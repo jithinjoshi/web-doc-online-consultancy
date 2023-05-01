@@ -1,10 +1,14 @@
-import React from 'react'
+import React, { useState } from 'react'
 
-const Form = () => {
+const Form = ({ user }) => {
+    const userId = user._id;
+
+    
+
     return (
         <div class="flex items-center justify-center p-12">
             <div class="mx-auto w-full max-w-[550px]">
-                <form action="https://formbold.com/s/FORM_ID" method="POST">
+                <form method="POST">
                     <div class="-mx-3 flex flex-wrap">
                         <div class="w-full px-3 sm:w-1/2">
                             <div class="mb-5">

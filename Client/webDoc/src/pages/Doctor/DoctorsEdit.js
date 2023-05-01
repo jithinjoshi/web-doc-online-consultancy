@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { login, selectDoctor, selectUser } from '../../Redux/Doctor/doctorSlice'
+import { login, selectUser } from '../../Redux/Doctor/doctorSlice'
 import { doctorProfile, editDoctorProfile } from '../../Helpers/doctorHelper'
 import { useNavigate, useParams } from 'react-router-dom'
 import SideBar from '../../components/Doctor/SideBar'

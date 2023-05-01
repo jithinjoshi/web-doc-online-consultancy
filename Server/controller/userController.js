@@ -1,5 +1,7 @@
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken';
+import express from 'express'
+const router = express.Router();
 
 
 import admin from '../config/firebase.config.js';
@@ -12,11 +14,49 @@ import Stripe from 'stripe';
 import nodemailer from 'nodemailer'
 import { Department } from '../Model/Department.js';
 
+
 import dotenv from 'dotenv'
 dotenv.config()
 
 
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
+
+let refreshTokens = []
+
+const generateAccessToken = (user) => {
+    return jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '15m' });
+
+}
+
+const generateRefreshToken = (user) => {
+    return jwt.sign({ userId: user._id }, process.env.JWT_RESFRESH_SECRET);
+
+}
+
+//refresh
+export const refresh = async (req, res) => {
+    const refreshToken = req.body.token;
+
+    if (!refreshToken) return res.status(401).json({ err: "you are not authenticated" });
+    if (!refreshTokens.includes(refreshToken)) {
+        return res.status(403).json({ err: "refresh token is not valid" })
+    }
+
+    jwt.verify(refreshToken, process.env.JWT_RESFRESH_SECRET, async (err, user) => {
+        err && console.log(err);
+        refreshTokens = refreshTokens.filter((token) => token !== refreshToken);
+        const newAccessToken = generateAccessToken(user);
+        const newRefreshToken = generateRefreshToken(user);
+
+        const updateToken = await User.findByIdAndUpdate(user._id, { tokens: { accessToken: newAccessToken, refreshToken: newRefreshToken } });
+
+        refreshTokens.push(newRefreshToken);
+        res.status(200).json({
+            accessToken: newAccessToken,
+            refreshToken: newRefreshToken
+        })
+    })
+}
 
 
 //register
@@ -199,21 +239,15 @@ export const login = async (req, res) => {
         if (user) {
             let isValidUser = await bcrypt.compare(password, user.password);
             if (isValidUser) {
-                const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '35s' });
-                console.log(user._id);
+                const accessToken = generateAccessToken(user);
+                const refreshToken = generateRefreshToken(user);
 
-                if (req.cookies[user._id]) {
-                    req.cookies[user._id] = ""
-                }
+                const updateToken = await User.findByIdAndUpdate(user._id, { tokens: { accessToken: accessToken, refreshToken: refreshToken } });
 
-                res.cookie(String(user._id), token, {
-                    path: "/",
-                    expires: new Date(Date.now() + 1000 * 30),
-                    httpOnly: true,
-                    sameSite: 'lax'
-                })
+                refreshTokens.push(refreshToken);
 
-                res.status(201).send({ msg: "Login successfull", user, token })
+
+                res.status(201).send({ msg: "Login successfull", user, accessToken, refreshToken })
             } else {
                 res.status(500).send("invalid credentials")
             }
@@ -235,10 +269,9 @@ export const getUser = async (req, res,) => {
         let user = await User.findById(userId);
 
         if (user) {
-            console.log(user);
+            console.log(user, ":::");
             let { password, ...rest } = Object.assign({}, user.toJSON());
             res.status(201).send(rest);
-            console.log(rest);
         } else {
             res.status(500).send("can't find the user")
         }
@@ -266,7 +299,6 @@ export const getSingleDoctor = async (req, res) => {
     try {
         const { id } = req.params;
         const doctor = await Doctor.findOne({ _id: id }, '-password');
-        console.log(doctor);
         res.status(200).send(doctor)
 
     } catch (error) {
@@ -410,8 +442,6 @@ export const checkAvailability = async (req, res) => {
 }
 
 //payment
-
-
 export const payment = async (req, res) => {
     try {
         const line_items = req.body;
@@ -419,6 +449,14 @@ export const payment = async (req, res) => {
         const usdToInrRate = 100; // Assuming 1 USD = 100 INR
         const usdAmount = line_items?.price
         const inrAmount = usdAmount * usdToInrRate;
+
+        const customer = await stripe.customers.create({
+            metadata: {
+                userId: line_items.userId,
+                appointments: JSON.stringify(line_items)
+
+            }
+        })
 
         const session = await stripe.checkout.sessions.create({
             line_items: [
@@ -438,6 +476,7 @@ export const payment = async (req, res) => {
                     quantity: 1
                 },
             ],
+            customer: customer.id,
             mode: 'payment',
             success_url: `${process.env.CLIENT_URL}/checkout-success`,
             cancel_url: `${process.env.CLIENT_URL}/checkout-failure`,
@@ -449,6 +488,73 @@ export const payment = async (req, res) => {
 
     }
 }
+
+export const handleWebhook = async (req, res) => {
+    let signature = req.headers['stripe-signature'];
+    const endpointSecret = "whsec_98351d7eaef6f96ad8d4da5bd4f2bf4413d7bbf97dd7a1302aeeb794ea875e62";
+
+    let data;
+    let eventType;
+
+    if (endpointSecret) {
+        const payload = req.body;
+        const payloadString = JSON.stringify(payload, null, 2);
+        const header = stripe.webhooks.generateTestHeaderString({
+            payload: payloadString,
+            secret: endpointSecret,
+        });
+        let event;
+        try {
+            event = stripe.webhooks.constructEvent(payloadString, header, endpointSecret);
+
+        } catch (err) {
+            res.status(400).send(`Webhook Error: ${err.message}`);
+            return;
+        }
+
+        data = event.data.object;
+        eventType = event.type;
+    } else {
+        data = req.body.data.object;
+        eventType = req.body.type;
+    }
+
+    // Handle the event
+    if (eventType === "checkout.session.completed") {
+        stripe.customers
+            .retrieve(data.customer)
+            .then((customer) => {
+                console.log(data,"PPPP");
+                const appointmentsData = JSON.parse(customer.metadata.appointments);
+
+                const newAppointment = new Appointment({
+                    userId: customer?.metadata?.userId,
+                    doctorId: appointmentsData?.doctorId,
+                    doctorName: appointmentsData?.doctor,
+                    doctorImage: appointmentsData?.doctorImage,
+                    department: appointmentsData?.doctorDepartment,
+                    date: appointmentsData?.date,
+                    time: appointmentsData?.time,
+                    price: appointmentsData?.price,
+                    payment_status: data?.payment_status,
+                    paymentOwner:data?.customer_details?.name,
+                    paymentOwnerEmail:data?.customer_details?.email
+
+                })
+                newAppointment.save().then(() => {
+                    console.log("data added successfully");
+                }).catch((err) => {
+                    console.log(err);
+                })
+
+         })
+            .catch((err) => console.log(err));
+    }
+    // Return a 200 response to acknowledge receipt of the event
+    res.send().end();
+
+}
+
 
 //login with otp
 export const loginWithOtp = async (req, res) => {
@@ -566,27 +672,92 @@ export const getAllDepartments = async (req, res) => {
     }
 }
 
+//get token
+export const getToken = async (req, res) => {
+    try {
+        const userId = req.user;
+        res.status(200).json(userId)
+
+    } catch (error) {
+        res.status(500).json({ err: "can't get the access token" })
+
+    }
+}
+
+//get user appointment
+export const getMyAppointment = async(req,res) =>{
+    try {
+        const {id} = req.params;
+        const myAppointments = await Appointment.find({userId:id});
+        res.status(200).json(myAppointments);
+        
+    } catch (error) {
+        res.status(500).json({err:"can't get the appointments"})
+        
+    }
+}
+
+//get my doctors
+export const getMyDoctors = async (req, res) => {
+    try {
+        const userId = req.params.id;
+        const data = await Appointment.find({ userId }).select('-userId -payment_status -createdAt -updatedAt -paymentOwner -price -__v -paymentOwnerEmail')
+
+        res.status(200).send(data)
+
+    } catch (error) {
+        res.send("can't get user data");
+
+    }
+}
+
+//get profile
+export const getUserProfile = async(req,res) =>{
+    try {
+        const userId = req.params.id;
+        const user = await User.findOne({_id:userId}).select('-password -tokens')
+        return res.status(201).json(user)
+        
+    } catch (error) {
+        res.status(500).json("can't access user")
+    }
+}
+
+//update profile
+
+export const updateProfile = async(req,res)=>{
+    try {
+        const id = req.params.id;
+        const data = req.body;
+        const userId = await User.findOneAndUpdate({_id:id});
+        
+    } catch (error) {
+        res.status(500).json("can't update the data")
+        
+    }
+}
+
+
+
 //signout user
 export const signoutUser = async (req, res) => {
     try {
-        const cookies = req.headers.cookie
-        const prevToken = cookies.split("=")[1];
+        const refreshToken = req.body.token;
+        console.log(refreshToken, "::::::::::::::::::::::::");
+        const user = req.user;
 
-        if (!prevToken) {
-            return res.status(400).json({ message: "couldn't find the token" });
+        if (refreshToken) {
+            refreshTokens = refreshTokens.filter((token) => token !== refreshToken);
+            const updateToken = await User.findOneAndUpdate(user._id, { tokens: { accessToken: "", refreshToken: "" } });
+            res.status(200).json("you are logout successfully")
+
+        } else {
+            res.status(500).json("can't logout")
         }
-        jwt.verify(String(prevToken), process.env.JWT_SECRET, (err, decoded) => {
-            if (err) {
-                console.log(err);
-                return res.status(403).json({ msg: "Authentication failed" })
-            }
-            res.clearCookie(`${decoded.userId}`);
-            req.cookies[`${decoded.userId}`] = "";
-        });
-        res.status(201).json({ success: "user signout successfully" })
 
     } catch (error) {
-        res.status(500).json({ err: "unable to logout user" });
+        console.log(error);
+        res.status(500).json(error);
 
     }
 }

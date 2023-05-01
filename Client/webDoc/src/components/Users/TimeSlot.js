@@ -119,12 +119,12 @@ const TimeSlot = ({ doctor, id }) => {
         dispatch(paymentData(credentials))
 
 
-        appointmentDoctor(credentials).then((data) => {
-            console.log("success");
+        // appointmentDoctor(credentials).then((data) => {
+        //     console.log("success");
 
-        }).catch((err) => {
-            console.log(err);
-        })
+        // }).catch((err) => {
+        //     console.log(err);
+        // })
 
 
         history(`/confirm-appointment/${id}`)

@@ -1,7 +1,8 @@
 import axios from "axios";
 axios.defaults.withCredentials = true
 
-axios.defaults.baseURL = process.env.REACT_APP_SERVER_URL
+axios.defaults.baseURL = process.env.REACT_APP_SERVER_URL;
+
 
 
 //signup
@@ -66,15 +67,17 @@ export async function loginUser(credentials) {
 
 
 //user
-export async function getUser() {
-    return new Promise((resolve, reject) => {
-        axios.get('/api/user/user', { withCredentials: true }).then((user) => {
-            resolve(user)
-        }).catch((err) => {
-            reject(err)
-        })
-    })
-}
+// export async function getUser() {
+//     return new Promise((resolve, reject) => {
+//         axios.get('/api/user/user',{
+//             headers:{authorization:"Bearer "+userData.accessToken}
+//         }).then((user) => {
+//             resolve(user)
+//         }).catch((err) => {
+//             reject(err)
+//         })
+//     })
+// }
 
 
 //refresh token
@@ -216,18 +219,18 @@ export const paymentGate = (async credentials =>{
 });
 
 //appointment update
-export const appointmentUpdate = (async credentials =>{
-    try {
-        const updateAppointment = await axios.put('/api/user/update-appointment',credentials);
-        if(updateAppointment){
-            return updateAppointment;
-        }
+// export const appointmentUpdate = (async credentials =>{
+//     try {
+//         const updateAppointment = await axios.put('/api/user/update-appointment',credentials);
+//         if(updateAppointment){
+//             return updateAppointment;
+//         }
         
-    } catch (error) {
-        return error;
+//     } catch (error) {
+//         return error;
         
-    }
-})
+//     }
+// })
 
 export const loginWithOtp = async (credentials) =>{
     try {
@@ -269,6 +272,62 @@ export const updatePassword = async (id,token,credentials) =>{
     }
 }
 
+//user appointments
+export const singleUserAppointments = async (id)=>{
+    try {
+        const appointments = await axios.get(`/api/user/my-appointments/${id}`);
+        return appointments;
+    } catch (error) {
+        return error;
+    }
+}
+
+//get all appointed doctors
+export const getAllAppointmentDoctors = async (id) =>{
+    try {
+        const doctors = await axios.get(`/api/user/my-doctors/${id}`);
+        return doctors;  
+    } catch (error) {
+        return error
+        
+    }
+}
+
+//add message to db
+export function addMessage(credentials){
+    return new Promise((resolve,reject)=>{
+        axios.post("/api/message/addmsg",credentials).then((data)=>{
+            console.log(data);
+        }).catch((err)=>{
+            console.log(err);
+        })
+    })
+}
+
+//get all messages
+export function getAllMessages(credentials){
+    return new Promise((resolve,reject)=>{
+        axios.post("/api/message/getmsg",credentials).then((data)=>{
+            resolve(data);
+            console.log(data);
+        }).catch((err)=>{
+            reject(err)
+            console.log(err);
+        })
+    })
+}
+
+
+//get user profile
+export function getUserData(id){
+    return new Promise((resolve,reject)=>{
+        axios.get(`/api/user/get-profile/${id}`).then((user)=>{
+            resolve(user)
+        }).catch((err)=>{
+            reject(err);
+        })
+    })
+}
 
 //signout user
 export const signoutUser = async () => {

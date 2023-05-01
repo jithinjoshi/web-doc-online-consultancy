@@ -9,5 +9,7 @@ router.route('/profile/:id').get(controller.profile);
 router.route('/edit/:id').put(controller.edit);
 router.route('/schedule/:id').post(controller.schedule);
 router.route('/scheduledTime/:id').get(controller.scheduledTime);
+router.route('/getMyPatients/:id').get(controller.getMyPatients);
+router.route('/appointments/:id').get(controller.getAppointments);
 
 export default router

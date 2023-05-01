@@ -29,6 +29,12 @@ import Profile from "../pages/User/Profile";
 
 import ErrorPage from '../components/ErrorPage'
 import ApplyForDoctor from "../pages/User/ApplyForDoctor";
+import Appointments from "../pages/User/Appointments";
+import DoctorChat from "../pages/Doctor/DoctorChat";
+import DoctorAppointments from "../pages/Doctor/DoctorAppointments";
+import Chats from "../components/Users/Chat/Chats";
+
+
 
 
 
@@ -153,6 +159,14 @@ export const router = createBrowserRouter([
         element:<ApplyForDoctor/>,
         errorElement:<ErrorPage/>
     },
+    {
+        path:'/appointments',
+        element:<Appointments/>
+    },
+    {
+        path:'/chats',
+        element:<Chats/>
+    },
 
     //doctors
     {
@@ -179,6 +193,15 @@ export const router = createBrowserRouter([
         path:"/doctor/schedule/:id",
         element:<Doctorschedule/>,
         errorElement:<ErrorPage/>
+    },
+    
+    {
+        path:'/doctor/chat',
+        element:<DoctorChat/>
+    },
+    {
+        path:'/doctor/appointments',
+        element:<DoctorAppointments/>
     }
     
 ])

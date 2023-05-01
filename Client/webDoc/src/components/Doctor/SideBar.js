@@ -117,7 +117,7 @@ const SideBar = () => {
               <span class="">Reports</span>
             </Link>
             <Link
-              href=""
+              to='/doctor/chat'
               class="text-sm font-medium text-gray-700 py-4 px-2 hover:bg-teal-500 hover:text-white hover:scale-105 rounded-md transition duration-150 ease-in-out"
             >
               <svg
@@ -154,7 +154,7 @@ const SideBar = () => {
               <span class="">Schedule</span>
             </Link>
             <Link
-              href=""
+              to='/doctor/appointments'
               class="text-sm font-medium text-gray-700 py-4 px-2 hover:bg-teal-500 hover:text-white hover:scale-105 rounded-md transition duration-150 ease-in-out"
             >
               <svg
@@ -169,7 +169,7 @@ const SideBar = () => {
                   clip-rule="evenodd"
                 ></path>
               </svg>
-              <span class="">Table</span>
+              <span class="">Appointments</span>
             </Link>
             <Link
               href=""

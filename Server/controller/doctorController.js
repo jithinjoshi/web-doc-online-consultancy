@@ -4,16 +4,17 @@ import jwt from 'jsonwebtoken'
 import { Schedule } from "../Model/Schedules.js";
 import moment from 'moment'
 import cloudinary from "../utils/cloudinary.js";
+import { Appointment } from "../Model/Appointment.js";
 
 export const login = async (req, res) => {
     try {
         const { email, password } = req.body;
         let user = await Doctor.findOne({ email });
-       
+
 
         if (user) {
             let isValidUser = await bcrypt.compare(password, user.password);
-            
+
             if (isValidUser) {
                 const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '30min' });
 
@@ -39,35 +40,35 @@ export const login = async (req, res) => {
     }
 };
 
-export const profile = async(req,res)=>{
+export const profile = async (req, res) => {
     try {
         let doctorId = req.params.id
         console.log(doctorId);
-        if(doctorId){
-            let doctor = await Doctor.findOne({_id:doctorId});
-            if(doctor){
+        if (doctorId) {
+            let doctor = await Doctor.findOne({ _id: doctorId });
+            if (doctor) {
                 res.status(201).send(doctor)
             }
-        }else{
-            res.status(500).json({err:"Un authorized user"});
+        } else {
+            res.status(500).json({ err: "Un authorized user" });
         }
-        
+
     } catch (error) {
-        res.status(500).json({err:"can't get the profile"});
-        
+        res.status(500).json({ err: "can't get the profile" });
+
     }
 }
 
 //edit doctor
-export const edit = async(req,res)=>{
+export const edit = async (req, res) => {
     try {
         let userId = req.params.id;
         let data = req.body;
-        if(req.body.image){
+        if (req.body.image) {
             const imgId = req.body.imgPublicId;
-            
+
             await cloudinary.uploader.destroy(imgId);
-    
+
             const uploadRes = await cloudinary.uploader.upload(req.body.image, {
                 allowed_formats: "jpg,png,webp,jpeg",
                 upload_preset: 'webDoc'
@@ -75,23 +76,23 @@ export const edit = async(req,res)=>{
             data.image = uploadRes;
             delete data.imgPublicId;
         }
-        const doctors = await Doctor.findByIdAndUpdate(userId,data);
-        if(doctors){
-            const updatedDoctor = await Doctor.findOne({_id:doctors._id});
+        const doctors = await Doctor.findByIdAndUpdate(userId, data);
+        if (doctors) {
+            const updatedDoctor = await Doctor.findOne({ _id: doctors._id });
             res.status(200).send(updatedDoctor)
-        }else{
-            res.status(500).json({err:"Doctor Updation failed"});
+        } else {
+            res.status(500).json({ err: "Doctor Updation failed" });
         }
-        
+
     } catch (error) {
         res.status(500).json(error)
-        
+
     }
 }
 
-export const schedule = async(req,res)=>{
+export const schedule = async (req, res) => {
     try {
-        const {startingTime,endingTime,date,doctorId} = req.body;
+        const { startingTime, endingTime, date, doctorId } = req.body;
         let schedules = [];
         var convertedStartTime = moment(startingTime, 'hh:mm A').format('HH:mm');
         var convertedEndTime = moment(endingTime, 'hh:mm A').format('HH:mm');
@@ -99,13 +100,13 @@ export const schedule = async(req,res)=>{
         let numEndTime = Number(convertedEndTime.split(':')[0]);
         console.log(convertedStartTime);
 
-        if(numStartTime < numEndTime){
-            for(let i = numStartTime; i < numEndTime; i++){
+        if (numStartTime < numEndTime) {
+            for (let i = numStartTime; i < numEndTime; i++) {
                 schedules.push(i);
             }
         }
-        if(numEndTime < numStartTime){
-            for(let i = numStartTime; i >= numEndTime; i--){
+        if (numEndTime < numStartTime) {
+            for (let i = numStartTime; i >= numEndTime; i--) {
                 schedules.push(i);
             }
         }
@@ -117,26 +118,60 @@ export const schedule = async(req,res)=>{
             doctorId,
             schedules
         });
-        newSchedule.save().then(()=>{
-            res.status(200).send({success:"data added successfully"})
-        }).catch((err)=>{
-            res.status(500).send({err:"can't insert data into database"})
+        newSchedule.save().then(() => {
+            res.status(200).send({ success: "data added successfully" })
+        }).catch((err) => {
+            res.status(500).send({ err: "can't insert data into database" })
         })
-        
+
     } catch (error) {
-        res.status(500).json({err:"can't schedule time"});
-        
+        res.status(500).json({ err: "can't schedule time" });
+
     }
 }
 
-export const scheduledTime = async (req,res)=>{
+export const scheduledTime = async (req, res) => {
     try {
         const doctorId = req.params.id;
-        const mySchedules = await Schedule.find({doctorId});
+        const mySchedules = await Schedule.find({ doctorId });
         res.status(200).send(mySchedules)
     } catch (error) {
-        res.status(500).json({err:"can't find the schedules"})
+        res.status(500).json({ err: "can't find the schedules" })
     }
 }
 
+export const getMyPatients = async (req, res) => {
+    try {
+        const doctorId = req.params.id;
+        const data = await Appointment.find({ doctorId })
+            .populate({
+                path: 'userId',
+                select: ['-password', '-tokens', '-mobile',]
+            }).select('-doctorId -doctorName -doctorImage -department -date -time -price -payment_status -paymentOwner -paymentOwnerEmail -createdAt -updatedAt -__v');
+
+        res.status(200).send(data)
+
+    } catch (error) {
+        res.send("can't get user data");
+
+    }
+}
+
+
+export const getAppointments = async(req,res)=>{
+    const doctorId = req.params.id;
+    try {
+        const data = await Appointment.find({doctorId})
+        .populate({
+            path:'userId',
+            select:['-password','-tokens']
+
+        }).select("-doctorId -doctorName -doctorImage -department -price -payment_status -paymentOwner -paymentOwnerEmail -createdAt -updatedAt -__v");
+        res.send(data)
+        
+    } catch (error) {
+        res.send("can't find appointments")
+        
+    }
+}
 

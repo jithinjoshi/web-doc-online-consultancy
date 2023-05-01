@@ -1,6 +1,7 @@
 import express from 'express'
 const router = express.Router();
-import { Auth, checkIsBlocked, refreshToken} from '../Auth/middleware.js';
+import { Auth } from '../Auth/middleware.js';
+
 
 import * as controller from '../controller/userController.js'
 
@@ -9,11 +10,11 @@ router.route('/register').post(controller.register);
 router.route('/register-with-google').get(controller.googleRegister);
 router.route('/login-with-google').get(controller.googleLogin)
 router.route('/login').post(controller.login);
-router.route("/user").get(Auth,controller.getUser);
-router.route("/refresh").get(refreshToken,Auth,controller.getUser);
+router.route("/user").get(Auth, controller.getUser);
+router.route("/refresh").post(controller.refresh);
 router.route('/doctors').get(controller.getAllDoctors);
 router.route('/availableSlots/:id').get(controller.getDoctorAvailability);
-router.route('/signout').post(Auth,controller.signoutUser);
+router.route('/signout').post(Auth, controller.signoutUser);
 router.route('/doctor/:id').get(controller.getSingleDoctor);
 router.route('/doctor/appointment').post(controller.appointment);
 // router.route('/doctor/timings').post(controller.manageTimings);
@@ -26,5 +27,13 @@ router.route('/forgot-password').post(controller.forgotPassword);
 router.route('/reset-password/:id/:token').post(controller.resetPassword);
 router.route('/get-all-departments').get(controller.getAllDepartments);
 router.route('/update-appointment').put(controller.appointmentUpdate);
+router.route('/tokens').get(controller.getToken);
+router.route('/webhook').post(express.json({type:'application/json'}), controller.handleWebhook);
+router.route('/my-appointments/:id').get(controller.getMyAppointment);
+router.route('/my-doctors/:id').get(controller.getMyDoctors);
+router.route('/get-profile/:id').get(controller.getUserProfile);
+router.route('/updateProfile/:id').put(controller.updateProfile);
+
+
 
 export default router; 

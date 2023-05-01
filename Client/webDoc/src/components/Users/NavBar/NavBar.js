@@ -9,6 +9,10 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { getUser, refreshToken } from '../../../Helpers/userHelper';
 
 const NavBar = () => {
+
+  const user = useSelector(selectUser);
+  const dispatch = useDispatch()
+
   $(document).ready(function () {
     $(".nav-toggler").each(function (_, navToggler) {
       var target = $(navToggler).data("target");
@@ -25,25 +29,13 @@ const NavBar = () => {
     });
   });
 
-  const firstRender = false;
-  const [userz,setUserz] = useState();
-  useEffect(()=>{
-    if(firstRender){
-      firstRender = false;
-      getUser().then((user)=> setUserz(user))
-    }
-    let intervel = setInterval(()=>{
-      refreshToken().then(data => setUserz(data))
-    },1000 * 28)
 
-    return clearInterval(intervel)
-    
-  },[])
+  const handleLogout = () => {
+    console.log('Logging out...');
+  };
 
-  const user = useSelector(selectUser);
-  const dispatch = useDispatch()
 
-  console.log(userz,"PPPPPPPPPPPP");
+
   return (
     <>
       <nav className="flex items-center bg-white p-3 flex-wrap border">
@@ -65,6 +57,7 @@ const NavBar = () => {
           >
             <Link
               to='/'
+
               className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-black items-center justify-center hover:bg-blue-500 hover:text-white"
             >
               <span>Home</span>
@@ -76,19 +69,21 @@ const NavBar = () => {
               <span>Our Doctors</span>
             </Link>
 
-            {
-              user ?
-                <>
-                  <Link to="/profile" className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-black items-center justify-center hover:bg-blue-500 hover:text-white">Profile</Link>
-                  <Link to="/" className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-black items-center justify-center hover:bg-blue-500 hover:text-white" onClick={() => dispatch(logout())}>signout</Link>
-                </>
+            {user && (
+              <Link to="/profile" className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-black items-center justify-center hover:bg-blue-500 hover:text-white">Profile</Link>
+              
+            )}
+            {user ? (
+              <div onClick={handleLogout}>
+                <button className='lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-black items-center justify-center hover:bg-blue-500 hover:text-white'>Logout</button>
+              </div>
 
-                :
-                <>
-                  <Link to='/signup' className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-black items-center justify-center hover:bg-blue-500 hover:text-white">sign up</Link>
-                  <Link to='/signin' className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-black items-center justify-center hover:bg-blue-500 hover:text-white">sign in</Link>
-                </>
-            }
+            ) : (
+              <>
+                <Link to='/signup' className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-black items-center justify-center hover:bg-blue-500 hover:text-white">sign up</Link>
+                <Link to='/signin' className="lg:inline-flex lg:w-auto w-full px-3 py-2 rounded text-black items-center justify-center hover:bg-blue-500 hover:text-white">sign in</Link>
+              </>
+            )}
           </div>
         </div>
       </nav>

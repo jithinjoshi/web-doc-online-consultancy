@@ -154,7 +154,7 @@ const Signup = () => {
                         </label>
                         <label for="password">
                             <p class="font-medium text-slate-700 pb-2">confirm Password</p>
-                            <input id="password" name="password" type="password" class="w-full py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow" placeholder="Enter your password" onChange={formik.handleChange}
+                            <input id="password" name="confirmPassword" type="password" class="w-full py-3 border border-slate-200 rounded-lg px-3 focus:outline-none focus:border-slate-500 hover:shadow" placeholder="Enter your password" onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
                                     value={formik.values.confirmPassword}/>
                         </label>

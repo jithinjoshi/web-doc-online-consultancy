@@ -1,11 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { paymentGate } from '../../Helpers/userHelper'
 
 const PayButton = ({items}) => {
+    const [paymentDetails,usePaymentDetails] = useState();
     const handleClick = ()=>{
-        console.log("Hello");
+        
         paymentGate(items).then((payment)=>{
-            console.log(payment);
             if(payment.data.URL){
                 window.location.href = payment.data.URL;
             }

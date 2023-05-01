@@ -3,9 +3,11 @@ import { Link } from 'react-router-dom'
 import { selectUser } from '../../Redux/User/userSlice'
 import { useSelector } from 'react-redux';
 import PayButton from '../User/PayButton';
+import { selectPaymentDetails } from '../../Redux/User/Paymentslice';
 
 const PaymentBefore = ({doctor}) => {
     const user = useSelector(selectUser);
+    const payment = useSelector(selectPaymentDetails);
     const paymentItems = {
         name: "Online Doctor consultancy",
         price: doctor?.fees,
@@ -13,7 +15,9 @@ const PaymentBefore = ({doctor}) => {
         userId: user?._id,
         doctorImage: doctor?.image?.secure_url,
         doctorDepartment: doctor?.department,
-        doctorId: doctor?._id
+        doctorId: doctor?._id,
+        date:payment?.date,
+        time:payment?.time
     }
 
     return (

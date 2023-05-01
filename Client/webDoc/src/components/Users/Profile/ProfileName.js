@@ -1,7 +1,7 @@
 import React from 'react'
 import Form from './Form'
 
-const ProfileName = () => {
+const ProfileName = ({user}) => {
     return (
         <>
             <div class="container mx-auto py-10 h-64 md:w-4/5 w-11/12 px-6 flex flex-col md:flex-row">
@@ -11,13 +11,13 @@ const ProfileName = () => {
                         <input type="file" class="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer" />
                     </div>
 
-                    <h1 class="text-small font-medium flex sm:text-4xl sm:ms-9"> Jithin Joshi</h1>
+                    <h1 class="text-small font-medium flex sm:text-4xl sm:ms-9">{user?.username}</h1>
                 </div>
             </div>
 
 
             <h1 className='text-center text-2xl font-bold underline'>Personal Information</h1>
-            <Form />
+            <Form user={user}/>
         </>
     )
 }
