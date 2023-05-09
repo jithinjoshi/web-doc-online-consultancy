@@ -30,6 +30,7 @@ import doctorReducer from '../Redux/Doctor/doctorSlice';
 import userReducer from '../Redux/User/userSlice';
 import loadingReducer from '../Redux/Loader/LoadingSlice'
 import paymentReducer from '../Redux/User/Paymentslice'
+import chatUserReducer from '../Redux/Doctor/chatSlice'
 
 const persistConfig = {
   key: 'root',
@@ -41,7 +42,9 @@ const rootReducer = combineReducers({
   doctor: doctorReducer,
   user: userReducer,
   loading:loadingReducer,
-  paymentDetails:paymentReducer
+  paymentDetails:paymentReducer,
+  chatUser:chatUserReducer
+  
 
 });
 

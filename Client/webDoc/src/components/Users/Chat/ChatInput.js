@@ -1,21 +1,9 @@
 import React, { useState } from 'react'
-import data from '@emoji-mart/data'
-import Picker from '@emoji-mart/react'
+
 
 const ChatInput = ({ chats, setChats }) => {
-    const [showEmojiPicker, setShowImojiPicker] = useState(false);
     const [msg, setMsg] = useState();
 
-    const handleEmojiPickerHideAndShow = () => {
-        setShowImojiPicker(!showEmojiPicker)
-    }
-
-    const handleEmojiSelect = (emoji) => {
-        let message = msg;
-        message = message += emoji.native;
-        setMsg(message)
-        // Do something with the selected emoji, such as updating state or sending it to a server
-    };
 
     const submitHandler = ((e) => {
         e.preventDefault();
@@ -37,25 +25,6 @@ const ChatInput = ({ chats, setChats }) => {
                             class="flex w-full border rounded-xl focus:outline-none focus:border-indigo-300 pl-4 h-10"
                             onChange={(e) => setMsg(e.target.value)} value={msg}
                         />
-                        <button
-                            class="absolute flex items-center justify-center h-full w-12 right-0 top-0 text-gray-400 hover:text-gray-600"
-                        >
-                            <svg onClick={handleEmojiPickerHideAndShow}
-                                class="w-6 h-6"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                                xmlns="http://www.w3.org/2000/svg"
-                            >
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                                ></path>
-                            </svg>
-                            {showEmojiPicker && <Picker data={data} onEmojiSelect={handleEmojiSelect} />}
-                        </button>
                     </div>
                 </div>
                 <div class="ml-4">

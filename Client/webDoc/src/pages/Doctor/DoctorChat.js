@@ -1,10 +1,11 @@
 import React from 'react'
-import ChatsPage from '../../components/Doctor/Chat/Chat'
+import Chat from '../../components/Doctor/Chat/Body'
+
 
 const DoctorChat = () => {
   return (
     <>
-        <ChatsPage/>
+       <Chat/>
     </>
   )
 }

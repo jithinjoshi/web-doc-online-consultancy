@@ -5,6 +5,7 @@ import { Schedule } from "../Model/Schedules.js";
 import moment from 'moment'
 import cloudinary from "../utils/cloudinary.js";
 import { Appointment } from "../Model/Appointment.js";
+import { User } from "../Model/user.js";
 
 export const login = async (req, res) => {
     try {
@@ -173,5 +174,11 @@ export const getAppointments = async(req,res)=>{
         res.send("can't find appointments")
         
     }
+}
+
+export const getSingleDoctor = async (req,res)=>{
+    const {id} = req.params;
+    const user = await User.findById({_id:id}).select('-password')
+    res.status(201).json(user)
 }
 

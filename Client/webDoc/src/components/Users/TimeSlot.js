@@ -72,7 +72,6 @@ const TimeSlot = ({ doctor, id }) => {
     // }
 
     const selectedDay = (val) => {
-        console.log(val, "llll")
         const changedDate = moment(val).format('MM/DD/YYYY');
         setDate(changedDate);
         setIsAvailable(false)
@@ -140,7 +139,7 @@ const TimeSlot = ({ doctor, id }) => {
                     getSelectedDay={selectedDay}
                     labelFormat={"MMMM"}
                     color={"#374e8c"}
-                    endDate={30}
+                    endDate={31}
                 />
             </div>
 

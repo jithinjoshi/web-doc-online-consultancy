@@ -4,18 +4,15 @@ import { useSelector } from 'react-redux';
 import Doctors from './Doctors';
 import { addMessage, getAllAppointmentDoctors, getAllMessages } from '../../../Helpers/userHelper';
 import ChatPage from './ChatPage';
-import { io } from 'socket.io-client'
-import { v4 as uuidv4 } from 'uuid'
+
 
 
 const Chats = () => {
-    const host="http://localhost:8080/"
-    const socket = useRef()
     const user = useSelector(selectUser);
     const [doctors, setDoctors] = useState([])
-    const [selectedDoctor,setSelectedDoctor] = useState({});
-    const [chats,setChats] = useState()
-    const [messages,setMessages] = useState([])
+    const [selectedDoctor, setSelectedDoctor] = useState({});
+    const [chats, setChats] = useState()
+    const [messages, setMessages] = useState([])
     useEffect(() => {
         if (user) {
             getAllAppointmentDoctors((user._id)).then((doctors) => {
@@ -25,35 +22,24 @@ const Chats = () => {
         }
     }, [user])
 
-    useEffect(async () => {
-        const data = await addMessage({
+    useEffect(() => {
+        addMessage({
             from: user?._id,
             to: selectedDoctor?.doctorId,
             message: chats
+        }).then((response) => {
+            return response;
         })
-
-    }, [chats])
-
-    useEffect(async () => {
-        const response = await getAllMessages({ from: user?._id, to: selectedDoctor?.doctorId });
-        setMessages(response.data)
-    }, [selectedDoctor]);
-
-    useEffect(async () => {
-        const data = await addMessage({
-            from: user?._id,
-            to: selectedDoctor?.doctorId,
-            message: chats
-        })
-
     }, [chats])
 
     useEffect(() => {
-        if (user) {
-            socket.current = io(host);
-            socket.current.emit("add-user", user._id);
-        }
-    }, [user]);
+        getAllMessages({ from: user?._id, to: selectedDoctor?.doctorId }).then((response)=>{
+            setMessages(response.data)
+        })
+    }, [selectedDoctor]);
+
+
+
 
     return (
         <div class="flex h-screen antialiased text-gray-800">
@@ -81,12 +67,12 @@ const Chats = () => {
                         <div class="ml-2 font-bold text-2xl">Chat</div>
                     </div>
 
-                    <Doctors doctors={doctors} setSelectedDoctor={setSelectedDoctor}/>
+                    <Doctors doctors={doctors} setSelectedDoctor={setSelectedDoctor} />
                 </div>
 
-                <ChatPage selectedDoctor={selectedDoctor} chats={chats} setChats={setChats} messages={messages}/>
+                <ChatPage selectedDoctor={selectedDoctor} chats={chats} setChats={setChats} messages={messages} />
 
-                
+
             </div>
         </div>
     )

@@ -55,6 +55,7 @@ const Appointments = () => {
                                 <tbody>
                                     {
                                         myAppointments.map((appointments, index) => {
+                                            console.log(appointments,":::::::::::::::::")
                                             return (
                                                 <tr class="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100">
                                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{index + 1}</td>
@@ -77,8 +78,11 @@ const Appointments = () => {
                                                         <Link to='/doctor/chat' className='inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'>
                                                             Chat
                                                         </Link>
+                                                        <Link to={`/doctor/create-room/${appointments?.userId?._id}`} className='inline-block bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ms-4'>
+                                                            create room
+                                                        </Link>
                                                     </td>
-
+                                                    
                                                 </tr>
 
                                             )

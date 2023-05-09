@@ -115,3 +115,45 @@ export function getMyAppointments(id){
         })
     })
 }
+
+
+export function getAllConversations(id){
+    return new Promise((resolve,reject) =>{
+        axios.get(`/api/conversation/${id}`).then((data)=>{
+            resolve(data)
+        }).catch((err)=>{
+            reject(err);
+        })
+    })
+};
+
+export function getMessages(id){
+    return new Promise((resolve,reject)=>{
+        axios.get(`/api/message/${id}`).then((data)=>{
+            resolve(data);
+        }).catch((err)=>{
+            reject(err)
+        })
+    })
+}
+
+export function newMessages(credentials){
+    return new Promise((resolve,reject)=>{
+        axios.post('/api/message',credentials).then((data)=>{
+            resolve(data);
+        }).catch((err)=>{
+            reject(err)
+        })
+    })
+}
+
+//get single user
+export function getsingleUser(id){
+    return new Promise((resolve,reject)=>{
+        axios.post(`/api/doctor/getSingleDoctor/${id}`).then((data)=>{
+            resolve(data)
+        }).catch((err)=>{
+            reject(err)
+        })
+    })
+}
