@@ -32,7 +32,7 @@ import ApplyForDoctor from "../pages/User/ApplyForDoctor";
 import Appointments from "../pages/User/Appointments";
 import DoctorChat from "../pages/Doctor/DoctorChat";
 import DoctorAppointments from "../pages/Doctor/DoctorAppointments";
-import Chats from "../components/Users/Chat/Chats";
+import Chats from "../pages/User/userChat";
 import Video from "../components/User/VideoChat/Video";
 import CreateRoom from "../components/Doctor/VideoChat/CreateRoom";
 

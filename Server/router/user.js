@@ -33,6 +33,7 @@ router.route('/my-appointments/:id').get(controller.getMyAppointment);
 router.route('/my-doctors/:id').get(controller.getMyDoctors);
 router.route('/get-profile/:id').get(controller.getUserProfile);
 router.route('/updateProfile/:id').put(controller.updateProfile);
+router.route('/getSingleUser/:id').post(controller.getSingleUser);
 
 
 

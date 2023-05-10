@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react';
 import Users from './Users';
 import Search from './Search';
 import Messages from './Messages';
-import { getAllConversations} from '../../../Helpers/doctorHelper';
+import { getAllConversations} from '../../../Helpers/userHelper';
 
 
 const Body = () => {
@@ -20,44 +20,36 @@ const Body = () => {
 
 
 
-  //send message
-  useEffect(()=>{
+  //get all doctors
+  const {user} = useSelector((state)=>state.user);
+
+   //send message
+   useEffect(()=>{
     if(sendMessage !== null){
       socket.current.emit('send-message',sendMessage)
     }
   },[sendMessage]);
 
- 
-
-
-  
-
-  //get all doctors
-  const {doctor} = useSelector((state)=>state.doctor);
-
   //socket
   useEffect(()=>{
     socket.current = io('http://localhost:8800');
-    socket.current.emit("new-user-add",doctor?._id);
+    socket.current.emit("new-user-add",user?._id);
     socket.current.on('get-users',(users)=>{
       setOnlineUsers(users);
     })
-  },[doctor])
+  },[user])
 
    //recieve message
    useEffect(()=>{
     socket.current.on('recieve-message',(data)=>{
-      console.log("data recieved in parent",data);
       setRecieveMessage(data)
     })
   },[])
-
-  
   
   useEffect(()=>{
     const getAllChats = async()=>{
       try {
-        const {data} = await getAllConversations(doctor?._id);
+        const {data} = await getAllConversations(user?._id);
         setChats(data?.conversation);
         
       } catch (error) {
@@ -67,16 +59,17 @@ const Body = () => {
       }
     }
     getAllChats()
-  },[doctor]);
+  },[user]);
+
+
+  
 
 
   const checkOnlineStatus = (chat)=>{
-    const chatMember = chat.members.find((member)=>member !== doctor._id);
+    const chatMember = chat.members.find((member)=>member !== user._id);
     const online = onlineUsers.find((user)=>user.userId === chatMember);
     return online ? true : false;
   }
-
-
 
     return (
     
@@ -88,7 +81,7 @@ const Body = () => {
               chats?.map((chat)=>{
                 return(
                   <div onClick={()=>setCurrentChat(chat)}>
-                  <Users data={chat} currentUserId = {doctor?._id} online={checkOnlineStatus(chat)}/>
+                  <Users data={chat} currentUserId = {user?._id} online={checkOnlineStatus(chat)}/>
                   </div>
                 )
                 
@@ -100,7 +93,7 @@ const Body = () => {
         <div className="basis-4/6">
           <div className="">
             
-            <Messages chat={currentChat} currentUserId={doctor?._id} setSendMessage={setSendMessage} recieveMessage={recieveMessage}/>
+            <Messages chat={currentChat} currentUserId={user?._id} setSendMessage={setSendMessage} recieveMessage={recieveMessage}/>
   
   
           </div>

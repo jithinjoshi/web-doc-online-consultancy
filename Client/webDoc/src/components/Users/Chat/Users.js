@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from 'react'
-import { chatUser, getsingleUser } from '../../../Helpers/doctorHelper';
 import { useDispatch } from 'react-redux';
 import { chatUserData } from '../../../Redux/Doctor/chatSlice';
+import { getSingleDoctor } from '../../../Helpers/userHelper';
 
 
 const Users = ({ data, currentUserId, online }) => {
-    const dispatch = useDispatch();
+
     const [userData, setUserData] = useState(null);
     useEffect(() => {
         const userId = data?.members.find((id) => id !== currentUserId);
         const getUserData = async () => {
             try {
-                const user = await getsingleUser(userId);
+                const user = await getSingleDoctor(userId);
+                console.log(user?.data,"::::");
                 setUserData(user?.data);
-                dispatch(chatUserData(user?.data))
             } catch (error) {
                 return error;
 
@@ -27,10 +27,10 @@ const Users = ({ data, currentUserId, online }) => {
         <div class="user-list overflow-y-auto sm:h-screen bg-white">
             <div class="flex hover:bg-slate-100 transition px-5 py-3 hover:cursor-pointer">
                 <div class="pr-4">
-                    <img src={userData?.image ? userData?.image :"https://cdn-icons-png.flaticon.com/512/149/149071.png"} alt='profile' width="50" />
+                    <img className='rounded-full w-14 h-14' src={userData?.image ? userData?.image?.secure_url :"https://cdn-icons-png.flaticon.com/512/149/149071.png"} alt='profile' width="50" />
                 </div>
                 <div>
-                    <h3 class="text-violet-500 tex-md">{userData?.username}</h3>
+                    <h3 class="text-violet-500 tex-md">{userData?.firstName} {userData?.lastName}</h3>
                     <p class="text-sm text-gray-400 font-light overflow-hidden h-5">{online ?  'online' : 'offline'}</p>
                 </div>
             </div>

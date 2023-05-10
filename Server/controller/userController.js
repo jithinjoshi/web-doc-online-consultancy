@@ -738,6 +738,14 @@ export const updateProfile = async(req,res)=>{
 }
 
 
+//get single user
+export const getSingleUser = async (req,res)=>{
+    const {id} = req.params;
+    const user = await User.findById({_id:id}).select('-password')
+    res.status(201).json(user)
+}
+
+
 
 //signout user
 export const signoutUser = async (req, res) => {

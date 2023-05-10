@@ -1,10 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { FiSend } from 'react-icons/fi';
-import { getMessages, getsingleUser, newMessages } from '../../../Helpers/doctorHelper';
+import { getMessages, newMessages, getSingleDoctor } from '../../../Helpers/userHelper';
 import SelectedUser from './SelectedUser';
 import Welcome from './Welcome';
 import { format } from 'timeago.js'
-
 
 const Messages = ({ chat, currentUserId, setSendMessage, recieveMessage }) => {
   const [userData, setUserData] = useState(null);
@@ -12,7 +11,6 @@ const Messages = ({ chat, currentUserId, setSendMessage, recieveMessage }) => {
   const [newMessage, setNewMessages] = useState("");
   const scroll = useRef();
 
-  console.log(recieveMessage, "::::");
 
   useEffect(() => {
     if (recieveMessage !== null && recieveMessage.conversationId === chat._id) {
@@ -25,7 +23,7 @@ const Messages = ({ chat, currentUserId, setSendMessage, recieveMessage }) => {
     const userId = chat?.members?.find((id) => id !== currentUserId);
     const getUserData = async () => {
       try {
-        const user = await getsingleUser(userId);
+        const user = await getSingleDoctor(userId)
         setUserData(user?.data);
       } catch (error) {
         return error;
@@ -61,7 +59,7 @@ const Messages = ({ chat, currentUserId, setSendMessage, recieveMessage }) => {
     try {
       const { data } = await newMessages(message);
       console.log(data);
-      // setMessages([...messages, data?.messages]); Remove this line
+      //setMessages([...messages, data?.messages]);
       setNewMessages('');
     } catch (error) {
       console.log(error);
@@ -78,13 +76,15 @@ const Messages = ({ chat, currentUserId, setSendMessage, recieveMessage }) => {
   }, [messages])
 
 
+
+
   return (
     <>
       {userData ? (
         <>
           <SelectedUser userData={userData} />
-          <div class="basis-4/6 mb-20">
-            <div class="">
+          <div className="basis-4/6 mb-20">
+            <div className="">
               <div className="message-area mt-4 px-4">
                 {messages.map((message, index) => {
                   return (
@@ -129,6 +129,7 @@ const Messages = ({ chat, currentUserId, setSendMessage, recieveMessage }) => {
       )}
     </>
   );
+  
 };
 
 export default Messages;
