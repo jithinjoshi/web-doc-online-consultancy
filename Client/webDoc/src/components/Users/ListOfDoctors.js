@@ -3,9 +3,12 @@ import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { ShimmerPostList } from "react-shimmer-effects";
 import NoDataFound from './NoDataFound';
+import { selectUser } from '../../Redux/User/userSlice';
+import { useSelector } from 'react-redux';
 
 const ListOfDoctors = ({ doctors }) => {
     const history = useNavigate();
+    const user = useSelector(selectUser);
     return (
         <>
             {
@@ -40,7 +43,14 @@ const ListOfDoctors = ({ doctors }) => {
                                                     </span>
                                                     <p>Fees: <span className='font-bold'>₹{doctor?.fees}</span></p>
                                                 </div>
-                                                <Link to={`/appointment/${doctor?._id}`}><Button class="mt-4 text-xl w-full text-white bg-indigo-600 py-2 rounded-xl shadow-lg">Book Now</Button></Link>
+                                                {
+                                                    user ? 
+                                                    <Link to={`/appointment/${doctor?._id}`}><Button class="mt-4 text-xl w-full text-white bg-indigo-600 py-2 rounded-xl shadow-lg">Book Now</Button></Link>
+                                                    :
+                                                    <Link to={`/signin`}><Button class="mt-4 text-xl w-full text-white bg-indigo-600 py-2 rounded-xl shadow-lg">Book Now</Button></Link>
+
+                                                }
+                                                
 
                                             </div>
                                         </div>

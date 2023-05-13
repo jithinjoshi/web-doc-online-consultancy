@@ -6,6 +6,7 @@ import moment from 'moment'
 import cloudinary from "../utils/cloudinary.js";
 import { Appointment } from "../Model/Appointment.js";
 import { User } from "../Model/user.js";
+import mongoose from "mongoose";
 
 export const login = async (req, res) => {
     try {
@@ -159,26 +160,55 @@ export const getMyPatients = async (req, res) => {
 }
 
 
-export const getAppointments = async(req,res)=>{
+export const getAppointments = async (req, res) => {
     const doctorId = req.params.id;
     try {
-        const data = await Appointment.find({doctorId})
-        .populate({
-            path:'userId',
-            select:['-password','-tokens']
+        const data = await Appointment.find({ doctorId })
+            .populate({
+                path: 'userId',
+                select: ['-password', '-tokens']
 
-        }).select("-doctorId -doctorName -doctorImage -department -price -payment_status -paymentOwner -paymentOwnerEmail -createdAt -updatedAt -__v");
+            }).select("-doctorId -doctorName -doctorImage -department -price -payment_status -paymentOwner -paymentOwnerEmail -createdAt -updatedAt -__v");
         res.send(data)
-        
+
     } catch (error) {
         res.send("can't find appointments")
-        
+
     }
 }
 
-export const getSingleDoctor = async (req,res)=>{
-    const {id} = req.params;
-    const user = await User.findById({_id:id}).select('-password')
+export const getSingleDoctor = async (req, res) => {
+    const { id } = req.params;
+    const user = await User.findById({ _id: id }).select('-password')
     res.status(201).json(user)
+}
+
+export const getFullPayment = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const payment = await Appointment.aggregate([
+            {
+              $match: {
+                doctorId:new mongoose.Types.ObjectId(id)
+              }
+            },
+            {
+              $group: {
+                _id: null,
+                total: { $sum: "$price" }
+              }
+            }
+          ])
+
+        res.status(200).json(payment);
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ err: "can't access data" })
+
+    }
+
+
+    
 }
 

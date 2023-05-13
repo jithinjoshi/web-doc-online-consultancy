@@ -17,7 +17,6 @@ const Appointments = () => {
         })
     }
 },[user]);
-    console.log(appointments,"OOOOOOOOOO")
     return (
         <body class="antialiased font-sans">
             <div class=" mx-auto px-4 sm:px-8">

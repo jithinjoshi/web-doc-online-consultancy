@@ -1,4 +1,5 @@
 import axios from "axios";
+import { data } from "jquery";
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = process.env.REACT_APP_SERVER_URL;
 
@@ -112,6 +113,15 @@ export function getMyAppointments(id){
             resolve(data);
         }).catch((err)=>{
             reject(err)
+        })
+    })
+}
+
+export function getTotalPayments(id){
+    console.log(id);
+    return new Promise((resolve,reject)=>{
+        axios.get(`/api/doctor/getFullProfit/${id}`).then((result)=>{
+            resolve(result);
         })
     })
 }

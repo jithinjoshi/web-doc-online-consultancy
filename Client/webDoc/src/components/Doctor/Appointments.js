@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 import { getMyAppointments } from '../../Helpers/doctorHelper';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import moment from 'moment';
 
 const Appointments = () => {
     const user = useSelector(selectUser);
@@ -19,6 +20,13 @@ const Appointments = () => {
         }
 
     }, [user])
+
+    //get current time
+    const now = Date.now(); // Current timestamp
+const momentObj = moment(now); // Create a Moment object
+const formattedTime = momentObj.format('h:mm a'); // Format the time as "10:30 am"
+console.log(formattedTime);
+
 
     return (
         <>
@@ -46,9 +54,6 @@ const Appointments = () => {
                                         </th>
                                         <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
                                             Time
-                                        </th>
-                                        <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                                            Action
                                         </th>
                                     </tr>
                                 </thead>
@@ -78,10 +83,11 @@ const Appointments = () => {
                                                         <Link to='/doctor/chat' className='inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'>
                                                             Chat
                                                         </Link>
-                                                        <Link to={`/doctor/create-room/${appointments?.userId?._id}`} className='inline-block bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ms-4'>
+                                                        <Link to={`/room/${appointments?.userId?._id}`} className='inline-block bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ms-4'>
                                                             create room
                                                         </Link>
                                                     </td>
+                                                    
                                                     
                                                 </tr>
 

@@ -187,8 +187,6 @@ const DoctorsEdit = () => {
                 class="h-full w-screen flex flex-row overflow-hidden"
                 x-data="{ sidenav: true }"
             >
-                <SideBar />
-
                 <section className="px-2">
                 <Toaster position='top-center' reverseOrder={false}></Toaster>
                     <form novalidate="" action="" className="container flex flex-col mx-auto space-y-10 ng-untouched ng-pristine ng-valid" onSubmit={formik.handleSubmit}>

@@ -32,7 +32,7 @@ const Body = () => {
 
   
 
-  //get all doctors
+  //get  doctor
   const {doctor} = useSelector((state)=>state.doctor);
 
   //socket

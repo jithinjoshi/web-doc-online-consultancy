@@ -35,6 +35,7 @@ import DoctorAppointments from "../pages/Doctor/DoctorAppointments";
 import Chats from "../pages/User/userChat";
 import Video from "../components/User/VideoChat/Video";
 import CreateRoom from "../components/Doctor/VideoChat/CreateRoom";
+import DocEdit from "../pages/Doctor/DocEdit";
 
 
 
@@ -206,12 +207,16 @@ export const router = createBrowserRouter([
         element:<DoctorAppointments/>
     },
     {
-        path:'/room/:userId/:roomID',
+        path:'/room/:userId',
         element:<Video/>
     },
     {
         path:'/doctor/create-room/:userId',
         element:<CreateRoom/>
+    },
+    {
+        path:'/doctor/editProfile',
+        element:<DocEdit/>
     }
     
 ])

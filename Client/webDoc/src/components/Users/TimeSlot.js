@@ -80,6 +80,8 @@ const TimeSlot = ({ doctor, id }) => {
 
 
 
+
+
     //check availability
     const checkAvailabilityF = async () => {
         const credentials = {

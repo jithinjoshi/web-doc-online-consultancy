@@ -12,5 +12,6 @@ router.route('/scheduledTime/:id').get(controller.scheduledTime);
 router.route('/getMyPatients/:id').get(controller.getMyPatients);
 router.route('/appointments/:id').get(controller.getAppointments);
 router.route('/getSingleDoctor/:id').post(controller.getSingleDoctor);
+router.route('/getFullProfit/:id').get(controller.getFullPayment)
 
 export default router
