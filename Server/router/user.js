@@ -37,4 +37,5 @@ router.route('/getSingleUser/:id').post(controller.getSingleUser);
 
 
 
+
 export default router; 

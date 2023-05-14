@@ -187,6 +187,7 @@ export const checkAvailability = (async credentials => {
             return "something went wrong"
         }
     } catch (error) {
+        console.log(error);
         return error
     }
 

@@ -13,6 +13,7 @@ import { Appointment } from '../Model/Appointment.js';
 import Stripe from 'stripe';
 import nodemailer from 'nodemailer'
 import { Department } from '../Model/Department.js';
+import moment from 'moment'
 
 
 import dotenv from 'dotenv'
@@ -269,7 +270,6 @@ export const getUser = async (req, res,) => {
         let user = await User.findById(userId);
 
         if (user) {
-            console.log(user, ":::");
             let { password, ...rest } = Object.assign({}, user.toJSON());
             res.status(201).send(rest);
         } else {
@@ -411,35 +411,36 @@ export const appointmentUpdate = async (req, res) => {
 
 //check availability
 export const checkAvailability = async (req, res) => {
-    let { date, time, doctorId } = req.body;
-    date = new Date(date);
     try {
+      let { date,doctorId } = req.body;
+      console.log(date,doctorId,"OOOO");
 
-        // const fromTime = moment(time,'HH:mm').subtract(60,'minutes').toISOString();
-        // const toTime = moment(time,'HH:mm').add(60,'minutes').toISOString();
-        const appointments = await Appointment.find({
-            doctorId,
-            time,
-            date
-        });
-
-
-        if (appointments.length > 0) {
-            return res.status(200).send({
-                message: "Appointment not available",
-                success: false
-            });
-        } else {
-            return res.status(200).send({
-                message: "Appointment available",
-                success: true
-            })
-        }
+      let momentObj;
+  
+      if(date && doctorId){
+        momentObj = moment(date, 'MM/DD/YYYY hh:mm A');
+        if (!momentObj.isValid()) {
+            console.error(`Invalid date/time format: ${date}`);
+            res.status(400).json({ error: 'Invalid date/time format' });
+            return;
+          }
+      
+          const appointments = await Appointment.find({ doctorId, date });
+      
+          if (appointments && Array.isArray(appointments)) {
+            const times =  appointments.map(appointment => appointment.time);
+            res.status(200).json(times);
+          } else {
+            res.status(200).json(null);
+          }
+      }
+  
+     
     } catch (error) {
-        throw error;
-
+      console.error(error);
+      res.status(500).json({ error: 'Server error' });
     }
-}
+  }
 
 //payment
 export const payment = async (req, res) => {
@@ -524,7 +525,7 @@ export const handleWebhook = async (req, res) => {
         stripe.customers
             .retrieve(data.customer)
             .then((customer) => {
-                console.log(data,"PPPP");
+                console.log(data, "PPPP");
                 const appointmentsData = JSON.parse(customer.metadata.appointments);
 
                 const newAppointment = new Appointment({
@@ -537,8 +538,8 @@ export const handleWebhook = async (req, res) => {
                     time: appointmentsData?.time,
                     price: appointmentsData?.price,
                     payment_status: data?.payment_status,
-                    paymentOwner:data?.customer_details?.name,
-                    paymentOwnerEmail:data?.customer_details?.email
+                    paymentOwner: data?.customer_details?.name,
+                    paymentOwnerEmail: data?.customer_details?.email
 
                 })
                 newAppointment.save().then(() => {
@@ -547,7 +548,7 @@ export const handleWebhook = async (req, res) => {
                     console.log(err);
                 })
 
-         })
+            })
             .catch((err) => console.log(err));
     }
     // Return a 200 response to acknowledge receipt of the event
@@ -685,15 +686,15 @@ export const getToken = async (req, res) => {
 }
 
 //get user appointment
-export const getMyAppointment = async(req,res) =>{
+export const getMyAppointment = async (req, res) => {
     try {
-        const {id} = req.params;
-        const myAppointments = await Appointment.find({userId:id});
+        const { id } = req.params;
+        const myAppointments = await Appointment.find({ userId: id });
         res.status(200).json(myAppointments);
-        
+
     } catch (error) {
-        res.status(500).json({err:"can't get the appointments"})
-        
+        res.status(500).json({ err: "can't get the appointments" })
+
     }
 }
 
@@ -712,12 +713,12 @@ export const getMyDoctors = async (req, res) => {
 }
 
 //get profile
-export const getUserProfile = async(req,res) =>{
+export const getUserProfile = async (req, res) => {
     try {
         const userId = req.params.id;
-        const user = await User.findOne({_id:userId}).select('-password -tokens')
+        const user = await User.findOne({ _id: userId }).select('-password -tokens')
         return res.status(201).json(user)
-        
+
     } catch (error) {
         res.status(500).json("can't access user")
     }
@@ -725,23 +726,23 @@ export const getUserProfile = async(req,res) =>{
 
 //update profile
 
-export const updateProfile = async(req,res)=>{
+export const updateProfile = async (req, res) => {
     try {
         const id = req.params.id;
         const data = req.body;
-        const userId = await User.findOneAndUpdate({_id:id});
-        
+        const userId = await User.findOneAndUpdate({ _id: id });
+
     } catch (error) {
         res.status(500).json("can't update the data")
-        
+
     }
 }
 
 
 //get single user
-export const getSingleUser = async (req,res)=>{
-    const {id} = req.params;
-    const user = await User.findById({_id:id}).select('-password')
+export const getSingleUser = async (req, res) => {
+    const { id } = req.params;
+    const user = await User.findById({ _id: id }).select('-password')
     res.status(201).json(user)
 }
 

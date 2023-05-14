@@ -188,17 +188,17 @@ export const getFullPayment = async (req, res) => {
     try {
         const payment = await Appointment.aggregate([
             {
-              $match: {
-                doctorId:new mongoose.Types.ObjectId(id)
-              }
+                $match: {
+                    doctorId: new mongoose.Types.ObjectId(id)
+                }
             },
             {
-              $group: {
-                _id: null,
-                total: { $sum: "$price" }
-              }
+                $group: {
+                    _id: null,
+                    total: { $sum: "$price" }
+                }
             }
-          ])
+        ])
 
         res.status(200).json(payment);
 
@@ -207,8 +207,52 @@ export const getFullPayment = async (req, res) => {
         return res.status(500).json({ err: "can't access data" })
 
     }
+}
 
 
+//apply for doctor
+export const applyForDoctor = async (req, res) => {
+
+    try {
+        const { username, email, firstName, lastName, address, mobile, dob, about, image, department, experience, fees, startTime, endTime, certificate } = req.body;
+
+    if(image && certificate){
+        const uploadRes = await cloudinary.uploader.upload(image, {
+            allowed_formats: "jpg,png,webp,jpeg",
+            upload_preset: 'webDoc'
+        });
+
+        const certificateUploadRes = await cloudinary.uploader.upload(certificate, {
+            allowed_formats: "jpg,png,webp,jpeg",
+            upload_preset: 'webDoc'
+        });
+
+        if(uploadRes && certificateUploadRes){
+            const addDoc = new Doctor({
+                username,
+                email,
+                firstName,
+                lastName,
+                address,
+                mobile,
+                dob,
+                about,
+                department,
+                experience,
+                fees,
+                startTime,
+                endTime,
+                image:uploadRes,
+                certificate:certificateUploadRes
+            })
+        }
+
+
+    }
+        
+    } catch (error) {
+        
+    }
     
 }
 
