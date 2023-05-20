@@ -361,6 +361,19 @@ export function newMessages(credentials){
     })
 }
 
+//apply doctor
+export function applyDoctor(credentials) {
+    return new Promise((resolve, reject) => {
+        axios.post('/api/user/apply-doctor', credentials).then((response) => {
+            resolve(response);
+        }).catch((err) => {
+            console.log(err);
+            reject(err)
+        })
+
+    })
+}
+
 
 
 //signout user

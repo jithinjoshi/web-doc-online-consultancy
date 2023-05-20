@@ -28,7 +28,7 @@ const PhoneNumber = () => {
 
     async function onSignup() {
         const user = await loginWithOtp({mobile:ph});
-        console.log(user,">>>>>>>>>");
+
         if (user.data) {
             
             onCapchVerify();

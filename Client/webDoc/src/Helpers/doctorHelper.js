@@ -167,3 +167,75 @@ export function getsingleUser(id){
         })
     })
 }
+
+
+//apply doctor
+export function applyDoctor(credentials) {
+    return new Promise((resolve, reject) => {
+        axios.post('/api/doctor/apply-doctor', credentials).then((response) => {
+            resolve(response);
+        }).catch((err) => {
+            console.log(err);
+            reject(err)
+        })
+
+    })
+}
+
+//get all departments 
+export const getAllDepartments = async ()=>{
+    try {
+        const departments = await axios.get('/api/doctor/get-all-departments');
+        return departments?.data?.departments;
+    } catch (error) {
+        return error
+        
+    }
+}
+
+//signup 
+export const signupDoctor = async (id)=>{
+
+    try {
+        const emailData = await axios.get(`/api/doctor/signup-doctor/${id}`);
+        return emailData;
+    } catch (error) { 
+        return error
+        
+    }
+}
+
+//password update
+export const addPassword = async (id,credentials)=>{
+
+    return new Promise((resolve,reject)=>{
+        axios.post(`/api/doctor/addPassword/${id}`,credentials).then((data)=>{
+            resolve(data);
+        }).catch((err)=>{
+            reject(err)
+        })
+    })
+}
+
+//leave
+export const leave = async (id,credentials)=>{
+    return new Promise((resolve,reject)=>{
+        axios.put(`/api/doctor/leave/${id}`,credentials).then((data)=>{
+            console.log(data)
+        }).catch((err)=>{
+            console.log(err);
+        })
+    })
+}
+
+//get all patients
+export const patients = async (id) =>{
+    return new Promise((resolve,reject)=>{
+        axios.get(`/getMyPatients/${id}`).then((data)=>{
+            resolve(data)
+
+        }).catch((err)=>{
+            reject(err);
+        })
+    })
+}

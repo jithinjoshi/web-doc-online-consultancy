@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import mongoosePaginate from 'mongoose-paginate'
 
 const appointmentSchema = new mongoose.Schema({
     userId: {
@@ -38,5 +39,7 @@ const appointmentSchema = new mongoose.Schema({
 },
     { timestamps: true }
 );
+
+appointmentSchema.plugin(mongoosePaginate);
 
 export const Appointment = mongoose.model('Appointment', appointmentSchema);

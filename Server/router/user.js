@@ -34,7 +34,7 @@ router.route('/my-doctors/:id').get(controller.getMyDoctors);
 router.route('/get-profile/:id').get(controller.getUserProfile);
 router.route('/updateProfile/:id').put(controller.updateProfile);
 router.route('/getSingleUser/:id').post(controller.getSingleUser);
-
+router.route('/apply-doctor').post(controller.applyForDoctor);
 
 
 

@@ -23,9 +23,6 @@ const AddDoctor = () => {
 
     
 
-
-
-
     const handleDoctorImageUpload = (e) => {
         const file = e.target.files[0];
 
@@ -125,6 +122,7 @@ const AddDoctor = () => {
             if (!imgCopy.department) {
                 imgCopy.department = departments[0].department;
             }
+           
             let doctor = addDoctor(imgCopy)
 
             toast.promise(doctor, {
@@ -139,7 +137,7 @@ const AddDoctor = () => {
 
                 }
             }).catch((err) => {
-                console.log("login failure");
+                console.log("adding doctor failure");
             })
         }
     })
@@ -258,12 +256,6 @@ const AddDoctor = () => {
                                                     }
                                                 </select>
                                             </div>
-
-
-
-
-
-
 
 
 

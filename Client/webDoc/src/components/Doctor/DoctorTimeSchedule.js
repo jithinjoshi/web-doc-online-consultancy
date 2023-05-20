@@ -30,8 +30,9 @@ const DoctorTimeSchedule = () => {
             return times;
           }
           
+          console.log(startTime);
           const timings = getTimesBetween(startTime, endTime);
-          console.log(timings);
+          console.log(timings,"OOOpppp");
 
 
         const update = editDoctorProfile(id,{timings:timings,startTime:formattedStartTime,endTime:formattedEndTime});

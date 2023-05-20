@@ -36,6 +36,13 @@ import Chats from "../pages/User/userChat";
 import Video from "../components/User/VideoChat/Video";
 import CreateRoom from "../components/Doctor/VideoChat/CreateRoom";
 import DocEdit from "../pages/Doctor/DocEdit";
+import Notifications from "../pages/Admin/Notifications/Notifications";
+import DoctorRequest from "../pages/Admin/DoctorRequest/DoctorRequest";
+import ApplyDoctor from "../pages/Doctor/ApplyDoctor";
+import DoctorSignup from "../pages/Doctor/DoctorSignup";
+import AppliedDoctors from "../pages/Admin/AppliedDoctors/AppliedDoctors";
+import Leave from "../pages/Doctor/Leave";
+import Transactions from "../pages/Admin/Transactions/Transactions";
 
 
 
@@ -83,6 +90,26 @@ export const router = createBrowserRouter([
     {
         path:'/admin/update-doctor/:id',
         element:<UpdateDoctor/>,
+        errorElement:<ErrorPage/>
+    },
+    {
+        path:'/admin/notifications',
+        element:<Notifications/>,
+        errorElement:<ErrorPage/>
+    },
+    {
+        path:'/admin/doctor-request/:id',
+        element:<DoctorRequest/>,
+        errorElement:<ErrorPage/>
+    },
+    {
+        path:'/admin/doctor-requests',
+        element:<AppliedDoctors/>,
+        errorElement:<ErrorPage/>
+    },
+    {
+        path:'/admin/transactions',
+        element:<Transactions/>,
         errorElement:<ErrorPage/>
     },
     //user
@@ -164,11 +191,13 @@ export const router = createBrowserRouter([
     },
     {
         path:'/appointments',
-        element:<Appointments/>
+        element:<Appointments/>,
+        errorElement:<ErrorPage/>
     },
     {
         path:'/chats',
-        element:<Chats/>
+        element:<Chats/>,
+        errorElement:<ErrorPage/>
     },
 
     //doctors
@@ -217,6 +246,19 @@ export const router = createBrowserRouter([
     {
         path:'/doctor/editProfile',
         element:<DocEdit/>
+    },
+    {
+        path:'/doctor/apply-doctor',
+        element:<ApplyDoctor/>,
+    },
+    {
+        path:'/doctor/signup/:id',
+        element:<DoctorSignup/>
+    },
+    {
+        path:'/doctor/leave',
+        element:<Leave/>
     }
+
     
 ])

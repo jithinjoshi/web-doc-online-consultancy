@@ -14,7 +14,19 @@ router.route('/patients').get(controller.getAllPatients);
 router.route('/delete-doctor/:id').delete(controller.deleteDoctor);
 router.route('/delete-department/:id').delete(controller.deleteDepartment);
 router.route('/block-user/:id').post(controller.blockUser);
-router.route('/edit-doctor/:id').put(controller.editDoctor)
+router.route('/edit-doctor/:id').put(controller.editDoctor);
+router.route('/notifications').get(controller.getAllNotifications);
+router.route('/notificationCount').get(controller.getAllNotificationCount);
+router.route('/view-doctor-requests/:id').get(controller.selectedDoctorDetails);
+router.route('/approve-doctor/:id').put(controller.doctorApproval);
+router.route('/deny-doctor/:id').delete(controller.doctorApproval);
+router.route('/doctor-requests').get(controller.doctorRequests);
+router.route('/data-count').get(controller.getAllDataCount);
+router.route('/sales-monthly').get(controller.getSalesForChart);
+router.route('/weeklySales').get(controller.getWeeklyReport);
+router.route('/dailySales').get(controller.getDailyReport);
+router.route('/yearlySales').get(controller.getYearlyReport);
+router.route('/salesReport').get(controller.getSaleReport);
 
 
 

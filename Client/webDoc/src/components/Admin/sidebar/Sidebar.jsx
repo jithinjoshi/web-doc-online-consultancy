@@ -45,6 +45,13 @@ const Sidebar = () => {
             </li>
           </Link>
 
+          <Link to="/admin/doctor-requests" style={{ textDecoration: "none" }}>
+            <li style={{marginTop:"10px"}}>
+              <MedicationIcon className="icon" />
+              <span>Doctor Requests</span>
+            </li>
+          </Link>
+
           <Link to="/admin/departments" style={{ textDecoration: "none" }}>
             <li style={{marginTop:"10px"}}>
               <CategoryIcon className="icon" />
@@ -52,18 +59,16 @@ const Sidebar = () => {
             </li>
           </Link>
   
+        <Link to='/admin/transactions'>
           <li style={{marginTop:"10px"}}>
             <CreditCardIcon className="icon" />
             <span>Transactions</span>
           </li>
+          </Link>
 
           
           
           <p className="title">USER</p>
-          <li style={{marginTop:"20px"}}>
-            <AccountCircleOutlinedIcon className="icon" />
-            <span>Profile</span>
-          </li>
           <li style={{marginTop:"10px"}}>
             <ExitToAppIcon className="icon" />
             <span>Logout</span>
@@ -79,7 +84,7 @@ const Sidebar = () => {
           className="colorOption"
           onClick={() => dispatch({ type: "DARK" })}
         ></div>
-      </div> */}
+      </div> */}  
     </div>
   );
 };

@@ -1,0 +1,91 @@
+.table {
+    .cellWrapper {
+        display: flex;
+        align-items: center;
+
+        .image {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            margin-right: 10px;
+            object-fit: cover;
+        }
+    }
+
+    .status {
+        padding: 5px;
+        border-radius: 5px;
+
+        &.Approved {
+            color: green;
+            background-color: rgba(0, 128, 0, 0.151);
+        }
+
+        &.Pending {
+            color: goldenrod;
+            background-color: rgba(189, 189, 3, 0.103);
+        }
+    }
+
+    @import url(https://fonts.googleapis.com/css?family=Poiret+One);
+
+    @mixin button-bg($bg) {
+        background: $bg;
+
+        &:hover {
+            background: darken($bg, 8%);
+            transition: all 0.3s ease;
+        }
+
+        &:active {
+            background: darken($bg, 25%);
+        }
+    }
+
+    .btn {
+        color: white;
+        text-decoration: none;
+        padding: 5px;
+        border-radius: 3px;
+        font-family: 'Poiret One', cursive;
+        font-size: 1em;
+    }
+
+    .btn-green {
+        @include button-bg(#2ecc71);
+    }
+
+    .btn-blue {
+        @include button-bg(#3498db);
+    }
+
+    .btn-yellow {
+        @include button-bg(#f1c40f);
+    }
+
+    .btn-red {
+        @include button-bg(#e74c3c);
+    }
+
+    /*Other Stylez*/
+    .wrap {
+        margin: 0 auto;
+        width: 800px;
+        text-align: center;
+    }
+
+    h1 {
+        font-family: 'Poiret One', cursive;
+        font-size: 4em;
+    }
+
+    .tableCell {
+        img {
+          width: 50px; /* Set the desired width */
+          height: 50px; /* Set the desired height */
+          border-radius: 50%; /* Make the image rounded */
+        }
+      }
+
+
+}   

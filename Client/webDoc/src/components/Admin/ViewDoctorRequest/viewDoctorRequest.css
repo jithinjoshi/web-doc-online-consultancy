@@ -1,0 +1,4 @@
+.expanded {
+    transform: scale(1.5); /* Example styling */
+    /* Add any other styles to modify the appearance when expanded */
+  }

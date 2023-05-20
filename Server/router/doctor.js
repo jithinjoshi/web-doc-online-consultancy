@@ -14,5 +14,11 @@ router.route('/appointments/:id').get(controller.getAppointments);
 router.route('/getSingleDoctor/:id').post(controller.getSingleDoctor);
 router.route('/getFullProfit/:id').get(controller.getFullPayment);
 router.route('/apply-doctor').post(controller.applyForDoctor);
+router.route('/get-all-departments').get(controller.getAllDepartments);
+router.route('/signup-doctor/:id').get(controller.signupDoctor);
+router.route('/addPassword/:id').post(controller.addPassword);
+router.route('/leave/:id').put(controller.updateLeave);
+
+
 
 export default router

@@ -7,6 +7,8 @@ import cloudinary from "../utils/cloudinary.js";
 import { Appointment } from "../Model/Appointment.js";
 import { User } from "../Model/user.js";
 import mongoose from "mongoose";
+import { Admin } from '../Model/admin.js'
+import { Department } from "../Model/Department.js";
 
 export const login = async (req, res) => {
     try {
@@ -212,47 +214,152 @@ export const getFullPayment = async (req, res) => {
 
 //apply for doctor
 export const applyForDoctor = async (req, res) => {
-
     try {
-        const { username, email, firstName, lastName, address, mobile, dob, about, image, department, experience, fees, startTime, endTime, certificate } = req.body;
+        const { fullName, email, firstName, lastName, address, mobile, dob, about, image, department, experience, fees, startTime, endTime, certificate } = req.body;
 
-    if(image && certificate){
-        const uploadRes = await cloudinary.uploader.upload(image, {
-            allowed_formats: "jpg,png,webp,jpeg",
-            upload_preset: 'webDoc'
-        });
+        const formattedStartTime = moment(startTime, "hh:mmA");
+        const formattedEndTime = moment(endTime, "hh:mmA");
 
-        const certificateUploadRes = await cloudinary.uploader.upload(certificate, {
-            allowed_formats: "jpg,png,webp,jpeg",
-            upload_preset: 'webDoc'
-        });
 
-        if(uploadRes && certificateUploadRes){
-            const addDoc = new Doctor({
-                username,
-                email,
-                firstName,
-                lastName,
-                address,
-                mobile,
-                dob,
-                about,
-                department,
-                experience,
-                fees,
-                startTime,
-                endTime,
-                image:uploadRes,
-                certificate:certificateUploadRes
-            })
+        function getTimesBetween(start, end) {
+            const times = [];
+            let currentTime = moment(start);
+
+            while (currentTime.isBefore(end)) {
+                times.push(currentTime.format("h:mm A"));
+                currentTime.add(1, 'hour');
+            }
+
+            return times;
         }
 
+        const timings = getTimesBetween(formattedStartTime, formattedEndTime);
+        console.log(timings);
+
+
+        if (image && certificate) {
+            const uploadRes = await cloudinary.uploader.upload(image, {
+                allowed_formats: "jpg,png,webp,jpeg",
+                upload_preset: 'webDoc'
+            });
+
+            const certificateUploadRes = await cloudinary.uploader.upload(certificate, {
+                allowed_formats: "jpg,png,webp,jpeg",
+                upload_preset: 'webDoc'
+            });
+
+            if (uploadRes && certificateUploadRes) {
+                const addDoc = new Doctor({
+                    fullName,
+                    email,
+                    firstName,
+                    lastName,
+                    address,
+                    mobile,
+                    dob,
+                    about,
+                    department,
+                    experience,
+                    fees,
+                    startTime,
+                    endTime,
+                    timings,
+                    image: uploadRes,
+                    certificate: certificateUploadRes
+                });
+
+                addDoc.save().then(async () => {
+                    console.log("Doctor application sent successfully.");
+                    const adminId = await Admin.find({}).select('_id');
+                    const doctor = await Doctor.find({ email }).select('-password');
+                    const unSeenNotification = {
+                        doctorId: doctor[0]._id,
+                        message: `${doctor[0].fullName} has applied for a doctor account`,
+                        data: doctor[0]
+                    }
+
+                    const applyDoctor = await Admin.updateOne(
+                        { _id: adminId },
+                        { $push: { unSeenNotification: unSeenNotification } }
+                    );
+
+                    res.status(200).json({ success: true });
+                })
+                    .catch((err) => {
+                        res.status(400).json({ error: new Error("Some of the credentials already exist.") });
+                    });
+            }
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ success: false });
+    }
+}
+
+
+//get all departments
+export const getAllDepartments = async (req, res) => {
+    try {
+        const getAllDepartments = await Department.find({});
+        res.status(200).json({ departments: getAllDepartments })
+
+    } catch (error) {
+        res.status(500).json({ err: "unable to get data" })
 
     }
-        
-    } catch (error) {
-        
-    }
-    
 }
+
+//signup doctor
+export const signupDoctor = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const email = await Doctor.findById(id, 'email');
+        // const {password} = req.body;
+
+        res.status(200).json({ email: email })
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ err: "unable to update data" })
+
+    }
+}
+
+//password
+export const addPassword = (async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { password } = req.body;
+        const hash = await bcrypt.hash(password, 10);
+        const passwordUpdate = await Doctor.findByIdAndUpdate(id, { password: hash });
+        res.status(200).json({ success: "user updated successfully" })
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ err: "can't update password" })
+    }
+
+
+});
+
+//leave 
+export const updateLeave = (async (req, res) => {
+    try {
+        const { id } = req.params;
+        const dates = req.body
+
+
+
+        console.log(id, dates);
+
+        const updateLeave = await Doctor.findByIdAndUpdate(
+            id,
+            { $set: { "leaves.$": dates } }
+          );
+        res.status(200).json({ success: "data updated successfully" })
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ err: "can't update leave" })
+
+    }
+})
 

@@ -25,4 +25,17 @@
       background-color: rgba(189, 189, 3, 0.103);
     }
   }
+  
+}
+.pagination-button {
+  margin: 5px;
+  padding: 5px 10px;
+  border: none;
+  background-color: transparent;
+  color: black;
+  cursor: pointer;
+}
+
+.pagination-button.active {
+  background-color: #e0e0e0;
 }

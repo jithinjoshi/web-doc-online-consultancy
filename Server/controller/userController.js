@@ -17,6 +17,8 @@ import moment from 'moment'
 
 
 import dotenv from 'dotenv'
+import cloudinary from '../utils/cloudinary.js';
+import { Admin } from '../Model/admin.js';
 dotenv.config()
 
 
@@ -285,7 +287,9 @@ export const getUser = async (req, res,) => {
 //get all doctors
 export const getAllDoctors = async (req, res) => {
     try {
-        let doctors = await Doctor.find({}, '-password');
+
+
+        let doctors = await Doctor.find({status:"approved"}, '-password');
         res.status(200).send(doctors);
 
     } catch (error) {
@@ -736,6 +740,78 @@ export const updateProfile = async (req, res) => {
         res.status(500).json("can't update the data")
 
     }
+}
+
+//apply for doctor
+export const applyForDoctor = async (req, res) => {
+
+    try {
+        const { fullName, email, firstName, lastName, address, mobile, dob, about, image, department, experience, fees, startTime, endTime, certificate } = req.body;
+
+    if(image && certificate){
+        const uploadRes = await cloudinary.uploader.upload(image, {
+            allowed_formats: "jpg,png,webp,jpeg",
+            upload_preset: 'webDoc'
+        });
+
+        const certificateUploadRes = await cloudinary.uploader.upload(certificate, {
+            allowed_formats: "jpg,png,webp,jpeg",
+            upload_preset: 'webDoc'
+        });
+
+        if(uploadRes && certificateUploadRes){
+            const addDoc = new Doctor({
+                fullName,
+                email,
+                firstName,
+                lastName,
+                address,
+                mobile,
+                dob,
+                about,
+                department,
+                experience,
+                fees,
+                startTime,
+                endTime,
+                image:uploadRes,
+                certificate:certificateUploadRes
+            });
+
+            addDoc.save().then(async ()=>{console.log("doctor application sended successfully successfully...");
+            const adminId = await Admin.find({}).select('_id');
+            const doctor = await Doctor.find({email}).select('-password');
+            const unSeenNotification = {
+                doctorId :doctor[0]._id,
+                message: `${doctor[0].fullName} was applied for doctor account`,
+                data:doctor[0]
+            }
+
+           const applyDoctor = await Admin.updateOne(
+                { _id: adminId }, 
+                { $push: { unSeenNotification:unSeenNotification} } 
+              );
+            
+
+            res.status(200).json({success:true})
+        })
+            .catch((err)=>{
+              
+                res.status(400).json({error: new Error("some of the creditials are already exist")})
+            }
+            );
+           
+        }
+
+
+    }
+        
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({success:false})
+        
+    }
+    
 }
 
 

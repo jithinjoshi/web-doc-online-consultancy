@@ -13,6 +13,12 @@ const adminSchema = new mongoose.Schema({
     isAdmin:{
         type:Boolean,
         default:true
+    },
+    unSeenNotification:{
+        type:Array
+    },
+    seenNotification:{
+        type:Array
     }
 });
 

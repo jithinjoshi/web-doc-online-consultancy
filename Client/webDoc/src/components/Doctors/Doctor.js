@@ -6,7 +6,7 @@ import ListOfUsers from './ListOfUsers'
 import AnotherTable from './AnotherTable'
 import Footer from './Footer'
 
-const Doctor = () => {
+const Doctor = ({appointments,payment}) => {
     return (
         <>
             <div>
@@ -18,7 +18,7 @@ const Doctor = () => {
                         <main>
                             <div class="pt-6 px-4">
 
-                                <UsersCount/>
+                                <UsersCount appointments={appointments} payment={payment}/>
                                 <div class="grid grid-cols-1 2xl:grid-cols-2 xl:gap-4 my-4">
                                     <ListOfUsers/>
                                     <AnotherTable/>

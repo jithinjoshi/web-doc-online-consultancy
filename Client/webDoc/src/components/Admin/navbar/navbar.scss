@@ -39,15 +39,30 @@
         align-items: center;
         margin-right: 20px;
         position: relative;
+        justify-content: flex-end;
 
         .icon {
           font-size: 20px;
+          background-color: #fff;
+          padding: 5px;
+          border-radius: 50%;
         }
 
         .avatar {
           width: 30px;
           height: 30px;
           border-radius: 50%;
+          margin-right: 10px;
+        }
+
+        .dot {
+          width: 8px;
+          height: 8px;
+          background-color: red;
+          border-radius: 50%;
+          position: absolute;
+          top: 0;
+          right: 0;
         }
 
         .counter {
@@ -63,6 +78,52 @@
           font-weight: bold;
           position: absolute;
           top: -5px;
+          right: -5px;
+        }
+      }
+
+      .notification {
+        display: flex;
+        align-items: center;
+        margin-right: 20px;
+        position: relative;
+
+        .icon {
+          font-size: 20px;
+          background-color: #fff;
+          padding: 5px;
+          border-radius: 50%;
+        }
+
+        .dot {
+          width: 16px; /* Adjust the width to accommodate the count */
+          height: 16px; /* Adjust the height to accommodate the count */
+          background-color: red;
+          border-radius: 50%;
+          position: absolute;
+          top: 0;
+          right: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 10px; /* Adjust the font size as needed */
+          font-weight: bold;
+          color: white;
+        }
+
+        .counter {
+          width: 15px;
+          height: 15px;
+          background-color: red;
+          border-radius: 50%;
+          color: white;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 10px;
+          font-weight: bold;
+          position: absolute;
+          top: -3px;
           right: -5px;
         }
       }

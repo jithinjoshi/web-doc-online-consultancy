@@ -168,26 +168,26 @@ const TimeSlot = ({ doctor, id }) => {
 
 
             <div class="flex flex-wrap justify-center m-4">
-  <div class="grid grid-cols-4 gap-4 md:grid-cols-3 lg:grid-cols-4">
-    {
-      timings && timings.filter((time) => {
-        const excludeTimes = excludeDate.map((date) => moment(date, ["h:mmA"]).format("HH:mm"));
-        return !excludeTimes.includes(moment(time, ["h:mmA"]).format("HH:mm"));
-      }).map((time, index) => {
-        const changedTime = moment(time, ["h:mm"]).format("hh A");
-        return (
-          <button
-            key={index}
-            class={`mt-[14px] cursor-pointer truncate rounded-[4px] border border-[#E7EAEE] p-3 text-[#191D23] ${lastClickedButton === index ? 'text-white bg-green-700' : 'hover:border-green-700'}`}
-            value={changedTime}
-            onClick={(e) => timeHandler(e, index)}
-          >
-            {changedTime}
-          </button>
-        )
-      })
-    }
-  </div>
+            <div class="grid grid-cols-4 gap-4 md:grid-cols-3 lg:grid-cols-4">
+  {
+    timings && timings.filter((time) => {
+      const excludeTimes = excludeDate.map((date) => moment(date, ["h:mmA"]).format("HH:mm"));
+      return !excludeTimes.includes(moment(time, ["h:mmA", "h:mm"]).format("HH:mm"));
+    }).map((time, index) => {
+      const changedTime = moment(time, ["h:mmA", "h:mm"]).format("hh A");
+      return (
+        <button
+          key={index}
+          class={`mt-[14px] cursor-pointer truncate rounded-[4px] border border-[#E7EAEE] p-3 text-[#191D23] ${lastClickedButton === index ? 'text-white bg-green-700' : 'hover:border-green-700'}`}
+          value={changedTime}
+          onClick={(e) => timeHandler(e, index)}
+        >
+          {changedTime}
+        </button>
+      )
+    })
+  }
+</div>
 </div>
 
 

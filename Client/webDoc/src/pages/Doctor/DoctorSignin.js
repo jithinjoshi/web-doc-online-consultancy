@@ -102,8 +102,10 @@ const DoctorSignin = () => {
                                     <div class="relative">
                                         <button class="bg-blue-500 text-white rounded-md px-2 py-1">Submit</button>
                                     </div>
+                                    
                                 </div>
                             </div>
+                            <Link to='/doctor/apply-doctor' className='text-blue-500 mt-5'>Apply For Doctor</Link>
                         </form>
                     </div>
                 </div>
