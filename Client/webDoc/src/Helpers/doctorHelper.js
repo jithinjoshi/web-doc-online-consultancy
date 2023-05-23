@@ -229,13 +229,151 @@ export const leave = async (id,credentials)=>{
 }
 
 //get all patients
-export const patients = async (id) =>{
+export const getPatients = async (id) =>{
     return new Promise((resolve,reject)=>{
-        axios.get(`/getMyPatients/${id}`).then((data)=>{
+        axios.get(`/api/doctor/getMyPatients`,null, { withCredentials: true }).then((data)=>{
             resolve(data)
 
         }).catch((err)=>{
             reject(err);
         })
     })
+}
+
+//get monthly report
+export const getMonthlyReport = async(id)=>{
+    return new Promise((resolve,reject)=>{
+        axios.get('/api/doctor/monthly-report').then((data)=>{
+            resolve(data)
+        }).catch((err)=>{
+            reject(err)
+        })
+    })
+}
+
+//get weekly report
+export const weeklyReport = async()=>{
+    return new Promise((resolve,reject)=>{
+        axios.get('/api/doctor/weekly-report').then((data)=>{
+            resolve(data)
+        }).catch((err)=>{
+            reject(err)
+        })
+    })
+}
+
+//get daily report 
+export const dailyReport = async() =>{
+    return new Promise((resolve,reject)=>{
+        axios.get('/api/doctor/daily-report').then((doctor)=>{
+            resolve(doctor);
+        }).catch((err)=>{
+            reject(err)
+        })
+    })
+}
+
+//get yearly report
+export const yearlyReport = async()=>{
+    return new Promise((resolve,reject)=>{
+        axios.get('/api/doctor/yearly-report').then((doctor)=>{
+            resolve(doctor)
+        }).catch((err)=>{
+            reject(err)
+        })
+    })
+}
+
+//doctor details
+export async function getDoctor() {
+    try {
+        const response = await axios.post('/api/doctor/', null, { withCredentials: true });
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+//sales report
+export async function salesReport(page){
+    try {
+        const response = await axios.get(`/api/doctor/salesReport?page=${page}`,null,{withCredentials:true});
+        return response.data;
+        
+    } catch (error) {
+        throw error;
+        
+    }
+}
+
+//get single appointment
+export async function getSingleAppointment(userId){
+    try {
+        const appointment = await axios.get(`/api/doctor/singleAppointment/${userId}`);
+        return appointment;
+        
+    } catch (error) {
+        return error;
+        
+    }
+
+}
+
+//prescriptions
+export async function prescriptions(userId){
+    try {
+        const prescription = await axios.get(`/api/doctor/prescriptions/${userId}`);
+        return prescription;
+        
+    } catch (error) {
+        throw error;
+        
+    }
+}
+
+//add prescriptions 
+export async function addPrescription(credentials){
+    try {
+        const data = await axios.post('/api/doctor/addprescription',credentials);
+        return data;
+    } catch (error) {
+        return error;
+        
+    }
+}
+
+//remove prescription
+export async function deletePrescription(id){
+    try {
+        const deleteReport = await axios.delete(`/api/doctor/deletePrescription/${id}`);
+        return deleteReport;
+    } catch (error) {
+        return error;
+        
+    }
+}
+
+//update prescription
+export async function updatePrescription(id,credentials){
+    try {
+        const update = await axios.put(`/api/doctor/editPrescription/${id}`,credentials);
+        return update;
+        
+    } catch (error) {
+        return error;
+        
+    }
+}
+
+//get single prescription
+export async function getSinglePrescription(id){
+    try {
+        const prescription = await axios.get(`/api/doctor/singlePrescription/${id}`);
+        return prescription
+        
+    } catch (error) {
+        return error;
+        
+    }
 }

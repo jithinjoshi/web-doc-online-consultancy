@@ -59,7 +59,7 @@ const Login = () => {
   return (
     <div class="container">
       <Toaster position='top-center' reverseOrder={false}></Toaster>
-      <h1 style={{ textAlign: "center" }}>Admin Login</h1>
+      <h1 style={{ textAlign: "center"}}>Admin Login</h1>
       <div class="form">
         <form action="#" class="login-form" onSubmit={formik.handleSubmit}>
           <input type="text" name="email" placeholder="email" onChange={formik.handleChange}

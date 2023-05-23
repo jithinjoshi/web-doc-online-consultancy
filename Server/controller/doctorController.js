@@ -9,6 +9,8 @@ import { User } from "../Model/user.js";
 import mongoose from "mongoose";
 import { Admin } from '../Model/admin.js'
 import { Department } from "../Model/Department.js";
+import { createSecretToken, createSecretTokenForDoc } from "../utils/secretToken.js";
+import { Prescription } from "../Model/Prescription.js";
 
 export const login = async (req, res) => {
     try {
@@ -20,16 +22,14 @@ export const login = async (req, res) => {
             let isValidUser = await bcrypt.compare(password, user.password);
 
             if (isValidUser) {
-                const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '30min' });
+                const token = createSecretTokenForDoc(user._id);
+                res.cookie("token", token, {
+                    httpOnly: false,
+                });
 
-                res.cookie(String(user._id), token, {
-                    path: "/",
-                    expires: new Date(Date.now() + 1000 * 100),
-                    httpOnly: true,
-                    sameSite: 'lax'
-                })
 
                 res.status(201).send({ msg: "Login successfull", user, token })
+                console.log(req.cookies);
             } else {
                 res.status(500).send("invalid credentials")
             }
@@ -146,20 +146,17 @@ export const scheduledTime = async (req, res) => {
 
 export const getMyPatients = async (req, res) => {
     try {
-        const doctorId = req.params.id;
-        const data = await Appointment.find({ doctorId })
-            .populate({
-                path: 'userId',
-                select: ['-password', '-tokens', '-mobile',]
-            }).select('-doctorId -doctorName -doctorImage -department -date -time -price -payment_status -paymentOwner -paymentOwnerEmail -createdAt -updatedAt -__v');
+        const doctorId = req.doctor;
+        const userIds = await Appointment.distinct("userId", { doctorId });
 
-        res.status(200).send(data)
+        const data = await User.find({ _id: { $in: userIds } })
+            .select('-password -tokens -mobile');
 
+        res.status(200).send(data);
     } catch (error) {
-        res.send("can't get user data");
-
+        res.status(500).send("Unable to fetch user data.");
     }
-}
+};
 
 
 export const getAppointments = async (req, res) => {
@@ -353,7 +350,7 @@ export const updateLeave = (async (req, res) => {
         const updateLeave = await Doctor.findByIdAndUpdate(
             id,
             { $set: { "leaves.$": dates } }
-          );
+        );
         res.status(200).json({ success: "data updated successfully" })
 
     } catch (error) {
@@ -362,4 +359,350 @@ export const updateLeave = (async (req, res) => {
 
     }
 })
+
+
+//monthly report
+export const monthlyReport = async (req, res) => {
+    try {
+        const doctorId = req.doctor;
+        console.log(doctorId)
+        const result = await Appointment.aggregate([
+            {
+                $match: {
+                    doctorId: new mongoose.Types.ObjectId(doctorId)
+                }
+            },
+            {
+                $group: {
+                    _id: {
+                        $month: "$date"
+                    },
+                    totalAmount: {
+                        $sum: "$price"
+                    }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    month: "$_id",
+                    totalAmount: 1
+                }
+            },
+            {
+                $group: {
+                    _id: null,
+                    data: {
+                        $push: {
+                            month: "$month",
+                            totalAmount: "$totalAmount"
+                        }
+                    }
+                }
+            },
+            {
+                $unwind: {
+                    path: "$data",
+                    includeArrayIndex: "index",
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            {
+                $group: {
+                    _id: "$data.month",
+                    totalAmount: {
+                        $max: "$data.totalAmount"
+                    }
+                }
+            },
+            {
+                $sort: {
+                    _id: 1
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    month: "$_id",
+                    totalAmount: {
+                        $ifNull: ["$totalAmount", 0]
+                    }
+                }
+            }
+        ]);
+
+
+        const months = Array.from(Array(12), (_, i) => i + 1); // Generate an array of months (1 to 12)
+        const prices = months.map(month => {
+            const resultItem = result.find(item => item.month === month);
+            return resultItem ? resultItem.totalAmount : 0;
+        });
+
+        res.status(200).send(prices);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: "Unable to retrieve the data" });
+    }
+};
+
+//weekly report
+export const weeklyReport = (async (req, res) => {
+    try {
+        const doctorId = req.doctor;
+
+        const result = await Appointment.aggregate([
+            {
+                $match: {
+                    doctorId: new mongoose.Types.ObjectId(doctorId)
+                }
+            },
+            {
+                $group: {
+                    _id: { $dayOfWeek: "$createdAt" },
+                    totalSales: { $sum: "$price" }
+                }
+            },
+            {
+                $sort: { _id: 1 }
+            }
+        ])
+
+        const salesByDay = Array.from({ length: 7 }, (_, index) => {
+            const dayData = result.find(data => data._id === index + 1);
+            return dayData ? dayData.totalSales : 0
+        });
+        console.log("Weekly Sales Report:", salesByDay);
+        res.status(201).json(salesByDay)
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ err: "can't create data" })
+
+    }
+
+});
+
+//daily report 
+export const getDailyReport = (async (req, res) => {
+    try {
+        const doctorId = req.doctor;
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const result = await Appointment.aggregate([
+            {
+                $match: {
+                    date: { $gte: today },
+                    doctorId: new mongoose.Types.ObjectId(doctorId)
+                }
+            },
+            {
+                $group: {
+                    _id: null,
+                    prices: { $push: "$price" }
+                }
+            }
+        ])
+
+        const dailyPrices = result.length > 0 ? result[0].prices : 0;
+        console.log("Daily Prices:", dailyPrices);
+        res.status(201).json(dailyPrices)
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ err: "can't find the data" })
+
+    }
+})
+
+//yearly report
+export const getYearlyReport = (async (req, res) => {
+    const doctorId = req.doctor;
+    try {
+        const result = await Appointment.aggregate([
+            {
+                $match: {
+                    doctorId: new mongoose.Types.ObjectId(doctorId)
+                }
+            },
+            {
+                $group: {
+                    _id: { $year: "$createAt" },
+                    totalSales: { $sum: "$price" }
+                }
+            },
+            {
+                $sort: { _id: 1 }
+            }
+        ])
+
+        const yearlyReport = result.map(yearData => yearData.totalSales);
+        res.status(201).json(yearlyReport)
+
+    } catch (error) {
+        res.status(500).json({ err: "can't update the data" })
+
+    }
+})
+
+//user
+export const getData = async (req, res,) => {
+    const doctorId = req.doctor;
+    try {
+
+        let user = await Doctor.findById(doctorId);
+        if (user) {
+            let { password, ...rest } = Object.assign({}, user.toJSON());
+            res.status(201).send(rest);
+        } else {
+            res.status(500).send("can't find the user")
+        }
+
+    } catch (error) {
+        res.status(500).send("not authorized")
+    }
+
+}
+
+//sales report 
+export const getSaleReport = async (req, res) => {
+    const doctorId = req.doctor;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
+
+    try {
+        const result = await Appointment.paginate(
+            { doctorId: doctorId },
+            {
+                page,
+                limit,
+                populate: {
+                    path: 'userId',
+                    select: '-password -tokens -mobile'
+                },
+                sort: { createdAt: -1 }
+            }
+        );
+
+        const totalPages = Math.ceil(result.total / limit);
+
+        res.status(201).json({
+            transactions: result.docs,
+            totalPages
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ err: "Can't access data" });
+    }
+};
+
+//single appointment 
+export const singleAppointment = (async (req, res) => {
+    try {
+        const { id } = req.params;
+        const doctorId = req.doctor;
+        console.log(id, doctorId)
+
+        const appointment = await Appointment.findOne({ userId: new mongoose.Types.ObjectId(id), doctorId: new mongoose.Types.ObjectId(doctorId) }).populate({
+            path: 'userId',
+            select: ['-password', '-tokens']
+
+        })
+        res.status(200).json(appointment)
+
+    } catch (error) {
+        res.status(500).json({ err: "can't access the appointment" })
+
+    }
+})
+
+
+//prescriptions
+export const prescriptions = (async (req, res) => {
+    const {id} = req.params;
+    const doctorId = req.doctor;
+    const docId = doctorId.toString();
+    try {
+
+        console.log(docId)
+        console.log(id);
+
+        const newPrescription = await Prescription.find({
+            doctorId:new mongoose.Types.ObjectId(docId),
+            userId:new  mongoose.Types.ObjectId(id),
+        });
+
+        res.status(200).json(newPrescription);
+
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({ err: "can't create prescription" })
+    }
+})
+
+//single prescription
+export const singlePrescription = (async (req, res) => {
+    const { id } = req.params;
+    try {
+        const prescription = await Prescription.findById(id) .populate({
+            path: 'userId',
+            select: ['-password', '-tokens']
+
+        })
+        res.status(200).json({ prescription });
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ err: "can't find the data" })
+
+    }
+})
+
+//add prescription
+export const addPrescription = (async (req, res) => {
+    try {
+        const { userId, doctorId, title, description, username, doctorname } = req.body;
+        const newPrescription = new Prescription({
+            userId,
+            doctorId,
+            username,
+            doctorname,
+            title,
+            description
+        });
+        newPrescription.save();
+        res.status(201).json({ success: "data created successfully" })
+
+    } catch (error) {
+        res.status(500).json({ err: "data creation failure" })
+
+    }
+
+
+})
+
+//update prescription
+export const updatePrescription = (async (req, res) => {
+    try {
+        const { id } = req.params;
+        const data = req.body;
+        const updateData = await Prescription.findByIdAndUpdate(id, data);
+        res.status(201).josn({ success: "data updated successfully" })
+    } catch (error) {
+        res.status(500).json({ err: "can't update the data" })
+
+    }
+
+});
+
+//delete prescription
+export const deletePrescription = (async(req,res)=>{
+    try {
+        const {id} = req.params;
+        const deletePrescription = await Prescription.findByIdAndDelete(id)
+        res.status(200).json({success:"deleted successfully"})
+
+    } catch (error) {
+        res.status(500).json({err:'delete data failed'}) 
+    }
+});
+
 

@@ -19,47 +19,12 @@ import moment from 'moment'
 import dotenv from 'dotenv'
 import cloudinary from '../utils/cloudinary.js';
 import { Admin } from '../Model/admin.js';
+import { createSecretToken } from '../utils/secretToken.js';
 dotenv.config()
 
 
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
-let refreshTokens = []
-
-const generateAccessToken = (user) => {
-    return jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '15m' });
-
-}
-
-const generateRefreshToken = (user) => {
-    return jwt.sign({ userId: user._id }, process.env.JWT_RESFRESH_SECRET);
-
-}
-
-//refresh
-export const refresh = async (req, res) => {
-    const refreshToken = req.body.token;
-
-    if (!refreshToken) return res.status(401).json({ err: "you are not authenticated" });
-    if (!refreshTokens.includes(refreshToken)) {
-        return res.status(403).json({ err: "refresh token is not valid" })
-    }
-
-    jwt.verify(refreshToken, process.env.JWT_RESFRESH_SECRET, async (err, user) => {
-        err && console.log(err);
-        refreshTokens = refreshTokens.filter((token) => token !== refreshToken);
-        const newAccessToken = generateAccessToken(user);
-        const newRefreshToken = generateRefreshToken(user);
-
-        const updateToken = await User.findByIdAndUpdate(user._id, { tokens: { accessToken: newAccessToken, refreshToken: newRefreshToken } });
-
-        refreshTokens.push(newRefreshToken);
-        res.status(200).json({
-            accessToken: newAccessToken,
-            refreshToken: newRefreshToken
-        })
-    })
-}
 
 
 //register
@@ -117,6 +82,11 @@ export const register = async (req, res) => {
                     })
 
                     newUser.save().then((user) => {
+                        const token = createSecretToken(user._id);
+                        res.cookie("token", token, {
+                            withCredentials: true,
+                            httpOnly: false,
+                        });
                         res.status(201).json({ success: "registration successfull" })
                     })
 
@@ -242,15 +212,14 @@ export const login = async (req, res) => {
         if (user) {
             let isValidUser = await bcrypt.compare(password, user.password);
             if (isValidUser) {
-                const accessToken = generateAccessToken(user);
-                const refreshToken = generateRefreshToken(user);
+                const token = createSecretToken(user._id);
+                res.cookie("token", token, {
+                    withCredentials: true,
+                    httpOnly: false,
+                });
 
-                const updateToken = await User.findByIdAndUpdate(user._id, { tokens: { accessToken: accessToken, refreshToken: refreshToken } });
 
-                refreshTokens.push(refreshToken);
-
-
-                res.status(201).send({ msg: "Login successfull", user, accessToken, refreshToken })
+                res.status(201).send({ msg: "Login successfull", user })
             } else {
                 res.status(500).send("invalid credentials")
             }
@@ -266,7 +235,8 @@ export const login = async (req, res) => {
 
 //get user
 export const getUser = async (req, res,) => {
-    const userId = req.user.userId;
+    const userId = req.user;
+    console.log(userId);
     try {
 
         let user = await User.findById(userId);
@@ -289,7 +259,7 @@ export const getAllDoctors = async (req, res) => {
     try {
 
 
-        let doctors = await Doctor.find({status:"approved"}, '-password');
+        let doctors = await Doctor.find({ status: "approved" }, '-password');
         res.status(200).send(doctors);
 
     } catch (error) {
@@ -416,35 +386,35 @@ export const appointmentUpdate = async (req, res) => {
 //check availability
 export const checkAvailability = async (req, res) => {
     try {
-      let { date,doctorId } = req.body;
-      console.log(date,doctorId,"OOOO");
+        let { date, doctorId } = req.body;
+        console.log(date, doctorId, "OOOO");
 
-      let momentObj;
-  
-      if(date && doctorId){
-        momentObj = moment(date, 'MM/DD/YYYY hh:mm A');
-        if (!momentObj.isValid()) {
-            console.error(`Invalid date/time format: ${date}`);
-            res.status(400).json({ error: 'Invalid date/time format' });
-            return;
-          }
-      
-          const appointments = await Appointment.find({ doctorId, date });
-      
-          if (appointments && Array.isArray(appointments)) {
-            const times =  appointments.map(appointment => appointment.time);
-            res.status(200).json(times);
-          } else {
-            res.status(200).json(null);
-          }
-      }
-  
-     
+        let momentObj;
+
+        if (date && doctorId) {
+            momentObj = moment(date, 'MM/DD/YYYY hh:mm A');
+            if (!momentObj.isValid()) {
+                console.error(`Invalid date/time format: ${date}`);
+                res.status(400).json({ error: 'Invalid date/time format' });
+                return;
+            }
+
+            const appointments = await Appointment.find({ doctorId, date });
+
+            if (appointments && Array.isArray(appointments)) {
+                const times = appointments.map(appointment => appointment.time);
+                res.status(200).json(times);
+            } else {
+                res.status(200).json(null);
+            }
+        }
+
+
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Server error' });
+        console.error(error);
+        res.status(500).json({ error: 'Server error' });
     }
-  }
+}
 
 //payment
 export const payment = async (req, res) => {
@@ -692,15 +662,57 @@ export const getToken = async (req, res) => {
 //get user appointment
 export const getMyAppointment = async (req, res) => {
     try {
-        const { id } = req.params;
-        const myAppointments = await Appointment.find({ userId: id });
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const { id, status } = req.params;
+        const currentDate = new Date();
+
+        function getCurrentTime() {
+            const now = new Date();
+            return now.getHours() + ':' + now.getMinutes();
+        }
+
+        let myAppointments;
+
+        const options = {
+            page,
+            limit,
+            sort: { createdAt: -1 },
+        };
+
+        if (status === 'completed') {
+            myAppointments = await Appointment.paginate(
+                {
+                    userId: id,
+                    $or: [
+                        { date: { $lt: currentDate } },
+                        { date: currentDate, time: { $lt: getCurrentTime() } },
+                    ],
+                },
+                options
+            );
+        } else {
+            myAppointments = await Appointment.paginate(
+                {
+                    userId: id,
+                    $or: [
+                        { date: { $gte: currentDate } },
+                        { date: currentDate, time: { $gte: getCurrentTime() } },
+                    ],
+                },
+                options
+            );
+        }
+
         res.status(200).json(myAppointments);
 
     } catch (error) {
-        res.status(500).json({ err: "can't get the appointments" })
-
+        console.log(error);
+        res.status(500).json({ err: "Failed to retrieve appointments" });
     }
-}
+};
+
+
 
 //get my doctors
 export const getMyDoctors = async (req, res) => {
@@ -748,70 +760,71 @@ export const applyForDoctor = async (req, res) => {
     try {
         const { fullName, email, firstName, lastName, address, mobile, dob, about, image, department, experience, fees, startTime, endTime, certificate } = req.body;
 
-    if(image && certificate){
-        const uploadRes = await cloudinary.uploader.upload(image, {
-            allowed_formats: "jpg,png,webp,jpeg",
-            upload_preset: 'webDoc'
-        });
-
-        const certificateUploadRes = await cloudinary.uploader.upload(certificate, {
-            allowed_formats: "jpg,png,webp,jpeg",
-            upload_preset: 'webDoc'
-        });
-
-        if(uploadRes && certificateUploadRes){
-            const addDoc = new Doctor({
-                fullName,
-                email,
-                firstName,
-                lastName,
-                address,
-                mobile,
-                dob,
-                about,
-                department,
-                experience,
-                fees,
-                startTime,
-                endTime,
-                image:uploadRes,
-                certificate:certificateUploadRes
+        if (image && certificate) {
+            const uploadRes = await cloudinary.uploader.upload(image, {
+                allowed_formats: "jpg,png,webp,jpeg",
+                upload_preset: 'webDoc'
             });
 
-            addDoc.save().then(async ()=>{console.log("doctor application sended successfully successfully...");
-            const adminId = await Admin.find({}).select('_id');
-            const doctor = await Doctor.find({email}).select('-password');
-            const unSeenNotification = {
-                doctorId :doctor[0]._id,
-                message: `${doctor[0].fullName} was applied for doctor account`,
-                data:doctor[0]
+            const certificateUploadRes = await cloudinary.uploader.upload(certificate, {
+                allowed_formats: "jpg,png,webp,jpeg",
+                upload_preset: 'webDoc'
+            });
+
+            if (uploadRes && certificateUploadRes) {
+                const addDoc = new Doctor({
+                    fullName,
+                    email,
+                    firstName,
+                    lastName,
+                    address,
+                    mobile,
+                    dob,
+                    about,
+                    department,
+                    experience,
+                    fees,
+                    startTime,
+                    endTime,
+                    image: uploadRes,
+                    certificate: certificateUploadRes
+                });
+
+                addDoc.save().then(async () => {
+                    console.log("doctor application sended successfully successfully...");
+                    const adminId = await Admin.find({}).select('_id');
+                    const doctor = await Doctor.find({ email }).select('-password');
+                    const unSeenNotification = {
+                        doctorId: doctor[0]._id,
+                        message: `${doctor[0].fullName} was applied for doctor account`,
+                        data: doctor[0]
+                    }
+
+                    const applyDoctor = await Admin.updateOne(
+                        { _id: adminId },
+                        { $push: { unSeenNotification: unSeenNotification } }
+                    );
+
+
+                    res.status(200).json({ success: true })
+                })
+                    .catch((err) => {
+
+                        res.status(400).json({ error: new Error("some of the creditials are already exist") })
+                    }
+                    );
+
             }
 
-           const applyDoctor = await Admin.updateOne(
-                { _id: adminId }, 
-                { $push: { unSeenNotification:unSeenNotification} } 
-              );
-            
 
-            res.status(200).json({success:true})
-        })
-            .catch((err)=>{
-              
-                res.status(400).json({error: new Error("some of the creditials are already exist")})
-            }
-            );
-           
         }
 
-
-    }
-        
     } catch (error) {
         console.log(error);
-        return res.status(500).json({success:false})
-        
+        return res.status(500).json({ success: false })
+
     }
-    
+
 }
 
 
@@ -820,6 +833,24 @@ export const getSingleUser = async (req, res) => {
     const { id } = req.params;
     const user = await User.findById({ _id: id }).select('-password')
     res.status(201).json(user)
+}
+
+
+//profile
+export const profile = async (req, res) => {
+    try {
+        const userId = req.user;
+        const updatedData = req.body;
+        if (userId) {
+            const updateUser = await User.findByIdAndUpdate(userId, updatedData);
+            res.status(200).json(updateUser);
+
+        }
+
+    } catch (error) {
+        res.status(500).json({ err: "update user failed" })
+    }
+
 }
 
 

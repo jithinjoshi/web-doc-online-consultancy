@@ -43,6 +43,11 @@ import DoctorSignup from "../pages/Doctor/DoctorSignup";
 import AppliedDoctors from "../pages/Admin/AppliedDoctors/AppliedDoctors";
 import Leave from "../pages/Doctor/Leave";
 import Transactions from "../pages/Admin/Transactions/Transactions";
+import SalesReport from "../pages/Doctor/SalesReport";
+import PatientsOfDoctor from "../pages/Doctor/Patients"
+import Prescription from "../pages/Doctor/Prescription";
+import ListOfPrescriptions from "../pages/Doctor/ListOfPrescriptions";
+import UpdatePrescription from "../pages/Doctor/UpdatePrescription";
 
 
 
@@ -258,7 +263,26 @@ export const router = createBrowserRouter([
     {
         path:'/doctor/leave',
         element:<Leave/>
-    }
-
+    },
+    {
+        path:'/doctor/salesreport',
+        element:<SalesReport/>
+    },
+    {
+        path:'/doctor/patients',
+        element:<PatientsOfDoctor/>
+    },
+    {
+        path:'/doctor/prescription/:userId',
+        element:<Prescription/>
+    },
+    {
+        path:'/doctor/prescriptionList/:userId',
+        element:<ListOfPrescriptions/>
+    },
+    {
+        path:'/doctor/updatePrescription/:prescriptionId',
+        element:<UpdatePrescription/>
+    },
     
 ])

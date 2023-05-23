@@ -7,6 +7,7 @@ import { Department } from '../Model/Department.js';
 import { User } from '../Model/user.js';
 import nodemailer from 'nodemailer'
 import { Appointment } from '../Model/Appointment.js'
+import { createSecretTokenForAdmin } from '../utils/secretToken.js';
 
 
 
@@ -49,22 +50,21 @@ export const signin = (async (req, res) => {
 
         if (admin) {
             const compare = await bcrypt.compare(password, admin.password);
-            console.log(compare);
+    
             if (compare) {
-                const token = jwt.sign({ userId: admin._id, isAdmin: admin.isAdmin }, process.env.JWT_SECRET, { expiresIn: '30min' });
-                console.log(token);
-
-                res.cookie(String(admin._id), token, {
-                    path: "/",
-                    expires: new Date(Date.now() + 1000 * 30),
-                    httpOnly: true,
-                    sameSite: 'lax'
-                })
-                res.status(201).send({ msg: "Login successfull", username: admin.email, token })
+                const token = createSecretTokenForAdmin(admin._id);
+                res.cookie("token", token, {
+                    withCredentials: true,
+                    httpOnly: false,
+                });
+                
+                res.status(201).send({ msg: "Login successfull", username: admin.email})
             } else {
                 console.log("error ");
                 res.status(500).send({ err: 'invalid credentials' });
             }
+        }else{
+            res.status(500).json({err:"wrong credentials"})
         }
     } catch (error) {
         console.log("error....");
@@ -534,7 +534,7 @@ export const getDailyReport = (async (req, res) => {
     }
 })
 
-
+//yearly report
 export const getYearlyReport = (async (req, res) => {
     try {
         const result = await Appointment.aggregate([
@@ -589,17 +589,22 @@ export const getSaleReport = async (req, res) => {
     }
   };
   
-  
-  
 
+  export const getData = async (req, res,) => {
+    const adminId = req.admin;
+    console.log(adminId,"::")
+    try {
 
+        let user = await Admin.findById(adminId);
+        if (user) {
+            let { password, ...rest } = Object.assign({}, user.toJSON());
+            res.status(201).send(rest);
+        } else {
+            res.status(500).send("can't find the user")
+        }
 
+    } catch (error) {
+        res.status(500).send("not authorized")
+    }
 
-
-
-
-
-
-
-
-
+}

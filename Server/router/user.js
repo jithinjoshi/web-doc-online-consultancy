@@ -11,7 +11,6 @@ router.route('/register-with-google').get(controller.googleRegister);
 router.route('/login-with-google').get(controller.googleLogin)
 router.route('/login').post(controller.login);
 router.route("/user").get(Auth, controller.getUser);
-router.route("/refresh").post(controller.refresh);
 router.route('/doctors').get(controller.getAllDoctors);
 router.route('/availableSlots/:id').get(controller.getDoctorAvailability);
 router.route('/signout').post(Auth, controller.signoutUser);
@@ -29,12 +28,13 @@ router.route('/get-all-departments').get(controller.getAllDepartments);
 router.route('/update-appointment').put(controller.appointmentUpdate);
 router.route('/tokens').get(controller.getToken);
 router.route('/webhook').post(express.json({type:'application/json'}), controller.handleWebhook);
-router.route('/my-appointments/:id').get(controller.getMyAppointment);
+router.route('/my-appointments/:status/:id').get(controller.getMyAppointment);
 router.route('/my-doctors/:id').get(controller.getMyDoctors);
 router.route('/get-profile/:id').get(controller.getUserProfile);
 router.route('/updateProfile/:id').put(controller.updateProfile);
 router.route('/getSingleUser/:id').post(controller.getSingleUser);
 router.route('/apply-doctor').post(controller.applyForDoctor);
+router.route('/profile').put(Auth,controller.profile)
 
 
 

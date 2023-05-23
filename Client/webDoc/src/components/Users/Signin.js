@@ -2,7 +2,7 @@ import { useFormik } from 'formik'
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import toast, { Toaster } from 'react-hot-toast'
-import { googleLogin, loginUser } from '../../Helpers/userHelper'
+import { getUser, googleLogin, loginUser } from '../../Helpers/userHelper'
 import { useNavigate } from 'react-router-dom'
 import { GoogleAuthProvider, getAuth, signInWithPopup } from 'firebase/auth'
 import { app } from '../../config/firebase-config'
@@ -66,6 +66,10 @@ const Signin = () => {
                         })
                     )
 
+                    getUser().then((user) => {
+                        setUser(user)
+                    });
+
                     setTimeout(() => {
                         history("/")
                     }, 1000)
@@ -87,6 +91,8 @@ const Signin = () => {
         setLoginwithGoogle(response);
 
     }
+
+    const [user, setUser] = useState([]);
 
     useEffect(() => {
         firebaseAuth.onAuthStateChanged((userCred) => {

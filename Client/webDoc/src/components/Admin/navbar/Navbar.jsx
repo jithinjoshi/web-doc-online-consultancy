@@ -11,7 +11,7 @@ import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getAllNotificationCount } from "../../../Helpers/adminHelper";
 
-const Navbar = () => {
+const Navbar = ({Logout}) => {
   const { dispatch } = useContext(DarkModeContext);
   const [count,setCount] = useState()
 
@@ -19,6 +19,11 @@ const Navbar = () => {
     getAllNotificationCount().then((notifications)=>{
       setCount(notifications?.data?.count);
     })
+  })
+
+  const logoutHandler = (e=>{
+    e.preventDefault();
+    Logout();
   })
 
   return (
@@ -36,11 +41,7 @@ const Navbar = () => {
           <div className="dot">{count}</div>
         </div>
           <div className="item">
-            <img
-              src="https://icons.veryicon.com/png/o/miscellaneous/admin-dashboard-flat-multicolor/admin-roles.png"
-              alt=""
-              className="avatar"
-            />
+            <button onClick={logoutHandler}>Logout</button>
           </div>
         </div>
       </div>

@@ -5,12 +5,16 @@ import UsersCount from './UsersCount'
 import ListOfUsers from './ListOfUsers'
 import AnotherTable from './AnotherTable'
 import Footer from './Footer'
+import MonthlyReport from './MonthlyReport'
+import WeeklyReport from './WeeklyReport'
+import YearlyReport from './YearlyReport'
+import DailyReport from './DailyReport'
 
-const Doctor = ({appointments,payment}) => {
+const Doctor = ({appointments,payment,patients,userId,Logout}) => {
     return (
         <>
             <div>
-                <NavBar />
+                <NavBar Logout={Logout}/>
                 <div class="flex overflow-hidden bg-white pt-16">
                     <SideBar />
                     <div class="bg-gray-900 opacity-50 hidden fixed inset-0 z-10" id="sidebarBackdrop"></div>
@@ -18,10 +22,12 @@ const Doctor = ({appointments,payment}) => {
                         <main>
                             <div class="pt-6 px-4">
 
-                                <UsersCount appointments={appointments} payment={payment}/>
+                                <UsersCount appointments={appointments} payment={payment} patients={patients}/>
                                 <div class="grid grid-cols-1 2xl:grid-cols-2 xl:gap-4 my-4">
-                                    <ListOfUsers/>
-                                    <AnotherTable/>
+                                    <MonthlyReport userId = {userId}/>
+                                    <WeeklyReport/>
+                                    <YearlyReport/>
+                                    <DailyReport/>
 
                                 </div>
                             </div>

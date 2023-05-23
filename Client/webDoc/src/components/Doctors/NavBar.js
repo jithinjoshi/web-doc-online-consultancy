@@ -1,6 +1,16 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
+import { useDispatch, useSelector} from 'react-redux';
+import { logout, selectUser} from '../../Redux/Doctor/doctorSlice';
 
-const NavBar = () => {
+const NavBar = ({Logout}) => {
+    const user = useSelector(selectUser);
+  const dispatch = useDispatch();
+    const logoutHandler = ((e)=>{
+        e.preventDefault();
+        Logout();
+        dispatch(logout())
+    })
   return (
     <>
         <nav class="bg-white border-b border-gray-200 fixed z-30 w-full">
@@ -37,9 +47,9 @@ const NavBar = () => {
                                         <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path>
                                     </svg>
                                 </button>
-                                <a href="#" class="hidden sm:inline-flex ml-5 text-white bg-cyan-600 hover:bg-cyan-700 focus:ring-4 focus:ring-cyan-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center items-center mr-3">
+                                <button onClick={logoutHandler} class="hidden sm:inline-flex ml-5 text-white bg-cyan-600 hover:bg-cyan-700 focus:ring-4 focus:ring-cyan-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center items-center mr-3">
                                     Logout
-                                </a>
+                                </button>
                             </div>
                         </div>
                     </div>

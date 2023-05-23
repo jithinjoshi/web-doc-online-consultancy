@@ -1,39 +1,42 @@
 import React, { useEffect, useState } from 'react'
-import Navbar from  '../../components/Users/NavBar/NavBar'
+import Navbar from '../../components/Users/NavBar/NavBar'
 import Banner from '../../components/Users/Banner'
 import MainDoctors from '../../components/Users/MainDoctors'
 import MainDepartments from '../../components/Users/MainDepartments'
 import Footer from '../../components/Users/Footer'
-import { getAllDepartments, getAllDoctors } from '../../Helpers/userHelper'
+import { getAllDepartments, getAllDoctors, getUser } from '../../Helpers/userHelper'
+import { useCookies } from "react-cookie";
+import { useNavigate } from 'react-router-dom'
 
 
 
 const LandingPage = () => {
-    const [doctors,setDoctors] = useState([]);
-    const [departments,setDepartments] = useState([])
+    const navigate = useNavigate();
+    const [doctors, setDoctors] = useState([]);
+    const [departments, setDepartments] = useState([]);
     //get All doctors
 
-    useEffect(()=>{
-        getAllDoctors().then((doctors)=>{
+    useEffect(() => {
+        getAllDoctors().then((doctors) => {
             setDoctors(doctors)
-        }).catch((err)=>{
+        }).catch((err) => {
             console.log(err);
         });
 
-        getAllDepartments().then((departments)=>{
+        getAllDepartments().then((departments) => {
             console.log(departments);
             setDepartments(departments)
         })
 
-    },[])
-    
+    }, [])
+
     return (
         <>
-            <Navbar/>
-            <Banner/>
-            <MainDoctors doctors={doctors.slice(0,4)}/>
-            <MainDepartments departments={departments}/>
-            <Footer/> 
+            <Navbar />
+            <Banner />
+            <MainDoctors doctors={doctors.slice(0, 4)} />
+            <MainDepartments departments={departments} />
+            <Footer />
         </>
 
     )

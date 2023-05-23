@@ -8,13 +8,50 @@ import Table from "../../../components/Admin/table/Table";
 import WeeklyChart from "../../../components/Admin/WeeklyChart/WeeklyChart";
 import YearlyChart from "../../../components/Admin/YearlyChart/YearlyChart"
 import DailyChart from "../../../components/Admin/DailyChart/DailyChart";
+import { useEffect, useState } from "react";
+import { useCookies } from "react-cookie";
+import { useNavigate } from "react-router-dom";
+import { getAdmin } from "../../../Helpers/adminHelper";
 
 const Home = () => {
+  const [cookies, removeCookie] = useCookies([]);
+const [admin, setAdmin] = useState("");
+const navigate = useNavigate();
+
+const Logout = () => {
+  removeCookie("token");
+  navigate("/admin/login");
+};
+
+useEffect(() => {
+  try {
+    const verifyCookie = async () => {
+      console.log(cookies, ":::");
+      if (cookies.token === "undefined") {
+        navigate('/admin/login');
+        const admin = await getAdmin();
+        setAdmin(admin);
+        if (!admin) {
+          removeCookie("token");
+          navigate("/admin/login");
+        }
+      }
+    };
+  
+    verifyCookie();
+    
+  } catch (error) {
+    console.log(error)
+    
+  }
+  
+}, [cookies, navigate, removeCookie]);
+
   return (
     <div className="home">
       <Sidebar />
       <div className="homeContainer">
-        <Navbar />
+        <Navbar Logout={Logout}/>
         <div className="widgets">
           <Widget type="user" />
           <Widget type="order" />

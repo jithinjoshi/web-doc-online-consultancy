@@ -4,6 +4,7 @@ import $ from 'jquery';
 import { Link } from 'react-router-dom'
 import { logout, selectUser } from '../../../Redux/User/userSlice'
 import { useDispatch, useSelector } from 'react-redux'
+import { useCookies } from "react-cookie";
 
 import MenuIcon from '@mui/icons-material/Menu';
 import { getUser, refreshToken } from '../../../Helpers/userHelper';
@@ -30,16 +31,19 @@ const menuItems = [
 const NavBar = () => {
 
   const user = useSelector(selectUser);
+  const [cookies, removeCookie] = useCookies([]);
   const dispatch = useDispatch()
 
 
 
   const handleLogout = () => {
+    
     dispatch(logout())
+    removeCookie("token");
   };
 
   
-  const [isMenuOpen, setIsMenuOpen] = React.useState(false)
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen)

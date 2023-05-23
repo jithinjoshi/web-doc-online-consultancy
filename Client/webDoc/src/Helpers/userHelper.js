@@ -5,6 +5,7 @@ axios.defaults.baseURL = process.env.REACT_APP_SERVER_URL;
 
 
 
+
 //signup
 export async function registerUser(credentials) {
     return new Promise((resolve, reject) => {
@@ -67,32 +68,16 @@ export async function loginUser(credentials) {
 
 
 //user
-// export async function getUser() {
-//     return new Promise((resolve, reject) => {
-//         axios.get('/api/user/user',{
-//             headers:{authorization:"Bearer "+userData.accessToken}
-//         }).then((user) => {
-//             resolve(user)
-//         }).catch((err) => {
-//             reject(err)
-//         })
-//     })
-// }
-
-
-//refresh token
-export const refreshToken = async () => {
-    try {
-        axios.get('/api/user/refresh', { withCredentials: true }).then((res) => {
-            const data = res.data;
-            return data;
-        }).catch(err => {
-            console.log(err);
+export async function getUser() {
+    return new Promise((resolve, reject) => {
+        axios.get('/api/user/user', { withCredentials: true }).then((user) => {
+            resolve(user)
+        }).catch((err) => {
+            reject(err)
         })
-    } catch (error) {
-        console.log(error);
-    }
+    })
 }
+
 
 //get all doctors
 export const getAllDoctors = async () => {
@@ -106,13 +91,13 @@ export const getAllDoctors = async () => {
 }
 
 //get all departments 
-export const getAllDepartments = async ()=>{
+export const getAllDepartments = async () => {
     try {
         const departments = await axios.get('/api/user/get-all-departments');
         return departments?.data?.departments;
     } catch (error) {
         return error
-        
+
     }
 }
 
@@ -155,7 +140,7 @@ export const getAllSchedules = async (id) => {
 //         }else{
 //             return 'something went wrong'
 //         }
-        
+
 //     } catch (error) {
 //         return error;
 //     }
@@ -167,13 +152,13 @@ export const getAllSchedules = async (id) => {
 //         const updateTime = await axios.put('/api/user/doctor/updateTimings',credentials);
 //         if(updateTime){
 //             return updateTime
-            
+
 //         }else{
 //             return false
 //         }
 //     } catch (error) {
 //         throw error
-        
+
 //     }
 // }
 
@@ -209,10 +194,10 @@ export const appointmentDoctor = (async credentials => {
 });
 
 //payment
-export const paymentGate = (async credentials =>{
+export const paymentGate = (async credentials => {
     try {
-        const payment = await axios.post('/api/user/payment',credentials);
-        if(payment){
+        const payment = await axios.post('/api/user/payment', credentials);
+        if (payment) {
             return payment;
         }
     } catch (error) {
@@ -227,57 +212,58 @@ export const paymentGate = (async credentials =>{
 //         if(updateAppointment){
 //             return updateAppointment;
 //         }
-        
+
 //     } catch (error) {
 //         return error;
-        
+
 //     }
 // })
 
-export const loginWithOtp = async (credentials) =>{
+export const loginWithOtp = async (credentials) => {
     try {
-        const users = await axios.post('/api/user/login-with-otp',credentials);
-        if(users){
+        const users = await axios.post('/api/user/login-with-otp', credentials);
+        if (users) {
             return users
         }
     } catch (error) {
         return error;
-        
+
     }
 }
 
-export const forgotPassword = async (credentials) =>{
+export const forgotPassword = async (credentials) => {
     try {
-        const resetLink = await axios.post('/api/user/forgot-password',credentials);
+        const resetLink = await axios.post('/api/user/forgot-password', credentials);
 
-        if(resetLink){
+        if (resetLink) {
             return resetLink;
-        }else{
+        } else {
             return "can't find data"
         }
-        
+
     } catch (error) {
         return error;
-        
+
     }
 }
 
 //update password
-export const updatePassword = async (id,token,credentials) =>{
+export const updatePassword = async (id, token, credentials) => {
     try {
-        const user = await axios.post(`/api/user/reset-password/${id}/${token}`,credentials);
-            return user;
-        
+        const user = await axios.post(`/api/user/reset-password/${id}/${token}`, credentials);
+        return user;
+
     } catch (error) {
         return error;
-        
+
     }
 }
 
 //user appointments
-export const singleUserAppointments = async (id)=>{
+export const singleUserAppointments = async (id, status) => {
     try {
-        const appointments = await axios.get(`/api/user/my-appointments/${id}`);
+        console.log(status);
+        const appointments = await axios.get(`/api/user/my-appointments/${status}/${id}`);
         return appointments;
     } catch (error) {
         return error;
@@ -285,34 +271,34 @@ export const singleUserAppointments = async (id)=>{
 }
 
 //get all appointed doctors
-export const getAllAppointmentDoctors = async (id) =>{
+export const getAllAppointmentDoctors = async (id) => {
     try {
         const doctors = await axios.get(`/api/user/my-doctors/${id}`);
-        return doctors;  
+        return doctors;
     } catch (error) {
         return error
-        
+
     }
 }
 
 //add message to db
-export function addMessage(credentials){
-    return new Promise((resolve,reject)=>{
-        axios.post("/api/message/addmsg",credentials).then((data)=>{
+export function addMessage(credentials) {
+    return new Promise((resolve, reject) => {
+        axios.post("/api/message/addmsg", credentials).then((data) => {
             console.log(data);
-        }).catch((err)=>{
+        }).catch((err) => {
             console.log(err);
         })
     })
 }
 
 //get all messages
-export function getAllMessages(credentials){
-    return new Promise((resolve,reject)=>{
-        axios.post("/api/message/getmsg",credentials).then((data)=>{
+export function getAllMessages(credentials) {
+    return new Promise((resolve, reject) => {
+        axios.post("/api/message/getmsg", credentials).then((data) => {
             resolve(data);
             console.log(data);
-        }).catch((err)=>{
+        }).catch((err) => {
             reject(err)
             console.log(err);
         })
@@ -321,41 +307,41 @@ export function getAllMessages(credentials){
 
 
 //get user profile
-export function getUserData(id){
-    return new Promise((resolve,reject)=>{
-        axios.get(`/api/user/get-profile/${id}`).then((user)=>{
+export function getUserData(id) {
+    return new Promise((resolve, reject) => {
+        axios.get(`/api/user/get-profile/${id}`).then((user) => {
             resolve(user)
-        }).catch((err)=>{
+        }).catch((err) => {
             reject(err);
         })
     })
 }
 
-export function getAllConversations(id){
-    return new Promise((resolve,reject) =>{
-        axios.get(`/api/conversation/${id}`).then((data)=>{
+export function getAllConversations(id) {
+    return new Promise((resolve, reject) => {
+        axios.get(`/api/conversation/${id}`).then((data) => {
             resolve(data)
-        }).catch((err)=>{
+        }).catch((err) => {
             reject(err);
         })
     })
 };
 
-export function getMessages(id){
-    return new Promise((resolve,reject)=>{
-        axios.get(`/api/message/${id}`).then((data)=>{
+export function getMessages(id) {
+    return new Promise((resolve, reject) => {
+        axios.get(`/api/message/${id}`).then((data) => {
             resolve(data);
-        }).catch((err)=>{
+        }).catch((err) => {
             reject(err)
         })
     })
 }
 
-export function newMessages(credentials){
-    return new Promise((resolve,reject)=>{
-        axios.post('/api/message',credentials).then((data)=>{
+export function newMessages(credentials) {
+    return new Promise((resolve, reject) => {
+        axios.post('/api/message', credentials).then((data) => {
             resolve(data);
-        }).catch((err)=>{
+        }).catch((err) => {
             reject(err)
         })
     })
@@ -371,6 +357,17 @@ export function applyDoctor(credentials) {
             reject(err)
         })
 
+    })
+}
+
+//user profile
+export function profileOfUser(credentials){
+    return new Promise((resolve,reject)=>{
+        axios.put('/api/user/profile',credentials).then((response)=>{
+            resolve(response)
+        }).catch((err)=>{
+            reject(err)
+        })
     })
 }
 

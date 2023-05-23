@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import * as controller from '../controller/adminController.js'
-import { Auth} from '../Auth/middleware.js';
+import { AdminAuth, Auth} from '../Auth/middleware.js';
 
 const router = Router();
 
@@ -27,6 +27,7 @@ router.route('/weeklySales').get(controller.getWeeklyReport);
 router.route('/dailySales').get(controller.getDailyReport);
 router.route('/yearlySales').get(controller.getYearlyReport);
 router.route('/salesReport').get(controller.getSaleReport);
+router.route('/').post(AdminAuth,controller.getData)
 
 
 

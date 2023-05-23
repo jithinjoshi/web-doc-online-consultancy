@@ -85,7 +85,7 @@ export function getAllPatients() {
 export const deleteDoctor = async (id) => {
     try {
         const deleteDoc = await axios.delete(`/api/admin/delete-doctor/${id}`);
-            return deleteDoc;
+        return deleteDoc;
     } catch (error) {
         return error;
 
@@ -94,23 +94,23 @@ export const deleteDoctor = async (id) => {
 }
 
 //delete department
-export const deleteDepartment = async(id)=>{
+export const deleteDepartment = async (id) => {
     try {
         const deleteDep = await axios.delete(`/api/admin/delete-department/${id}`);
         return deleteDep;
     } catch (error) {
         return error;
-        
+
     }
 }
 
 //edit doctor
-export function editDoctorProfile(id,credentials){
-    return new Promise((resolve,reject)=>{
-        axios.put(`/api/admin/edit-doctor/${id}`,credentials).then((user)=>{
+export function editDoctorProfile(id, credentials) {
+    return new Promise((resolve, reject) => {
+        axios.put(`/api/admin/edit-doctor/${id}`, credentials).then((user) => {
             console.log(user);
             resolve(user)
-        }).catch((err)=>{
+        }).catch((err) => {
             console.log(err);
             reject(err)
         })
@@ -118,11 +118,11 @@ export function editDoctorProfile(id,credentials){
 }
 
 //get all notifications
-export function getAllNotifications(){
-    return new Promise((resolve,reject)=>{
-        axios.get('/api/admin/notifications').then((notifications)=>{
+export function getAllNotifications() {
+    return new Promise((resolve, reject) => {
+        axios.get('/api/admin/notifications').then((notifications) => {
             resolve(notifications)
-        }).catch((err)=>{
+        }).catch((err) => {
             reject(err);
         })
 
@@ -130,22 +130,22 @@ export function getAllNotifications(){
 }
 
 //get all notification count
-export function getAllNotificationCount(){
-    return new Promise((resolve,reject)=>{
-        axios.get('/api/admin/notificationCount').then((notificationCount)=>{
+export function getAllNotificationCount() {
+    return new Promise((resolve, reject) => {
+        axios.get('/api/admin/notificationCount').then((notificationCount) => {
             resolve(notificationCount)
-        }).catch((err)=>{
+        }).catch((err) => {
             reject(err)
         })
     })
 }
 
 //get doctor request 
-export function getDoctorRequest(id){
-    return new Promise((resolve,reject)=>{
-        axios.get(`/api/admin/view-doctor-requests/${id}`).then((doctorData)=>{
+export function getDoctorRequest(id) {
+    return new Promise((resolve, reject) => {
+        axios.get(`/api/admin/view-doctor-requests/${id}`).then((doctorData) => {
             resolve(doctorData)
-        }).catch((err)=>{
+        }).catch((err) => {
             reject(err)
         })
     })
@@ -153,11 +153,11 @@ export function getDoctorRequest(id){
 
 //apporve doctor
 
-export function approveDoctor(id){
-    return new Promise((resolve,reject)=>{
-        axios.put(`/api/admin/approve-doctor/${id}`).then((doctor)=>{
+export function approveDoctor(id) {
+    return new Promise((resolve, reject) => {
+        axios.put(`/api/admin/approve-doctor/${id}`).then((doctor) => {
             resolve("doctor approved successfully")
-        }).catch((err)=>{
+        }).catch((err) => {
             reject("doctor approval failed")
         })
     })
@@ -165,11 +165,11 @@ export function approveDoctor(id){
 
 //deny doctor
 
-export function denyDoctor(id){
-    return new Promise((resolve,reject)=>{
-        axios.delete(`/api/admin/deny-doctor/${id}`).then((data)=>{
+export function denyDoctor(id) {
+    return new Promise((resolve, reject) => {
+        axios.delete(`/api/admin/deny-doctor/${id}`).then((data) => {
             resolve('doctor denied successfully')
-        }).catch((err)=>{
+        }).catch((err) => {
             reject("something wrong")
         })
     })
@@ -177,22 +177,22 @@ export function denyDoctor(id){
 
 //get all datas
 
-export function getAllData(){
-    return new Promise((resolve,reject)=>{
-        axios.get(`/api/admin/data-count`).then((data)=>{
+export function getAllData() {
+    return new Promise((resolve, reject) => {
+        axios.get(`/api/admin/data-count`).then((data) => {
             resolve(data)
-        }).catch((err)=>{
+        }).catch((err) => {
             reject(err)
         })
     })
 };
 
 //get chart data
-export function getChartData(){
-    return new Promise((resolve,reject)=>{
-        axios.get(`/api/admin/sales-monthly`).then((data)=>{
+export function getChartData() {
+    return new Promise((resolve, reject) => {
+        axios.get(`/api/admin/sales-monthly`).then((data) => {
             resolve(data)
-        }).catch((err)=>{
+        }).catch((err) => {
             reject(err)
         })
 
@@ -200,11 +200,11 @@ export function getChartData(){
 }
 
 //get weekly report
-export function getWeeklyData(){
-    return new Promise((resolve,reject)=>{
-        axios.get('/api/admin/weeklySales').then((data)=>{
+export function getWeeklyData() {
+    return new Promise((resolve, reject) => {
+        axios.get('/api/admin/weeklySales').then((data) => {
             resolve(data);
-        }).catch((err)=>{
+        }).catch((err) => {
             reject(err)
         })
     })
@@ -212,22 +212,22 @@ export function getWeeklyData(){
 
 
 //get daily report
-export function getDailyData(){
-    return new Promise((resolve,reject)=>{
-        axios.get('/api/admin/dailySales').then((data)=>{
+export function getDailyData() {
+    return new Promise((resolve, reject) => {
+        axios.get('/api/admin/dailySales').then((data) => {
             resolve(data);
-        }).catch((err)=>{
+        }).catch((err) => {
             reject(err)
         })
     })
 }
 
 //get daily report
-export function getYearlyData(){
-    return new Promise((resolve,reject)=>{
-        axios.get('/api/admin/yearlySales').then((data)=>{
+export function getYearlyData() {
+    return new Promise((resolve, reject) => {
+        axios.get('/api/admin/yearlySales').then((data) => {
             resolve(data);
-        }).catch((err)=>{
+        }).catch((err) => {
             reject(err)
         })
     })
@@ -236,10 +236,21 @@ export function getYearlyData(){
 //transactions
 export const getAllTransactions = async (page) => {
     try {
-      const response = await axios.get(`/api/admin/salesReport?page=${page}`);
-      return response.data;
+        const response = await axios.get(`/api/admin/salesReport?page=${page}`);
+        return response.data;
     } catch (error) {
-      console.error(error);
-      throw error;
+        console.error(error);
+        throw error;
     }
-  };
+};
+
+
+export async function getAdmin() {
+    return new Promise((resolve, reject) => {
+        axios.get('/api/admin/', { withCredentials: true }).then((user) => {
+            resolve(user)
+        }).catch((err) => {
+            reject(err)
+        })
+    })
+}
