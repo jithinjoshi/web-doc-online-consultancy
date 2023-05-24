@@ -26,9 +26,21 @@ const userSchema = new mongoose.Schema({
         type:Boolean,
         default:true
     },
-    tokens:{
-        type:Array
+    address:{
+        type:String
+    },
+    gender:{
+        type:String
+    },
+    dob:{
+        type:String
+    },
+    city:{
+        type:String
+    },image:{
+        type:Object
     }
+
 });
 
 

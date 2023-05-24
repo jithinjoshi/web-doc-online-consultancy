@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { login, selectUser } from '../../Redux/Doctor/doctorSlice'
 import { doctorProfile, editDoctorProfile } from '../../Helpers/doctorHelper'
 import { useNavigate, useParams } from 'react-router-dom'
-import SideBar from '../../components/Doctor/SideBar'
+import SideBar from '../../components/Doctors/SideBar'
 import { Toaster, toast } from 'react-hot-toast'
 import { useFormik } from 'formik'
 
@@ -94,13 +94,13 @@ const DoctorsEdit = () => {
             errors.password = toast.error("password must contain six characters")
         }
 
-        if(image){
-             if (result !== 'jpg' && result !== 'jpeg' && result !== 'png' && result !== 'webp') {
+        if (image) {
+            if (result !== 'jpg' && result !== 'jpeg' && result !== 'png' && result !== 'webp') {
                 errors.image = toast.error("This format of image is not supported")
             }
         }
 
-       
+
 
         return errors
     }
@@ -155,7 +155,6 @@ const DoctorsEdit = () => {
             }
 
             editDoctorProfile(id, credentials).then((doctor) => {
-                toast.loading('Loading...');
                 dispatch(
                     login({
                         _id: doctor.data._id,
@@ -181,91 +180,98 @@ const DoctorsEdit = () => {
 
     return (
 
-        <div className='font-poppins antialiased overflow-x-hidden coverflow-hidden'>
-            <div
-                id="view"
-                class="h-full w-screen flex flex-row overflow-hidden"
-                x-data="{ sidenav: true }"
-            >
-                <SideBar />
+        <>
+            <div>
+                <div class="flex overflow-hidden bg-white pt-16">
+                    <SideBar />
+                    <div class="bg-gray-900 opacity-50 hidden fixed inset-0 z-10" id="sidebarBackdrop"></div>
+                    <div id="main-content" class="h-full w-full relative overflow-y-auto lg:ml-64">
+                        <main>
 
-                <section className="px-2">
-                <Toaster position='top-center' reverseOrder={false}></Toaster>
-                    <form novalidate="" action="" className="container flex flex-col mx-auto space-y-10 ng-untouched ng-pristine ng-valid" onSubmit={formik.handleSubmit}>
-                        <fieldset className="grid grid-cols-4 gap-6 p-4 rounded-md shadow-sm border">
-                            <div className="space-y-2 col-span-full lg:col-span-1">
-                                <p className="font-medium">Personal Inormation</p>
-                                <p className="text-xs">About myself in brief</p>
+                            <div class="px-4">
+                                <h2 className='text-2xl'>Edit Profile</h2>
+                                <section className="px-2">
+                                    <Toaster position='top-center' reverseOrder={false}></Toaster>
+                                    <form novalidate="" action="" className="container flex flex-col mx-auto space-y-10 ng-untouched ng-pristine ng-valid" onSubmit={formik.handleSubmit}>
+                                        <fieldset className="grid grid-cols-4 gap-6 p-4 rounded-md shadow-sm border">
+                                            <div className="space-y-2 col-span-full lg:col-span-1">
+                                                <p className="font-medium">Personal Inormation</p>
+                                                <p className="text-xs">About myself in brief</p>
+                                            </div>
+                                            <div className="grid grid-cols-6 gap-4 col-span-full lg:col-span-3">
+                                                <div className="col-span-full sm:col-span-3">
+                                                    <label for="firstname" className="text-sm">First name</label>
+                                                    <input id="firstname" type="text" onChange={(e) => setFirstName(e.target.value)} value={firstName} placeholder="First name" className="w-full rounded-md focus:ring focus:ring-opacity-75 focus:ring-violet-400 dark:border-gray-700 dark:text-gray-900 border text-center" />
+                                                </div>
+                                                <div className="col-span-full sm:col-span-3">
+                                                    <label for="lastname" className="text-sm">Last name</label>
+                                                    <input id="lastname" type="text" onChange={(e) => setLastName(e.target.value)} value={lastName} placeholder="Last name" className="w-full rounded-md focus:ring focus:ring-opacity-75 focus:ring-violet-400 dark:border-gray-700 dark:text-gray-900 border text-center" />
+                                                </div>
+                                                <div className="col-span-full sm:col-span-3">
+                                                    <label for="email" className="text-sm">Email</label>
+                                                    <input id="email" type="email" placeholder="Email" onChange={(e) => setEmail(e.target.value)} value={email} className="w-full rounded-md focus:ring focus:ring-opacity-75 focus:ring-violet-400 dark:border-gray-700 dark:text-gray-900 border text-center" />
+                                                </div>
+                                                <div className="col-span-full">
+                                                    <label for="address" className="text-sm">Address</label>
+                                                    <input id="address" type="text" placeholder="" onChange={(e) => setAddress(e.target.value)} value={address} className="w-full rounded-md focus:ring focus:ring-opacity-75 focus:ring-violet-400 dark:border-gray-700 dark:text-gray-900 border text-center" />
+                                                </div>
+                                                <div className="col-span-full sm:col-span-3">
+                                                    <label for="city" className="text-sm">Date Of Birth</label>
+                                                    <input id="city" type="date" value={dob} placeholder="" onChange={(e) => setDob(e.target.value)} className="w-full rounded-md focus:ring focus:ring-opacity-75 focus:ring-violet-400 dark:border-gray-700 dark:text-gray-900 border text-center" />
+                                                </div>
+
+                                                <div className="col-span-full sm:col-span-3">
+                                                    <label for="email" className="text-sm">Experience</label>
+                                                    <input id="experience" type="number" placeholder="Experience" onChange={(e) => setExperience(e.target.value)} value={experience} className="w-full rounded-md focus:ring focus:ring-opacity-75 focus:ring-violet-400 dark:border-gray-700 dark:text-gray-900 border text-center" />
+                                                </div>
+
+                                            </div>
+                                        </fieldset>
+                                        <fieldset className="grid grid-cols-4 gap-6 p-4 rounded-md shadow-sm border">
+                                            <div className="space-y-2 col-span-full lg:col-span-1">
+                                                <p className="font-medium">Profile</p>
+                                                <p className="text-xs">About my profile</p>
+                                            </div>
+                                            <div className="grid grid-cols-6 gap-4 col-span-full lg:col-span-3">
+                                                <div className="col-span-full sm:col-span-3">
+                                                    <label for="username" className="text-sm">email/username</label>
+                                                    <input id="username" value={email} type="text" placeholder="Username" disabled className="w-full rounded-md focus:ring focus:ring-opacity-75 focus:ring-violet-400 dark:border-gray-700 dark:text-gray-900 border text-center" />
+                                                </div>
+                                                <div className="col-span-full sm:col-span-3">
+                                                    <label for="website" className="text-sm">Password</label>
+                                                    <input id="website" type="password" disabled value={password?.substr(0, 6)} className="w-full rounded-md focus:ring focus:ring-opacity-75 focus:ring-violet-400 dark:border-gray-700 dark:text-gray-900 border text-center" />
+                                                </div>
+                                                <div className="col-span-full sm:col-span-3">
+                                                    <label for="website" className="text-sm">Fees Per consultation</label>
+                                                    <input id="website" type="number" value={fees} onChange={(e) => setFees(e.target.value)} className="w-full rounded-md focus:ring focus:ring-opacity-75 focus:ring-violet-400 dark:border-gray-700 dark:text-gray-900 border text-center" />
+                                                </div>
+                                                <div className="col-span-full">
+                                                    <label for="bio" className="text-sm">About Me</label>
+                                                    <textarea id="bio" value={about} placeholder="" rows='4' onChange={(e) => setAbout(e.target.value)} className="w-full rounded-md focus:ring focus:ring-opacity-75 focus:ring-violet-400 dark:border-gray-700 dark:text-gray-900 border text-center"></textarea>
+                                                </div>
+                                                <div className="col-span-full">
+                                                    <label for="bio" className="text-sm">Photo</label>
+                                                    <div className="flex items-center space-x-2">
+                                                        <img src={doctor?.image?.secure_url} alt="" className="w-10 h-10 rounded-full" />
+                                                        <input id="dropzone-file" type="file" className="px-4 py-2 border rounded-md dark:border-gray-700 dark:text-gray-900" accept='image/*' onChange={handleDoctorImageUpload} />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                        <div class="flex justify-center">
+                                            <button type='submit' class="bg-purple-900 text-white hover:bg-blue-400 font-bold py-2 px-4 mt-1 rounded items-center">submit</button>
+                                        </div>
+                                    </form>
+
+                                </section>
+
                             </div>
-                            <div className="grid grid-cols-6 gap-4 col-span-full lg:col-span-3">
-                                <div className="col-span-full sm:col-span-3">
-                                    <label for="firstname" className="text-sm">First name</label>
-                                    <input id="firstname" type="text" onChange={(e) => setFirstName(e.target.value)} value={firstName} placeholder="First name" className="w-full rounded-md focus:ring focus:ring-opacity-75 focus:ring-violet-400 dark:border-gray-700 dark:text-gray-900 border text-center" />
-                                </div>
-                                <div className="col-span-full sm:col-span-3">
-                                    <label for="lastname" className="text-sm">Last name</label>
-                                    <input id="lastname" type="text" onChange={(e) => setLastName(e.target.value)} value={lastName} placeholder="Last name" className="w-full rounded-md focus:ring focus:ring-opacity-75 focus:ring-violet-400 dark:border-gray-700 dark:text-gray-900 border text-center" />
-                                </div>
-                                <div className="col-span-full sm:col-span-3">
-                                    <label for="email" className="text-sm">Email</label>
-                                    <input id="email" type="email" placeholder="Email" onChange={(e) => setEmail(e.target.value)} value={email} className="w-full rounded-md focus:ring focus:ring-opacity-75 focus:ring-violet-400 dark:border-gray-700 dark:text-gray-900 border text-center" />
-                                </div>
-                                <div className="col-span-full">
-                                    <label for="address" className="text-sm">Address</label>
-                                    <input id="address" type="text" placeholder="" onChange={(e) => setAddress(e.target.value)} value={address} className="w-full rounded-md focus:ring focus:ring-opacity-75 focus:ring-violet-400 dark:border-gray-700 dark:text-gray-900 border text-center" />
-                                </div>
-                                <div className="col-span-full sm:col-span-3">
-                                    <label for="city" className="text-sm">Date Of Birth</label>
-                                    <input id="city" type="date" value={dob} placeholder="" onChange={(e) => setDob(e.target.value)} className="w-full rounded-md focus:ring focus:ring-opacity-75 focus:ring-violet-400 dark:border-gray-700 dark:text-gray-900 border text-center" />
-                                </div>
-
-                                <div className="col-span-full sm:col-span-3">
-                                    <label for="email" className="text-sm">Experience</label>
-                                    <input id="experience" type="number" placeholder="Experience" onChange={(e) => setExperience(e.target.value)} value={experience} className="w-full rounded-md focus:ring focus:ring-opacity-75 focus:ring-violet-400 dark:border-gray-700 dark:text-gray-900 border text-center" />
-                                </div>
-
-                            </div>
-                        </fieldset>
-                        <fieldset className="grid grid-cols-4 gap-6 p-4 rounded-md shadow-sm border">
-                            <div className="space-y-2 col-span-full lg:col-span-1">
-                                <p className="font-medium">Profile</p>
-                                <p className="text-xs">About my profile</p>
-                            </div>
-                            <div className="grid grid-cols-6 gap-4 col-span-full lg:col-span-3">
-                                <div className="col-span-full sm:col-span-3">
-                                    <label for="username" className="text-sm">email/username</label>
-                                    <input id="username" value={email} type="text" placeholder="Username" disabled className="w-full rounded-md focus:ring focus:ring-opacity-75 focus:ring-violet-400 dark:border-gray-700 dark:text-gray-900 border text-center" />
-                                </div>
-                                <div className="col-span-full sm:col-span-3">
-                                    <label for="website" className="text-sm">Password</label>
-                                    <input id="website" type="password" disabled value={password?.substr(0, 6)} className="w-full rounded-md focus:ring focus:ring-opacity-75 focus:ring-violet-400 dark:border-gray-700 dark:text-gray-900 border text-center" />
-                                </div>
-                                <div className="col-span-full sm:col-span-3">
-                                    <label for="website" className="text-sm">Fees Per consultation</label>
-                                    <input id="website" type="number" value={fees} onChange={(e) => setFees(e.target.value)} className="w-full rounded-md focus:ring focus:ring-opacity-75 focus:ring-violet-400 dark:border-gray-700 dark:text-gray-900 border text-center" />
-                                </div>
-                                <div className="col-span-full">
-                                    <label for="bio" className="text-sm">About Me</label>
-                                    <textarea id="bio" value={about} placeholder="" onChange={(e) => setAbout(e.target.value)} className="w-full rounded-md focus:ring focus:ring-opacity-75 focus:ring-violet-400 dark:border-gray-700 dark:text-gray-900 border text-center"></textarea>
-                                </div>
-                                <div className="col-span-full">
-                                    <label for="bio" className="text-sm">Photo</label>
-                                    <div className="flex items-center space-x-2">
-                                        <img src={doctor?.image?.secure_url} alt="" className="w-10 h-10 rounded-full" />
-                                        <input id="dropzone-file" type="file" className="px-4 py-2 border rounded-md dark:border-gray-700 dark:text-gray-900" accept='image/*' onChange={handleDoctorImageUpload} />
-                                    </div>
-                                </div>
-                            </div>
-                        </fieldset>
-                        <div class="flex justify-center">
-                            <button type='submit' class="bg-purple-900 text-white hover:bg-blue-400 font-bold py-2 px-4 mt-1 rounded items-center">submit</button>
-                        </div>
-                    </form>
-
-                </section>
-
+                        </main>
+                    </div>
+                </div>
             </div>
-        </div>
+        </>
+
 
 
     )

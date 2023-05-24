@@ -384,3 +384,25 @@ export const signoutUser = async () => {
     }
 }
 
+
+//get appointed doctors
+export const getAppointedDoctors = (async()=>{
+    try {
+        const appointedDoctors = await axios.get('/api/user/appointedDoctors');
+        return appointedDoctors; 
+    } catch (error) {
+        return error;
+        
+    }
+})
+
+//get all prescriptions
+export const getDoctorPrescription = (async(doctorId)=>{
+    try {
+        const prescripions = await axios.get(`/api/user/prescriptions/${doctorId}`);
+        return prescripions;
+    } catch (error) {
+        return error
+        
+    }
+})

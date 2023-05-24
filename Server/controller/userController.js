@@ -20,6 +20,7 @@ import dotenv from 'dotenv'
 import cloudinary from '../utils/cloudinary.js';
 import { Admin } from '../Model/admin.js';
 import { createSecretToken } from '../utils/secretToken.js';
+import { Prescription } from '../Model/Prescription.js';
 dotenv.config()
 
 
@@ -839,41 +840,68 @@ export const getSingleUser = async (req, res) => {
 //profile
 export const profile = async (req, res) => {
     try {
-        const userId = req.user;
-        const updatedData = req.body;
-        if (userId) {
-            const updateUser = await User.findByIdAndUpdate(userId, updatedData);
-            res.status(200).json(updateUser);
+      const userId = req.user;
+      const updatedData = req.body;
+  
+    //   if (req.body.image && req.body.imgPublicId) {
+    //     const imgId = req.body.imgPublicId;
 
-        }
-
+    //     console.log(imgId)
+  
+    //     await cloudinary.uploader.destroy(imgId);
+  
+    //     const uploadRes = await cloudinary.uploader.upload(req.body.image, {
+    //       allowed_formats: "jpg,png,webp,jpeg",
+    //       upload_preset: 'webDoc'
+    //     });
+  
+    //     updatedData.image = uploadRes.secure_url;
+    //     delete updatedData.imgPublicId;
+    //   }                                           
+  
+      if (userId) {
+        const updateUser = await User.findByIdAndUpdate(userId, updatedData);
+        res.status(200).json(updateUser);
+      }
     } catch (error) {
-        res.status(500).json({ err: "update user failed" })
+      console.log(error);
+      res.status(500).json({ err: "Update user failed" });
     }
+  };
+  
 
-}
 
-
-
-//signout user
-export const signoutUser = async (req, res) => {
+export const getAppointedDoctors = (async(req,res)=>{
     try {
-        const refreshToken = req.body.token;
-        console.log(refreshToken, "::::::::::::::::::::::::");
-        const user = req.user;
-
-        if (refreshToken) {
-            refreshTokens = refreshTokens.filter((token) => token !== refreshToken);
-            const updateToken = await User.findOneAndUpdate(user._id, { tokens: { accessToken: "", refreshToken: "" } });
-            res.status(200).json("you are logout successfully")
-
-        } else {
-            res.status(500).json("can't logout")
+        const userId = req.user;
+        const doctorIds = await Appointment.distinct('doctorId', { userId: userId });
+        if(doctorIds){
+            const doctors = await Doctor.find({ _id: { $in: doctorIds } }).select('-password')
+            return res.status(201).json(doctors)
         }
-
+        res.status(201).json({doctors:[]})
+        
+        
     } catch (error) {
-        console.log(error);
-        res.status(500).json(error);
-
+        res.status(500).json({err:"can't find the data"})
+        
     }
-}
+})
+
+
+export const getPrescriptions = (async(req,res)=>{
+    try {
+        const {doctorId} = req.params;
+        const userId = req.user;
+
+        const prescripions = await Prescription.find({doctorId,userId}).populate({
+            path: 'doctorId',
+            select: ['firstName','lastName','image.secure_url']
+
+        })
+        res.status(200).json(prescripions);
+    } catch (error) {
+        return res.status(500).json({err:"unable to get the data"})
+        
+    }
+})

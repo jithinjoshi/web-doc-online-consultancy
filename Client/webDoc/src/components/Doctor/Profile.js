@@ -17,7 +17,7 @@ const Profile = ({doctor,id}) => {
 
                     <div class="mt-20 text-center border-b pb-12">
                         <h1 class="text-4xl font-medium text-gray-700">{doctor.firstName} {doctor.lastName}</h1>
-                        <p class="font-light text-gray-600 mt-3">{doctor.department}</p>
+                        <p class="font-light text-xl text-gray-600 mt-3">{doctor.department}</p>
 
                         <p class="mt-8 text-gray-500">{doctor.email}</p>
                         <p class="mt-2 text-gray-500">{doctor.dob}</p>

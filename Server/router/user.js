@@ -13,7 +13,6 @@ router.route('/login').post(controller.login);
 router.route("/user").get(Auth, controller.getUser);
 router.route('/doctors').get(controller.getAllDoctors);
 router.route('/availableSlots/:id').get(controller.getDoctorAvailability);
-router.route('/signout').post(Auth, controller.signoutUser);
 router.route('/doctor/:id').get(controller.getSingleDoctor);
 router.route('/doctor/appointment').post(controller.appointment);
 // router.route('/doctor/timings').post(controller.manageTimings);
@@ -34,7 +33,9 @@ router.route('/get-profile/:id').get(controller.getUserProfile);
 router.route('/updateProfile/:id').put(controller.updateProfile);
 router.route('/getSingleUser/:id').post(controller.getSingleUser);
 router.route('/apply-doctor').post(controller.applyForDoctor);
-router.route('/profile').put(Auth,controller.profile)
+router.route('/profile').put(Auth,controller.profile);
+router.route('/appointedDoctors').get(Auth,controller.getAppointedDoctors);
+router.route('/prescriptions/:doctorId').get(Auth,controller.getPrescriptions);
 
 
 

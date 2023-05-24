@@ -48,6 +48,8 @@ import PatientsOfDoctor from "../pages/Doctor/Patients"
 import Prescription from "../pages/Doctor/Prescription";
 import ListOfPrescriptions from "../pages/Doctor/ListOfPrescriptions";
 import UpdatePrescription from "../pages/Doctor/UpdatePrescription";
+import ConsultedDoctors from "../pages/User/AppointedDoctors";
+import PrescriptionDetails from "../pages/User/Prescription"
 
 
 
@@ -190,6 +192,10 @@ export const router = createBrowserRouter([
         errorElement:<ErrorPage/>
     },
     {
+        path:'/prescriptions/:doctorId',
+        element:<PrescriptionDetails/>
+    },
+    {
         path:'/apply-doctor',
         element:<ApplyForDoctor/>,
         errorElement:<ErrorPage/>
@@ -204,6 +210,12 @@ export const router = createBrowserRouter([
         element:<Chats/>,
         errorElement:<ErrorPage/>
     },
+    {
+        path:'/appointed-doctors',
+        element:<ConsultedDoctors/>,
+        errorElement:<ErrorPage/>
+    },
+    
 
     //doctors
     {
