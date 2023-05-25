@@ -13,7 +13,7 @@ const Messages = ({ chat, currentUserId, setSendMessage, recieveMessage }) => {
 
   useEffect(() => {
     if (recieveMessage !== null && recieveMessage.conversationId === chat._id) {
-      setMessages((prevMessages) => [...prevMessages, recieveMessage]);
+      setMessages([...messages, recieveMessage])
     }
   }, [recieveMessage]);
 
@@ -25,7 +25,7 @@ const Messages = ({ chat, currentUserId, setSendMessage, recieveMessage }) => {
         const user = await getsingleUser(userId);
         setUserData(user?.data);
       } catch (error) {
-        console.log(error);
+        return error;
       }
     };
     if (chat !== null) getUserData();
@@ -59,13 +59,13 @@ const Messages = ({ chat, currentUserId, setSendMessage, recieveMessage }) => {
       const { data } = await newMessages(message);
       console.log(data);
       setNewMessages('');
-      setMessages((prevMessages) => [...prevMessages, data?.messages]);
+      //setMessages((prevMessages) => [...prevMessages, data?.messages]);
     } catch (error) {
       console.log(error);
     }
 
-    const receiverId = chat.members.find((id) => id !== currentUserId);
-    setSendMessage({ ...message, receiverId });
+    const recieverId = chat.members.find((id) => id !== currentUserId);
+    setSendMessage({ ...message, recieverId });
   };
 
   useEffect(() => {
