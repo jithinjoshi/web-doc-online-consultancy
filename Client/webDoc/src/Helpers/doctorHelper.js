@@ -377,3 +377,38 @@ export async function getSinglePrescription(id){
         
     }
 }
+
+//get single doctor
+export async function getSingleUserData(id){
+    try {
+        const user = await axios.get(`/api/doctor/getSingleUser/${id}`);
+        return user;
+        
+    } catch (error) {
+        console.log(error)
+        return error
+        
+    }
+}
+
+export async function createConversation(credentials){
+    try {
+        const conversation = await axios.post('/api/conversation',credentials);
+        return conversation;
+        
+    } catch (error) {
+        return error;
+        
+    }
+}
+
+export async function checkConversationExistance(credentials){
+    try {
+        const existance = await axios.post('/api/conversation/check-existance',credentials);
+        return existance;
+        
+    } catch (error) {
+        return error
+        
+    }
+}

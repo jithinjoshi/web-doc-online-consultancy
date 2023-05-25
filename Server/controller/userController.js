@@ -904,4 +904,4 @@ export const getPrescriptions = (async(req,res)=>{
         return res.status(500).json({err:"unable to get the data"})
         
     }
-})
+});

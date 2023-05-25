@@ -2,14 +2,16 @@ import React from 'react'
 import { selectUser } from '../../Redux/Doctor/doctorSlice';
 import { useSelector } from 'react-redux';
 import { useEffect } from 'react';
-import { getMyAppointments } from '../../Helpers/doctorHelper';
+import { checkConversationExistance, createConversation, getMyAppointments } from '../../Helpers/doctorHelper';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import moment from 'moment';
 
 const Appointments = () => {
     const user = useSelector(selectUser);
-    const [myAppointments, setMyAppointments] = useState([])
+    const [myAppointments, setMyAppointments] = useState([]);
+    const navigate = useNavigate();
+    
 
     useEffect(() => {
         if (user?._id) {
@@ -20,6 +22,23 @@ const Appointments = () => {
         }
 
     }, [user])
+
+    const createChatHandler = async (userId)=>{
+        const credentials = {
+            senderId:userId,
+            recieverId: user?._id
+        }
+
+       const isExist = await checkConversationExistance(credentials);
+        
+       if(isExist?.data?.success){
+        const create = await createConversation(credentials);
+
+       }
+       navigate('/doctor/chat');
+
+
+    }
 
     //get current time
     const now = Date.now(); // Current timestamp
@@ -60,7 +79,6 @@ console.log(formattedTime);
                                 <tbody>
                                     {
                                         myAppointments.map((appointments, index) => {
-                                            console.log(appointments,":::::::::::::::::")
                                             return (
                                                 <tr class="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100">
                                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{index + 1}</td>
@@ -80,9 +98,9 @@ console.log(formattedTime);
                                                         {appointments?.time}
                                                     </td>
                                                     <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                                        <Link to='/doctor/chat' className='inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'>
+                                                        <button onClick={()=>createChatHandler(appointments?.userId?._id)} className='inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'>
                                                             Chat
-                                                        </Link>
+                                                        </button>
                                                         <Link to={`/room/${appointments?.userId?._id}`} className='inline-block bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ms-4'>
                                                             create room
                                                         </Link>

@@ -3,8 +3,7 @@ import { FiSend } from 'react-icons/fi';
 import { getMessages, getsingleUser, newMessages } from '../../../Helpers/doctorHelper';
 import SelectedUser from './SelectedUser';
 import Welcome from './Welcome';
-import { format } from 'timeago.js'
-
+import { format } from 'timeago.js';
 
 const Messages = ({ chat, currentUserId, setSendMessage, recieveMessage }) => {
   const [userData, setUserData] = useState(null);
@@ -12,15 +11,13 @@ const Messages = ({ chat, currentUserId, setSendMessage, recieveMessage }) => {
   const [newMessage, setNewMessages] = useState("");
   const scroll = useRef();
 
-  console.log(recieveMessage, "::::");
-
   useEffect(() => {
     if (recieveMessage !== null && recieveMessage.conversationId === chat._id) {
-      setMessages([...messages, recieveMessage])
+      setMessages((prevMessages) => [...prevMessages, recieveMessage]);
     }
-  }, [recieveMessage])
+  }, [recieveMessage]);
 
-  // fetch data;
+  // Fetch data
   useEffect(() => {
     const userId = chat?.members?.find((id) => id !== currentUserId);
     const getUserData = async () => {
@@ -28,7 +25,7 @@ const Messages = ({ chat, currentUserId, setSendMessage, recieveMessage }) => {
         const user = await getsingleUser(userId);
         setUserData(user?.data);
       } catch (error) {
-        return error;
+        console.log(error);
       }
     };
     if (chat !== null) getUserData();
@@ -47,36 +44,33 @@ const Messages = ({ chat, currentUserId, setSendMessage, recieveMessage }) => {
   }, [chat]);
 
   const handleChange = (e) => {
-    setNewMessages((e.target.value));
-  }
+    setNewMessages(e.target.value);
+  };
 
   const handleSend = async (e) => {
     e.preventDefault();
     const message = {
       sender: currentUserId,
       text: newMessage.trim(),
-      conversationId: chat?._id
-    }
+      conversationId: chat?._id,
+    };
 
     try {
       const { data } = await newMessages(message);
       console.log(data);
-      // setMessages([...messages, data?.messages]); Remove this line
       setNewMessages('');
+      setMessages((prevMessages) => [...prevMessages, data?.messages]);
     } catch (error) {
       console.log(error);
-      return error;
     }
 
-    const recieverId = chat.members.find((id) => id !== currentUserId);
-    setSendMessage({ ...message, recieverId })
-
-  }
+    const receiverId = chat.members.find((id) => id !== currentUserId);
+    setSendMessage({ ...message, receiverId });
+  };
 
   useEffect(() => {
-    scroll.current?.scrollIntoView({ behaviour: "smooth" })
-  }, [messages])
-
+    scroll.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
 
   return (
     <>

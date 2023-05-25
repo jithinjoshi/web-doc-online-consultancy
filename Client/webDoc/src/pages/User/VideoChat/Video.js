@@ -1,7 +1,9 @@
 import * as React from 'react';
 import { ZegoUIKitPrebuilt } from '@zegocloud/zego-uikit-prebuilt';
-import { useParams } from 'react-router-dom';
-import { getSingleUserData, getsingleUser } from '../../../Helpers/doctorHelper';
+import { useSelector } from 'react-redux';
+import { selectUser } from '../../../Redux/User/userSlice';
+
+
 
 function randomID(len) {
   let result = '';
@@ -23,9 +25,8 @@ export function getUrlParams(
   return new URLSearchParams(urlStr);
 }
 
-
-
 export default function App() {
+  const user = useSelector(selectUser);
   const roomID = getUrlParams().get('roomID') || randomID(5);
   let myMeeting = async (element) => {
 

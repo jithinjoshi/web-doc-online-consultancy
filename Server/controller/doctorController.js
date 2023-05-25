@@ -618,7 +618,7 @@ export const singleAppointment = (async (req, res) => {
 
 //prescriptions
 export const prescriptions = (async (req, res) => {
-    const {id} = req.params;
+    const { id } = req.params;
     const doctorId = req.doctor;
     const docId = doctorId.toString();
     try {
@@ -627,8 +627,8 @@ export const prescriptions = (async (req, res) => {
         console.log(id);
 
         const newPrescription = await Prescription.find({
-            doctorId:new mongoose.Types.ObjectId(docId),
-            userId:new  mongoose.Types.ObjectId(id),
+            doctorId: new mongoose.Types.ObjectId(docId),
+            userId: new mongoose.Types.ObjectId(id),
         });
 
         res.status(200).json(newPrescription);
@@ -643,7 +643,7 @@ export const prescriptions = (async (req, res) => {
 export const singlePrescription = (async (req, res) => {
     const { id } = req.params;
     try {
-        const prescription = await Prescription.findById(id) .populate({
+        const prescription = await Prescription.findById(id).populate({
             path: 'userId',
             select: ['-password', '-tokens']
 
@@ -695,15 +695,62 @@ export const updatePrescription = (async (req, res) => {
 });
 
 //delete prescription
-export const deletePrescription = (async(req,res)=>{
+export const deletePrescription = (async (req, res) => {
     try {
-        const {id} = req.params;
+        const { id } = req.params;
         const deletePrescription = await Prescription.findByIdAndDelete(id)
-        res.status(200).json({success:"deleted successfully"})
+        res.status(200).json({ success: "deleted successfully" })
 
     } catch (error) {
-        res.status(500).json({err:'delete data failed'}) 
+        res.status(500).json({ err: 'delete data failed' })
     }
 });
+
+
+//time slot for each day
+export const addDoctorTimeSlot = async (timeSlots) => {
+    const doctorId = req.doctor;
+    try {
+        const doctorTimeSlots = {
+            sunday: [],
+            monday: [],
+            tuesday: [],
+            wednesday: [],
+            thursday: [],
+            friday: [],
+            saturday: []
+          };
+    
+          timeSlots.forEach(slot => {
+            const { day, startTime, endTime } = slot;
+            
+            if (doctorTimeSlots.hasOwnProperty(day.toLowerCase())) {
+              doctorTimeSlots[day.toLowerCase()].push({ startTime, endTime });
+            }
+          });
+    
+        const updateDoctor = await Doctor.findByIdAndUpdate(doctorId,timeSlots);
+        res.status(201).josn({success:"time slot updated"})
+        
+    } catch (error) {
+        res.status(500).json({err:"can't update the time slots"})
+        
+    }
+
+    
+}
+
+//single user
+export const getSingleUser = async(req,res)=>{
+    try {
+        const {id} = req.params;
+        const user = await User.findById(id).select('-password')
+        res.status(200).json(user)
+        
+    } catch (error) {
+        res.status(500).json({err:"cant find user"})
+        
+    }
+}
 
 

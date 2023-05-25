@@ -33,7 +33,7 @@ import Appointments from "../pages/User/Appointments";
 import DoctorChat from "../pages/Doctor/DoctorChat";
 import DoctorAppointments from "../pages/Doctor/DoctorAppointments";
 import Chats from "../pages/User/userChat";
-import Video from "../components/User/VideoChat/Video";
+import Video from "../pages/User/VideoChat/Video";
 import CreateRoom from "../components/Doctor/VideoChat/CreateRoom";
 import DocEdit from "../pages/Doctor/DocEdit";
 import Notifications from "../pages/Admin/Notifications/Notifications";
@@ -215,6 +215,10 @@ export const router = createBrowserRouter([
         element:<ConsultedDoctors/>,
         errorElement:<ErrorPage/>
     },
+    {
+        path:'/room/:userId',
+        element:<Video/>
+    },
     
 
     //doctors
@@ -251,10 +255,6 @@ export const router = createBrowserRouter([
     {
         path:'/doctor/appointments',
         element:<DoctorAppointments/>
-    },
-    {
-        path:'/room/:userId',
-        element:<Video/>
     },
     {
         path:'/doctor/create-room/:userId',
