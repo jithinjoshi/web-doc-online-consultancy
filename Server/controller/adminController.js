@@ -60,14 +60,14 @@ export const signin = (async (req, res) => {
                 
                 res.status(201).send({ msg: "Login successfull", username: admin.email})
             } else {
-                console.log("error ");
+                
                 res.status(500).send({ err: 'invalid credentials' });
             }
         }else{
             res.status(500).json({err:"wrong credentials"})
         }
     } catch (error) {
-        console.log("error....");
+        
         return res.status(500).send({ err: error })
     }
 });
@@ -100,19 +100,15 @@ export const addDoctor = (async (req, res) => {
                 });
 
                 addNewDoctor.save().then(() => {
-                    console.log("data added");
+                   
                     res.status(200).send({ success: "doctor added successfully" });
                 }).catch((err) => {
-                    console.log(err);
                     res.status(500).send({ err: "something went wrong" })
                 })
 
-            } else {
-                console.log("something wrong");
             }
         }
     } catch (error) {
-        console.log(error);
         return res.status(500).json({ err: "Adding doctor failed" })
     }
 })
@@ -144,7 +140,6 @@ export const createDepartment = async (req, res) => {
                 const departments = await Department.find({})
                 res.status(200).json(departments)
             }).catch((err) => {
-                console.log(err);
                 res.status(500).json({ err: "can't add department" })
             })
         } else {
@@ -232,7 +227,6 @@ export const blockUser = async (req, res) => {
         return res.status(500).json({ err: "user blocking failed" })
 
     } catch (error) {
-        console.log(error);
         return res.status(500).json({ error })
     }
 }
@@ -332,15 +326,11 @@ export const doctorApproval = async (req, res) => {
                 html: link, // plain text body
             });
 
-            console.log("Message sent: %s", info.messageId);
-
-            console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
 
             res.status(200).json({ success: "doctor application approved successfully" })
         }
 
     } catch (error) {
-        console.log(error);
         res.status(500).json({ err: "unable to update the data" })
     }
 }
@@ -379,9 +369,6 @@ export const doctorRejection = async (req, res) => {
                 html: link, // plain text body
             });
 
-            console.log("Message sent: %s", info.messageId);
-
-            console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
 
             res.status(200).json({ success: "doctor application denied successfully" })
         }
@@ -494,10 +481,10 @@ export const getWeeklyReport = (async (req, res) => {
             const dayData = result.find(data => data._id === index + 1);
             return dayData ? dayData.totalSales : 0
         });
-        console.log("Weekly Sales Report:", salesByDay);
+       
         res.status(201).json(salesByDay)
     } catch (error) {
-        console.log(error)
+       
         res.status(500).json({ err: "can't create data" })
 
     }
@@ -524,11 +511,10 @@ export const getDailyReport = (async (req, res) => {
         ])
 
         const dailyPrices = result.length > 0 ? result[0].prices : 0;
-        console.log("Daily Prices:", dailyPrices);
+      
         res.status(201).json(dailyPrices)
 
     } catch (error) {
-        console.log(error)
         res.status(500).json({ err: "can't find the data" })
 
     }
@@ -584,7 +570,6 @@ export const getSaleReport = async (req, res) => {
         totalPages: totalPages
       });
     } catch (error) {
-      console.log(error);
       res.status(500).json({ err: "Can't access data" });
     }
   };
@@ -592,7 +577,6 @@ export const getSaleReport = async (req, res) => {
 
   export const getData = async (req, res,) => {
     const adminId = req.admin;
-    console.log(adminId,"::")
     try {
 
         let user = await Admin.findById(adminId);

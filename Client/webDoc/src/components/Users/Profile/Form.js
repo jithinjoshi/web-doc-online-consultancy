@@ -79,7 +79,7 @@ const Form = ({ userData }) => {
           }
         })
         .catch(err => {
-          console.log('Profile updation failure');
+            return err;
         });
     },
   });

@@ -27,10 +27,8 @@ export async function googleRegister(token) {
             },
         })
 
-        console.log(res.data);
         return res.data
     } catch (error) {
-        console.log(error);
         return error
     }
 
@@ -46,7 +44,7 @@ export async function googleLogin(token) {
         })
         return res.data
     } catch (err) {
-        console.log(err);
+      
         return err;
 
     }
@@ -163,21 +161,15 @@ export const getAllSchedules = async (id) => {
 // }
 
 //check availability
-export const checkAvailability = (async credentials => {
+export const checkAvailability = async (credentials) => {
     try {
-        const availability = await axios.post('/api/user/doctor/checkAvailability', credentials);
-        if (availability) {
-            return availability;
-        } else {
-            return "something went wrong"
-        }
+      const response = await axios.post('/api/user/doctor/checkAvailability', credentials);
+      const { bookedDates, bookedTimes } = response.data;
+      return { bookedDates, bookedTimes };
     } catch (error) {
-        console.log(error);
-        return error
+      throw error;
     }
-
-})
-
+  };
 //appointment
 export const appointmentDoctor = (async credentials => {
     try {
@@ -262,7 +254,7 @@ export const updatePassword = async (id, token, credentials) => {
 //user appointments
 export const singleUserAppointments = async (id, status) => {
     try {
-        console.log(status);
+       
         const appointments = await axios.get(`/api/user/my-appointments/${status}/${id}`);
         return appointments;
     } catch (error) {
@@ -285,9 +277,9 @@ export const getAllAppointmentDoctors = async (id) => {
 export function addMessage(credentials) {
     return new Promise((resolve, reject) => {
         axios.post("/api/message/addmsg", credentials).then((data) => {
-            console.log(data);
+        
         }).catch((err) => {
-            console.log(err);
+            return err;
         })
     })
 }
@@ -297,10 +289,10 @@ export function getAllMessages(credentials) {
     return new Promise((resolve, reject) => {
         axios.post("/api/message/getmsg", credentials).then((data) => {
             resolve(data);
-            console.log(data);
+          
         }).catch((err) => {
             reject(err)
-            console.log(err);
+            return err;
         })
     })
 }
@@ -353,7 +345,6 @@ export function applyDoctor(credentials) {
         axios.post('/api/user/apply-doctor', credentials).then((response) => {
             resolve(response);
         }).catch((err) => {
-            console.log(err);
             reject(err)
         })
 

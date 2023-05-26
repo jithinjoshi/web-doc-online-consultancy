@@ -33,7 +33,6 @@ const List = () => {
   const fetchTransactions = async (page) => {
     try {
       const data = await getAllTransactions(page);
-      console.log(data);
       setRows(data.transactions);
       setTotalPages(data.totalPages);
     } catch (error) {

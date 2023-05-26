@@ -12,7 +12,7 @@ const Users = ({ data, currentUserId, online }) => {
         const getUserData = async () => {
             try {
                 const user = await getSingleDoctor(userId);
-                console.log(user?.data,"::::");
+                
                 setUserData(user?.data);
             } catch (error) {
                 return error;

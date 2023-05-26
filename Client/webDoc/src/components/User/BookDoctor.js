@@ -45,7 +45,7 @@ const BookDoctor = ({ doctor }) => {
         }
     ];
 
-    console.log(time, ">>>");
+
     if (time) {
         timings.filter((item) => item !== time);
     }
@@ -56,44 +56,6 @@ const BookDoctor = ({ doctor }) => {
     }
 
 
-
-    // const submitHandler = async (e) => {
-    //     e.preventDefault();
-    //     try {
-
-    //     } catch (error) {
-
-    //     }
-    //     try {
-    //         const updateTimeSchedule = await updateTime(doctorId, date, timings);
-
-    //         if (updateTimeSchedule.data.success) {
-    //             console.log(updateTimeSchedule,"....");
-    //             appointmentDoctor(credentials).then((data) => {
-    //                 console.log(data);
-    //             }).catch((err) => {
-    //                 console.log(err);
-    //             })
-    //         } else {
-    //             const schedule = await timingsF(doctorId, date, timings);
-
-    //             if (schedule) {
-    //                 appointmentDoctor(credentials).then((data) => {
-    //                     console.log(data);
-    //                 }).catch((err) => {
-    //                     console.log(err);
-    //                 })
-
-    //             } else {
-    //                 console.log("something went wrong");
-    //             }
-
-    //         }
-
-    //     } catch (error) {
-    //         console.log(error,">>>>");
-    //     }
-    // }
 
     const timeHandler = ((e, id) => {
         e.preventDefault();
@@ -119,7 +81,7 @@ const BookDoctor = ({ doctor }) => {
             }
 
         } catch (error) {
-            console.log(error);
+            return error;
 
         }
 
@@ -137,49 +99,12 @@ const BookDoctor = ({ doctor }) => {
 
 
 
-    // const makePayment = async token => {
-    //     const body = {
-    //         token,
-    //         paymentItems
-    //     }
-
-    //     const headers = {
-    //         "Content-Type": "application/json"
-    //     }
-
-
-    //     return fetch(`http://localhost:8080/api/user/payment`,{
-    //         method:"POST",
-    //         headers,
-    //         body:JSON.stringify(body)
-    //     }).then(response => {
-    //         alert(response)
-    //         console.log(response,">>>");
-    //     }).catch(err => console.log(err,"|||||")) 
-
-    // }
 
     const makePayment = (token) => {
-        console.log(token, "LLLLLLL");
+       
     }
 
-    // const submitHandler = ((e) => {
-    //     e.preventDefault();
-    //     try {
-    //         appointmentDoctor(credentials).then((data) => {
-    //             console.log(data);
-    //             toast.success("appointment booked successfully")
-    //         }).catch((err) => {
-    //             console.log(err);
-    //             toast.err("appointment booking failed")
-    //         })
-
-    //     } catch (error) {
-    //         return error;
-
-    //     }
-
-    // })
+   
 
     return (
         <div className='flex justify-evenly'>

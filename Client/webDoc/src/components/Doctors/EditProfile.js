@@ -172,7 +172,7 @@ const DoctorsEdit = () => {
 
             }).catch((err) => {
                 toast.error("doctor updation failed")
-                console.log(err);
+               
             })
 
         }

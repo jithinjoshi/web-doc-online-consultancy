@@ -11,7 +11,6 @@ const ConsultedDoctors = () => {
         })
     }, [])
 
-    console.log(doctors);
     return (
         <>
             <div className="mx-auto flex max-w-3xl flex-col space-y-4 p-6 px-2 sm:p-10 sm:px-2">

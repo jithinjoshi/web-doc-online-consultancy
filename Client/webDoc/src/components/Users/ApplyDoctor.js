@@ -200,7 +200,7 @@ const ApplyDoctor = () => {
                     history("/");
                 }
             }).catch((err) => {
-                console.log("doctor promise rejected:", err);
+                return err;
             });
         }
     });
@@ -210,7 +210,7 @@ const ApplyDoctor = () => {
         getAllDepartments().then((data) => {
             setDepartments(data)
         }).catch((err) => {
-            console.log(err);
+            return err;
         })
     }, []);
 

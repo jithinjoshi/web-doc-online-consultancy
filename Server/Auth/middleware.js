@@ -60,7 +60,6 @@ export const AdminAuth = ((req, res, next) => {
     if (err) {
      return res.json({ status: 'verify failed' })
     } else {
-      console.log(data?.id,":::")
       const user = await Admin.findById(data.id);
       if (user){
         req.admin = user?._id

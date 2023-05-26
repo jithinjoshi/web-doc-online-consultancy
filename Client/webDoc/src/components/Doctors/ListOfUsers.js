@@ -10,7 +10,7 @@ const ListOfUsers = () => {
         })
 
     }, [])
-    console.log(patients)
+   
     return (
         <>
             <div class="bg-white shadow rounded-lg mb-4 p-4 sm:p-6 h-full">

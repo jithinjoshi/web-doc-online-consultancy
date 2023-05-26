@@ -12,7 +12,7 @@ const Departments = () => {
     getAllDepartments().then((data) => {
         setDepartments(data?.data);
     }).catch((err) => {
-        console.log(err);
+        
     })
 }, []);
 

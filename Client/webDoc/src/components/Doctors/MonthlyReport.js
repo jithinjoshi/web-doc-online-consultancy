@@ -12,7 +12,6 @@ const MonthlyReport = ({userId}) => {
         })
 
     },[])
-    console.log(data,":::");
     const options = {
         chart: {
         id: "basic-bar"

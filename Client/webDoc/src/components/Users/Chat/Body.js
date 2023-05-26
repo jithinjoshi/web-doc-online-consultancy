@@ -53,7 +53,7 @@ const Body = () => {
         setChats(data?.conversation);
         
       } catch (error) {
-        console.log(error);
+       
         return error;
         
       }

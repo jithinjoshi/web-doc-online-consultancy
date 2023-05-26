@@ -23,9 +23,6 @@ const Notifications = () => {
                 <TableBody>
                     {
                         notifications?.map((notification) => {
-                            console.log(notification,":::")
-                            console.log(notification?.data?.image?.secure_url)
-                            console.log(notification?.data?.fullName)
                             return (
                                 <TableRow>
                                     <TableCell className="tableCell"><img src={notification?.data?.image?.secure_url} alt="doctorImg"/></TableCell>

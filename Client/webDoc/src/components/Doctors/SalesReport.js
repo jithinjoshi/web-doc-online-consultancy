@@ -41,7 +41,7 @@ const SalesReport = () => {
         }
     };
 
-    console.log(report)
+
 
     return (
         <div className='bg-gray-50'>

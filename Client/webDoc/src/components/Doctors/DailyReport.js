@@ -4,6 +4,7 @@ import { dailyReport } from '../../Helpers/doctorHelper';
 
 
 const DailyReport = () => {
+    let today = new Date().toISOString().slice(0, 10)
     const [report,setReport] = useState([])
     useEffect(()=>{
         dailyReport().then((report)=>{
@@ -12,21 +13,21 @@ const DailyReport = () => {
         })
     },[])
 
-    console.log(report)
+  
     
     const options = {
         chart: {
         id: "basic-bar"
         },
         xaxis: {
-        categories: ['sunday','monday','tuesday','wednesday','thursday','friday','saturday']
+        categories: [today]
         }
         };
         
         const series = [
         {
         name: "daily report",
-        data: report
+        data: [report]
         }
         ];
   return (

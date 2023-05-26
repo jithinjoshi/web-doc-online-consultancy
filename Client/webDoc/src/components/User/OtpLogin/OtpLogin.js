@@ -15,7 +15,7 @@ const OtpLogin = () => {
             
         }).catch((err)=>{
             toast.error('Incorrect OTP input');
-            console.log(err);
+            return err;
         })
     }
 

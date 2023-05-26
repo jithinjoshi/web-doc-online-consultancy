@@ -19,7 +19,7 @@ const YearlyChart = ({ aspect, title }) => {
 
   },[]);
 
-  console.log(data)
+
 
   const options = {
     chart: {

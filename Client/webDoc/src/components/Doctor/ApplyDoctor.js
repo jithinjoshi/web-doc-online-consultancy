@@ -35,7 +35,7 @@ const ApplyDoctor = () => {
     const [endTime, setEndTime] = useState("05:00 PM");
     const history = useNavigate();
 
-    console.log(departments,":::")
+
 
     useEffect(() => {
         setStartTime(`${starthour}:${startminute}${startmeridiem}`);
@@ -201,7 +201,7 @@ const ApplyDoctor = () => {
                     history("/doctor/signin");
                 }
             }).catch((err) => {
-                console.log("doctor promise rejected:", err);
+                return err
             });
         }
     });
@@ -211,7 +211,7 @@ const ApplyDoctor = () => {
         getAllDepartments().then((data) => {
             setDepartments(data)
         }).catch((err) => {
-            console.log(err);
+           return err
         })
     }, []);
 

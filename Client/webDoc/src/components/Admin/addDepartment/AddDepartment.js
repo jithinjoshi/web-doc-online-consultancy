@@ -44,7 +44,7 @@ const AddDepartment = ({ onClose, visible, setDepartments }) => {
 
                 }
             }).catch((err) => {
-                console.log("login failure");
+                return err;
             })
 
         }

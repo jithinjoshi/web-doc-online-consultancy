@@ -58,30 +58,3 @@ app.use('/api/conversation',conversationRouter);
 
 app.listen(PORT, () => console.log(`server started on PORT ${PORT}`));
 
-
-// socket
-// const server = http.createServer();
-// const io = new Server(server,{
-//     cors:{
-//         origin:"http://localhost:3000",
-//         credentials:true
-//     },
-// });
-
-
-
-// global.onlineUsers = new Map();
-// io.on("connection", (socket) => {
-//     console.log("connect user");
-//     global.chatSocket = socket;
-//     socket.on("add-user", (userId) => {
-//         onlineUsers.set(userId, socket.id);
-//     });
-
-//     socket.on("send-msg", (data) => {
-//         const sendUserSocket = onlineUsers.get(data.to);
-//         if (sendUserSocket) {
-//             socket.to(sendUserSocket).emit("msg-recieve", data.msg)
-//         }
-//     })
-// })

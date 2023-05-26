@@ -99,14 +99,14 @@ const Signup = () => {
         firebaseAuth.onAuthStateChanged((userCred)=>{
             if(userCred){
                 userCred.getIdToken().then((token)=>{
-                    console.log(token);
+                    
                     googleRegister(token).then(data=>{
                         if(data.user){
                             history("/")
                         }
                         
                     }).catch((err)=>{
-                        console.log(err);
+                        return err;
                     })
                 })
             }

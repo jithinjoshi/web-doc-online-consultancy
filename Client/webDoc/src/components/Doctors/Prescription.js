@@ -11,7 +11,6 @@ const Prescription = ({ userId }) => {
     const navigate = useNavigate();
     useEffect(() => {
         getSingleAppointment(userId).then((appointment) => {
-            console.log(appointment)
             setAppointment(appointment?.data?.userId);
             setAllDetails(appointment?.data)
 
@@ -47,7 +46,6 @@ const Prescription = ({ userId }) => {
         })
     })
 
-    console.log(allDetails)
     
     return (
         <>

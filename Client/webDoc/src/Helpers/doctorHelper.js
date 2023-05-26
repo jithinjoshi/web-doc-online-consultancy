@@ -11,10 +11,10 @@ axios.defaults.baseURL = process.env.REACT_APP_SERVER_URL;
 export function signinDoctor(credentials){
     return new Promise((resolve,reject)=>{
         axios.post('/api/doctor/signin',credentials).then((user)=>{
-            console.log("doctor added successfully");
+         
             resolve(user);
         }).catch((err)=>{
-            console.log(err);
+          
             reject(err)
         })
     })
@@ -28,7 +28,7 @@ export function doctorProfile(id){
         axios.get(`/api/doctor/profile/${id}`).then((user)=>{
             resolve(user)
         }).catch((err)=>{
-            console.log(err);
+         
             reject(err)
         })
     })
@@ -38,10 +38,10 @@ export function doctorProfile(id){
 export function editDoctorProfile(id,credentials){
     return new Promise((resolve,reject)=>{
         axios.put(`/api/doctor/edit/${id}`,credentials).then((user)=>{
-            console.log(user);
+           
             resolve(user)
         }).catch((err)=>{
-            console.log(err);
+          
             reject(err)
         })
     })
@@ -51,10 +51,10 @@ export function editDoctorProfile(id,credentials){
 export function scheduleTime(id,credentials){
     return new Promise((resolve,reject)=>{
         axios.post(`/api/doctor/schedule/${id}`,credentials).then((user)=>{
-            console.log(user);
+        
             resolve(user)
         }).catch((err)=>{
-            console.log(err);
+          
             reject(err)
         })
     })
@@ -64,10 +64,10 @@ export function scheduleTime(id,credentials){
 export  function scheduledTimes(id){
     return new Promise((resolve,reject) =>{
         axios.get(`/api/doctor/scheduledTime/${id}`).then((user)=>{
-            console.log(user);
+         
             resolve(user)
         }).catch((err)=>{
-            console.log(err);
+           
             reject(err)
         })
     })
@@ -88,9 +88,9 @@ export function chatUser(id){
 export function addMessage(credentials){
     return new Promise((resolve,reject)=>{
         axios.post("/api/message/addmsg",credentials).then((data)=>{
-            console.log(data);
+          
         }).catch((err)=>{
-            console.log(err);
+            return err;
         })
     })
 }
@@ -99,10 +99,10 @@ export function getAllMessages(credentials){
     return new Promise((resolve,reject)=>{
         axios.post("/api/message/getmsg",credentials).then((data)=>{
             resolve(data);
-            console.log(data);
+            
         }).catch((err)=>{
             reject(err)
-            console.log(err);
+            return err;
         })
     })
 }
@@ -118,7 +118,7 @@ export function getMyAppointments(id){
 }
 
 export function getTotalPayments(id){
-    console.log(id);
+   
     return new Promise((resolve,reject)=>{
         axios.get(`/api/doctor/getFullProfit/${id}`).then((result)=>{
             resolve(result);
@@ -175,7 +175,7 @@ export function applyDoctor(credentials) {
         axios.post('/api/doctor/apply-doctor', credentials).then((response) => {
             resolve(response);
         }).catch((err) => {
-            console.log(err);
+          
             reject(err)
         })
 
@@ -221,9 +221,9 @@ export const addPassword = async (id,credentials)=>{
 export const leave = async (id,credentials)=>{
     return new Promise((resolve,reject)=>{
         axios.put(`/api/doctor/leave/${id}`,credentials).then((data)=>{
-            console.log(data)
+           
         }).catch((err)=>{
-            console.log(err);
+            return err;
         })
     })
 }
@@ -385,7 +385,6 @@ export async function getSingleUserData(id){
         return user;
         
     } catch (error) {
-        console.log(error)
         return error
         
     }
@@ -409,6 +408,17 @@ export async function checkConversationExistance(credentials){
         
     } catch (error) {
         return error
+        
+    }
+}
+
+export async function generateDoctorTimings(credentials){
+    try {
+        const result = await axios.put('/api/doctor/update-timeslots',credentials);
+        return result;
+        
+    } catch (error) {
+        return error;
         
     }
 }

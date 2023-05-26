@@ -47,7 +47,6 @@ const Body = () => {
   //recieve message
   useEffect(() => {
     socket.current.on('recieve-message', (data) => {
-      console.log("data recieved in parent", data);
       setRecieveMessage(data)
     })
   }, [])
@@ -61,7 +60,6 @@ const Body = () => {
         setChats(data?.conversation);
 
       } catch (error) {
-        console.log(error);
         return error;
 
       }

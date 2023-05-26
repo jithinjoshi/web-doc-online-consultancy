@@ -11,7 +11,6 @@ const Prescriptions = () => {
         })
 
     }, [])
-    console.log(prescripions)
     return (
         <>
 

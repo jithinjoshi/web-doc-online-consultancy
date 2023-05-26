@@ -26,7 +26,7 @@ const Logout = () => {
 useEffect(() => {
   try {
     const verifyCookie = async () => {
-      console.log(cookies, ":::");
+      
       if (cookies.token === "undefined") {
         navigate('/admin/login');
         const admin = await getAdmin();
@@ -41,7 +41,7 @@ useEffect(() => {
     verifyCookie();
     
   } catch (error) {
-    console.log(error)
+    return error;
     
   }
   

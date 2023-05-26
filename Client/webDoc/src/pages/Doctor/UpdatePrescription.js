@@ -5,7 +5,6 @@ import { useParams } from 'react-router-dom'
 
 const UpdatePrescription = () => {
     const {prescriptionId} = useParams();
-    console.log(prescriptionId)
   return (
     <>
             <div>

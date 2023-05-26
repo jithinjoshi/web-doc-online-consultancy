@@ -51,7 +51,6 @@ const Signin = () => {
 
             signin.then((user)=>{
                 if(user){ 
-                    console.log(user.data.user._id,">>>>");
                     dispatch(
                         login({
                             _id:user.data.user._id,
@@ -69,7 +68,7 @@ const Signin = () => {
 
                 }
             }).catch((err)=>{
-                console.log("login failure");
+                return err;
             })
 
         }
@@ -86,9 +85,9 @@ const Signin = () => {
         firebaseAuth.onAuthStateChanged((userCred)=>{
             if(userCred){
                 userCred.getIdToken().then((token)=>{
-                    console.log(token);
+                   
                     googleLogin(token).then(data=>{
-                        console.log(data);
+                     
                         if(data.user){
                             setTimeout(()=>{
                                 history("/")
@@ -97,7 +96,7 @@ const Signin = () => {
                         }
                         
                     }).catch((err)=>{
-                        console.log(err);
+                        return err;
                     })
                 })
             }

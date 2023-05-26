@@ -44,7 +44,7 @@ const Appointments = () => {
     const now = Date.now(); // Current timestamp
 const momentObj = moment(now); // Create a Moment object
 const formattedTime = momentObj.format('h:mm a'); // Format the time as "10:30 am"
-console.log(formattedTime);
+
 
 
     return (

@@ -12,7 +12,7 @@ const Doctors = () => {
     listDoctors().then((data) => {
         setDoctors(data?.data?.data);
     }).catch((err) => {
-        console.log(err);
+      return err;
     })
 }, []);
 

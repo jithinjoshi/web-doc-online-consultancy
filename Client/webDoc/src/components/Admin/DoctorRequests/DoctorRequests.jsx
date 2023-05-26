@@ -27,7 +27,7 @@ const DotorRequests = ({doctors,setDoctors}) => {
           setData()
           
           Swal.fire(
-            'Deleted!',
+            'success!',
             'Your file has been deleted.',
             'success'
           )
@@ -37,7 +37,7 @@ const DotorRequests = ({doctors,setDoctors}) => {
       
       
     } catch (error) {
-      console.log(error);
+      return error;
       
     }
   };

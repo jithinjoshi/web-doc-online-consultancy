@@ -10,7 +10,7 @@ const PayButton = ({items}) => {
                 window.location.href = payment.data.URL;
             }
         }).catch((err)=>{
-            console.log(err);
+            return err;
         })
         
     }

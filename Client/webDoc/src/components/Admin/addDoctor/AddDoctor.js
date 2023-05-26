@@ -137,17 +137,16 @@ const AddDoctor = () => {
 
                 }
             }).catch((err) => {
-                console.log("adding doctor failure");
+                return err
             })
         }
     })
 
     useEffect(() => {
         getAllDepartments().then((data) => {
-            console.log(data);
             setDepartments(data.data)
         }).catch((err) => {
-            console.log(err);
+            return err;
         })
     }, []);
 

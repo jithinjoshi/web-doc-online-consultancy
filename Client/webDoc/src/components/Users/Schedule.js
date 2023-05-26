@@ -7,7 +7,6 @@ const Schedule = () => {
     
 
     const onSelectedDay = (d) => {
-        console.log(d)
         setDate(d);
     }
 

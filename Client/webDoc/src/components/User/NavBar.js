@@ -6,7 +6,6 @@ import { useDispatch } from 'react-redux'
 
 const NavBar = () => {
   const user = useSelector(selectUser);
-  console.log(user,":::::");
   const dispatch = useDispatch()
  
 

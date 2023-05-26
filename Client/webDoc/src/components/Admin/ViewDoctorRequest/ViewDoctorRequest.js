@@ -46,12 +46,11 @@ const ViewDoctorRequest = () => {
                     }
                 }).catch((err) => {
                     toast.error("doctor request failed...")
-                    console.log("doctor promise rejected:", err);
                 });
 
                 Swal.fire(
-                    'Deleted!',
-                    'Your file has been deleted.',
+                    'Success!',
+                    'Doctor added successfull.',
                     'success'
                 )
             }
@@ -89,7 +88,6 @@ const ViewDoctorRequest = () => {
                     }
                 }).catch((err) => {
                     toast.error("doctor request failed...")
-                    console.log("doctor promise rejected:", err);
                 });
               Swal.fire(
                 'Deleted!',

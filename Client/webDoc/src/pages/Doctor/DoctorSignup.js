@@ -51,7 +51,7 @@ const DoctorSignup = () => {
 
                 }
             }).catch((err) => {
-                console.log("registration failure");
+                return err;
             })
 
         }

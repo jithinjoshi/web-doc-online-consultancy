@@ -20,11 +20,10 @@ const LandingPage = () => {
         getAllDoctors().then((doctors) => {
             setDoctors(doctors)
         }).catch((err) => {
-            console.log(err);
+            return err;
         });
 
         getAllDepartments().then((departments) => {
-            console.log(departments);
             setDepartments(departments)
         })
 

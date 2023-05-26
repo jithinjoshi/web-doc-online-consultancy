@@ -3,6 +3,7 @@ import Chart from "react-apexcharts";
 import { yearlyReport } from '../../Helpers/doctorHelper';
 
 const YearlyReport = () => {
+    const year = new Date().getFullYear();
     const [report,setReport] = useState([])
     useEffect(()=>{
         yearlyReport().then((data)=>{
@@ -15,7 +16,7 @@ const YearlyReport = () => {
             id: "basic-bar"
         },
         xaxis: {
-            categories: ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
+            categories: [year]
         }
     };
 

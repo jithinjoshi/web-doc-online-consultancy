@@ -6,28 +6,6 @@ import { clearPaymentData, paymentData } from '../../Redux/User/Paymentslice';
 
 const CheckoutSuccess = () => {
     
-    // const dispatch = useDispatch();
-    // const [datas,setDatas] = useState();
-
-    
-    // setDatas(useSelector((state)=>state?.paymentDetails?.paymentDetails?.doctorId));
-    // let data;
-
-    // if(datas){
-    //     console.log(datas);
-    //      data = {id:datas,status:"approved"}
-
-    // }
-
-    
-    // useEffect(() => {
-    //     appointmentUpdate(data).then(()=>{
-    //         console.log("data updated successfully");
-
-    //     }).catch((error)=>{
-    //         console.log(error);
-    //     })
-    // }, [datas])
 
 
     return (

@@ -50,6 +50,8 @@ import ListOfPrescriptions from "../pages/Doctor/ListOfPrescriptions";
 import UpdatePrescription from "../pages/Doctor/UpdatePrescription";
 import ConsultedDoctors from "../pages/User/AppointedDoctors";
 import PrescriptionDetails from "../pages/User/Prescription"
+import SelectSchedule from "../components/Doctors/SelectShedule";
+import DocScheduleTime from "../pages/Doctor/DocScheduleTime";
 
 
 
@@ -296,5 +298,9 @@ export const router = createBrowserRouter([
         path:'/doctor/updatePrescription/:prescriptionId',
         element:<UpdatePrescription/>
     },
+    {
+        path:'/doctor/select-schedule',
+        element:<DocScheduleTime/>
+    }
     
 ])

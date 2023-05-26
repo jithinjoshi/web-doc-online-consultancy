@@ -72,7 +72,7 @@ export const register = async (req, res) => {
             if (password) {
                 bcrypt.hash(password, 10, function (err, hash) {
                     if (err) {
-                        console.log("pass err", err);
+                       
                         return res.status(500).json({ err: err })
                     }
                     const newUser = new User({
@@ -237,7 +237,7 @@ export const login = async (req, res) => {
 //get user
 export const getUser = async (req, res,) => {
     const userId = req.user;
-    console.log(userId);
+    
     try {
 
         let user = await User.findById(userId);
@@ -303,9 +303,7 @@ export const getDoctorAvailability = async (req, res) => {
 export const appointment = async (req, res) => {
     try {
         const { userId, doctorId, doctorInfo, userInfo, date, time, status } = req.body;
-        // date = moment(req.body.date,'DD-MM-YYYY').toISOString();
-        // time = moment(req.body.time,'HH:mm').toISOString();
-        // console.log(req.body.time,"::::");
+       
         const newAppointment = new Appointment({
             userId,
             doctorId,
@@ -341,81 +339,38 @@ export const appointmentUpdate = async (req, res) => {
 
 }
 
-//manage timings
-// export const manageTimings = async (req,res)=>{
-//     try {
-//         const {doctorId,timings,date} = req.body;
-//         const newTiming = new Timing({
-//             doctorId,
-//             timings,
-//             date
-//         });
-
-//         newTiming.save().then((data)=>{
-//             res.status(201).send(data)
-//         }).catch((err)=>{
-//             res.status(500).json({err:"something went wrong"});
-//         })
-
-//     } catch (error) {
-//         res.status(500).json({err:"cant update data"})
-
-//     }
-// }
-
-// //update timings
-// export const updateTimings = async (req,res) =>{
-//     try {
-//         const {doctorId,date,timings} = req.body;
-
-//         const updatedTime = await Timing.findOneAndUpdate({doctorId,date},{timings});
-
-//         if(updatedTime){
-//             res.status(200).send({...updatedTime, success:true})
-
-//         }else{
-//             res.status(200).json({success:false})
-//         }
-
-//     } catch (error) {
-//         console.log(error);
-//         res.status(500).json({err:"something went wrong"})
-
-//     }
-// }
-
-//check availability
 export const checkAvailability = async (req, res) => {
     try {
-        let { date, doctorId } = req.body;
-        console.log(date, doctorId, "OOOO");
-
-        let momentObj;
-
-        if (date && doctorId) {
-            momentObj = moment(date, 'MM/DD/YYYY hh:mm A');
-            if (!momentObj.isValid()) {
-                console.error(`Invalid date/time format: ${date}`);
-                res.status(400).json({ error: 'Invalid date/time format' });
-                return;
-            }
-
-            const appointments = await Appointment.find({ doctorId, date });
-
-            if (appointments && Array.isArray(appointments)) {
-                const times = appointments.map(appointment => appointment.time);
-                res.status(200).json(times);
-            } else {
-                res.status(200).json(null);
-            }
+      const { date, doctorId } = req.body;
+  
+      let momentObj;
+  
+      if (date && doctorId) {
+        momentObj = moment(date, 'MM/DD/YYYY');
+        if (!momentObj.isValid()) {
+          console.error(`Invalid date format: ${date}`);
+          res.status(400).json({ error: 'Invalid date format' });
+          return;
         }
-
-
+  
+        const appointments = await Appointment.find({ doctorId, date });
+  
+        if (appointments && Array.isArray(appointments)) {
+          const bookedTimes = appointments.map(appointment => appointment.time);
+          const bookedDates = appointments.map(appointment => appointment.date);
+          res.status(200).json({ bookedDates, bookedTimes });
+        } else {
+          res.status(200).json({ bookedDates: [], bookedTimes: [] });
+        }
+      } else {
+        res.status(400).json({ error: 'Invalid request parameters' });
+      }
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Server error' });
+      console.error(error);
+      res.status(500).json({ error: 'Server error' });
     }
-}
+  };
+  
 
 //payment
 export const payment = async (req, res) => {
@@ -500,7 +455,7 @@ export const handleWebhook = async (req, res) => {
         stripe.customers
             .retrieve(data.customer)
             .then((customer) => {
-                console.log(data, "PPPP");
+             
                 const appointmentsData = JSON.parse(customer.metadata.appointments);
 
                 const newAppointment = new Appointment({
@@ -517,14 +472,9 @@ export const handleWebhook = async (req, res) => {
                     paymentOwnerEmail: data?.customer_details?.email
 
                 })
-                newAppointment.save().then(() => {
-                    console.log("data added successfully");
-                }).catch((err) => {
-                    console.log(err);
-                })
+                newAppointment.save();
 
             })
-            .catch((err) => console.log(err));
     }
     // Return a 200 response to acknowledge receipt of the event
     res.send().end();
@@ -587,15 +537,12 @@ export const forgotPassword = async (req, res) => {
             html: link, // plain text body
         });
 
-        console.log("Message sent: %s", info.messageId);
-
-        console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+       
 
 
 
 
     } catch (error) {
-        console.log(error);
         res.status(500).json({ err: "Forgot password failed" });
     }
 };
@@ -615,7 +562,7 @@ export const resetPassword = async (req, res) => {
         const secret = user.password + process.env.JWT_SECRET;
         jwt.verify(token, secret, async function (err, decoded) {
             if (err) {
-                console.log(err);
+              
                 return res.status(500).json({ err: "Verification failed" });
             } else {
                 const _id = user.id;
@@ -631,7 +578,7 @@ export const resetPassword = async (req, res) => {
             }
         });
     } catch (error) {
-        console.log(error);
+     
         return res.status(500).json({ err: "Reset password failed" });
     }
 };
@@ -708,7 +655,7 @@ export const getMyAppointment = async (req, res) => {
         res.status(200).json(myAppointments);
 
     } catch (error) {
-        console.log(error);
+        
         res.status(500).json({ err: "Failed to retrieve appointments" });
     }
 };
@@ -792,7 +739,6 @@ export const applyForDoctor = async (req, res) => {
                 });
 
                 addDoc.save().then(async () => {
-                    console.log("doctor application sended successfully successfully...");
                     const adminId = await Admin.find({}).select('_id');
                     const doctor = await Doctor.find({ email }).select('-password');
                     const unSeenNotification = {
@@ -821,7 +767,7 @@ export const applyForDoctor = async (req, res) => {
         }
 
     } catch (error) {
-        console.log(error);
+       
         return res.status(500).json({ success: false })
 
     }
@@ -843,28 +789,14 @@ export const profile = async (req, res) => {
       const userId = req.user;
       const updatedData = req.body;
   
-    //   if (req.body.image && req.body.imgPublicId) {
-    //     const imgId = req.body.imgPublicId;
-
-    //     console.log(imgId)
-  
-    //     await cloudinary.uploader.destroy(imgId);
-  
-    //     const uploadRes = await cloudinary.uploader.upload(req.body.image, {
-    //       allowed_formats: "jpg,png,webp,jpeg",
-    //       upload_preset: 'webDoc'
-    //     });
-  
-    //     updatedData.image = uploadRes.secure_url;
-    //     delete updatedData.imgPublicId;
-    //   }                                           
+                                          
   
       if (userId) {
         const updateUser = await User.findByIdAndUpdate(userId, updatedData);
         res.status(200).json(updateUser);
       }
     } catch (error) {
-      console.log(error);
+
       res.status(500).json({ err: "Update user failed" });
     }
   };

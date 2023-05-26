@@ -15,7 +15,7 @@ const ProfileName = ({ user }) => {
     const [userData, setUserData] = useState([])
 
     let result;
-    console.log(result,":::")
+   
 
     const [email, setEmail] = useState();
     const [address, setAddress] = useState();
@@ -29,10 +29,9 @@ const ProfileName = ({ user }) => {
     const handleUserImageUpload = (e) => {
         const file = e.target.files[0];
         TransformFile(file)
-        console.log(file)
+        
     };
 
-    console.log(image)
 
     const TransformFile = (file) => {
         const reader = new FileReader();
@@ -136,7 +135,7 @@ const ProfileName = ({ user }) => {
             }
 
             profileOfUser(credentials).then((user) => {
-                console.log(user);
+        
                 dispatch(
                     login({
                         _id: user.data._id,
@@ -151,13 +150,13 @@ const ProfileName = ({ user }) => {
 
             }).catch((err) => {
                 toast.error("user updation failed")
-                console.log(err);
+                return err;
             })
 
         }
     });
 
-    console.log(userData)
+    
 
     return (
         <>

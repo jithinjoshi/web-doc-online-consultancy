@@ -31,6 +31,7 @@ router.route('/addprescription').post(controller.addPrescription);
 router.route('/deletePrescription/:id').delete(controller.deletePrescription);
 router.route('/singlePrescription/:id').get(controller.singlePrescription);
 router.route('/getSingleUser/:id').get(controller.getSingleUser);
+router.route('/update-timeslots').put(DoctorAuth,controller.addDoctorTimeSlot)
 
 
 

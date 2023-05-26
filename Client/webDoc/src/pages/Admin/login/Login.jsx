@@ -45,12 +45,12 @@ const Login = () => {
 
       signin.then((user) => {
         if (user) {
-          console.log("login success");
+          
           history("/admin")
 
         }
       }).catch((err) => {
-        console.log("login failure");
+        return err;
       })
 
     }

@@ -38,7 +38,7 @@ const Messages = ({ chat, currentUserId, setSendMessage, recieveMessage }) => {
         const data = await getMessages(chat?._id);
         setMessages(data?.data?.messages);
       } catch (error) {
-        console.log(error);
+        return error;
       }
     };
     if (chat !== null) fetchMessages();
@@ -58,11 +58,11 @@ const Messages = ({ chat, currentUserId, setSendMessage, recieveMessage }) => {
 
     try {
       const { data } = await newMessages(message);
-      console.log(data);
+      
       //setMessages([...messages, data?.messages]);
       setNewMessages('');
     } catch (error) {
-      console.log(error);
+     
       return error;
     }
 

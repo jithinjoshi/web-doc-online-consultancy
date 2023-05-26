@@ -23,7 +23,6 @@ const DoctorHome = () => {
     getMyAppointments(user?._id).then((appointments) => {
       setAppointmentData(appointments?.data)
       setAppointments(appointments?.data?.length)
-      console.log(appointmentData, "appointments");
     })
   }, [user]);
 
@@ -36,7 +35,6 @@ const DoctorHome = () => {
 
   useEffect(()=>{
     getPatients(user?._id).then((patient)=>{
-      console.log(patient);
       setPatients(patient?.data);
     })
   },[user])
@@ -44,7 +42,6 @@ const DoctorHome = () => {
     const [data,setData] = useState();
     useEffect(()=>{
         getMonthlyReport(user?._id).then((data)=>{
-            console.log(data);
         })
 
     },[])
@@ -56,7 +53,7 @@ const DoctorHome = () => {
 
     useEffect(() => {
       const verifyCookie = async () => {
-        console.log(cookies,"LLLL")
+        
         if (typeof cookies.token === 'undefined' || cookies.token === 'undefined') {
           navigate('/doctor/signin');
         

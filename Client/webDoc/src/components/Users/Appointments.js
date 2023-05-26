@@ -13,7 +13,7 @@ function Appointments() {
   const [totalPages, setTotalPages] = useState(0);
   const user = useSelector(selectUser);
 
-  console.log(currentPage, totalPages);
+ 
 
   const getStatus = (data) => {
     if (data?.status === 'incompleted') {
@@ -21,17 +21,17 @@ function Appointments() {
     } else {
       setStatus('completed');
     }
-    console.log(data);
+   
   };
 
   const fetchAppointments = async () => {
     try {
       const appointmentsData = await singleUserAppointments(user?._id, status, currentPage);
-      console.log(appointmentsData?.data);
+      
       setAppointments(appointmentsData?.data?.docs);
       setTotalPages(appointmentsData?.data?.total);
     } catch (error) {
-      console.log(error);
+      return error;
     }
   };
 

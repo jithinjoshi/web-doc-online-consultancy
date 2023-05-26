@@ -13,7 +13,7 @@ const validate = values => {
     errors.email = toast.error("invalid email address")
   }
 
-  console.log(errors, "///");
+  
   return errors
 }
 
@@ -38,7 +38,7 @@ const ResetPassword = () => {
       })
 
       verify.then((data) => {
-        console.log(data);
+      
       }).catch((err) => {
         history("/signin")
       })

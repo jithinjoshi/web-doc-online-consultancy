@@ -30,9 +30,9 @@ const DoctorTimeSchedule = () => {
             return times;
           }
           
-          console.log(startTime);
+          
           const timings = getTimesBetween(startTime, endTime);
-          console.log(timings,"OOOpppp");
+         
 
 
         const update = editDoctorProfile(id,{timings:timings,startTime:formattedStartTime,endTime:formattedEndTime});
@@ -48,7 +48,7 @@ const DoctorTimeSchedule = () => {
                 history('/doctor/')
             },2000) 
         }).catch((err)=>{
-            console.log(err);
+            return err
         })
 
     })

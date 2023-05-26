@@ -37,7 +37,7 @@ const Doctors = ({doctors,setDoctors}) => {
       
       
     } catch (error) {
-      console.log(error);
+      return error
       
     }
   };

@@ -65,8 +65,14 @@ const doctorSchema = new mongoose.Schema({
         type:String,
         default:'pending'
     },
+    timeSlots:{
+        type:Array
+    },
     leaves:{
         type:Array
+    },
+    doctorTimings:{
+        type:Object
     }
 
 });

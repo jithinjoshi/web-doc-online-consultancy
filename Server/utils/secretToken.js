@@ -13,7 +13,6 @@ export const createSecretTokenForDoc = (id) => {
 }
 
 export const createSecretTokenForAdmin = (id) =>{
-  console.log(process.env.ADMIN_JWT_SECRET)
   return jwt.sign({ id }, process.env.ADMIN_JWT_SECRET, {
     expiresIn: 3 * 24 * 60 * 60,
   });

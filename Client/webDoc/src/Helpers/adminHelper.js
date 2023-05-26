@@ -6,10 +6,10 @@ axios.defaults.baseURL = process.env.REACT_APP_SERVER_URL;
 export function signInAdmin(credentials) {
     return new Promise((resolve, reject) => {
         axios.post('/api/admin/signin', credentials).then((user) => {
-            console.log('doctor addedd successfully');
+          
             resolve(user)
         }).catch((err) => {
-            console.log(err);
+       
             reject(err)
         })
     })
@@ -20,7 +20,7 @@ export async function listDoctors() {
     try {
         return await axios.get('/api/admin/allDoctors');
     } catch (error) {
-        console.log(error);
+   
         return error
     }
 }
@@ -30,7 +30,7 @@ export async function doctorRequests() {
     try {
         return await axios.get('/api/admin/doctor-requests');
     } catch (error) {
-        console.log(error);
+      
         return error
     }
 }
@@ -41,7 +41,7 @@ export function addDoctor(credentials) {
         axios.post('/api/admin/addDoctor', credentials).then((response) => {
             resolve(response);
         }).catch((err) => {
-            console.log(err);
+        
             reject(err)
         })
 
@@ -53,7 +53,7 @@ export async function getAllDepartments() {
     try {
         return await axios.get('/api/admin/departments')
     } catch (error) {
-        console.log(error);
+      
         return error;
     }
 }
@@ -108,10 +108,10 @@ export const deleteDepartment = async (id) => {
 export function editDoctorProfile(id, credentials) {
     return new Promise((resolve, reject) => {
         axios.put(`/api/admin/edit-doctor/${id}`, credentials).then((user) => {
-            console.log(user);
+           
             resolve(user)
         }).catch((err) => {
-            console.log(err);
+           
             reject(err)
         })
     })
