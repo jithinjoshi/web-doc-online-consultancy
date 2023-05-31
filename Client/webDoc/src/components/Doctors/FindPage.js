@@ -22,6 +22,7 @@ const FindPage = () => {
     }
   };
 
+  console.log(report)
   useEffect(() => {
     fetchAppointments(currentPage);
   }, [currentPage]);
@@ -39,7 +40,7 @@ const FindPage = () => {
 
   return (
     <>
-      <div className="p-6 grid grid-cols-1 gap-6  shadow-lg rounded-lg mb-3">
+      <div className="p-6 grid grid-cols-1 gap-6  shadow-lg rounded-lg mt-6">
         <h4 className="text-2xl font-bold">Search</h4>
         <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
           <div className="relative">
@@ -63,7 +64,7 @@ const FindPage = () => {
             <input
               type="search"
               id="default-search"
-              className="block w-full p-4 pl-10 text-sm text-gray-900 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
+              className="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
               placeholder="Search Doctors...."
               required
               onChange={(e) => setSearchInput(e.target.value)}
