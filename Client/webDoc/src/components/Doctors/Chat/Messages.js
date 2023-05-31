@@ -34,14 +34,20 @@ const Messages = ({ chat, currentUserId, setSendMessage, recieveMessage }) => {
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const data = await getMessages(chat?._id);
-        setMessages(data?.data?.messages);
+        if (chat) {
+          const data = await getMessages(chat._id);
+          setMessages(data?.data?.messages);
+        }
       } catch (error) {
-        return error
+        return error;
       }
     };
-    if (chat !== null) fetchMessages();
+  
+    if (chat !== null) {
+      fetchMessages();
+    }
   }, [chat]);
+  
 
   const handleChange = (e) => {
     setNewMessages(e.target.value);
@@ -54,18 +60,22 @@ const Messages = ({ chat, currentUserId, setSendMessage, recieveMessage }) => {
       text: newMessage.trim(),
       conversationId: chat?._id,
     };
-
+  
     try {
       const { data } = await newMessages(message);
       setNewMessages('');
-      //setMessages((prevMessages) => [...prevMessages, data?.messages]);
+      setMessages((prevMessages) => [...prevMessages, data?.messages]);
     } catch (error) {
-      return error
+      return error;
     }
-
+  
     const recieverId = chat.members.find((id) => id !== currentUserId);
     setSendMessage({ ...message, recieverId });
   };
+  
+
+  
+  
 
   useEffect(() => {
     scroll.current?.scrollIntoView({ behavior: 'smooth' });
