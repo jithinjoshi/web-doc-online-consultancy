@@ -1,272 +1,386 @@
-import React, { useEffect, useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { login, selectUser } from '../../Redux/Doctor/doctorSlice'
-import { doctorProfile, editDoctorProfile } from '../../Helpers/doctorHelper'
-import { useNavigate, useParams } from 'react-router-dom'
-import SideBar from '../../components/Doctor/SideBar'
-import { Toaster, toast } from 'react-hot-toast'
-import { useFormik } from 'formik'
-
+import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { login, selectUser } from '../../Redux/Doctor/doctorSlice';
+import { doctorProfile, editDoctorProfile } from '../../Helpers/doctorHelper';
+import { useNavigate, useParams } from 'react-router-dom';
+import SideBar from '../../components/Doctor/SideBar';
+import { Toaster, toast } from 'react-hot-toast';
+import { useFormik } from 'formik';
 
 const DoctorsEdit = () => {
-    const history = useNavigate();
-    const dispatch = useDispatch();
+  const history = useNavigate();
+  const dispatch = useDispatch();
 
-    const user = useSelector(selectUser)
+  const user = useSelector(selectUser);
 
-    let result;
+  let result;
 
+  let { id } = useParams();
+  let [doctor, setDoctor] = useState([]);
 
-    let { id } = useParams();
-    let [doctor, setDoctor] = useState([]);
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [address, setAddress] = useState('');
+  const [dob, setDob] = useState('');
+  const [password, setPassword] = useState('');
+  const [about, setAbout] = useState('');
+  const [experience, setExperience] = useState('');
+  const [fees, setFees] = useState('');
+  const [image, setImage] = useState('');
 
-    let [firstName, setFirstName] = useState();
-    let [lastName, setLastName] = useState();
-    let [email, setEmail] = useState();
-    let [address, setAddress] = useState();
-    let [dob, setDob] = useState();
-    let [password, setPassword] = useState();
-    let [about, setAbout] = useState();
-    const [experience, setExperience] = useState();
-    const [fees, setFees] = useState();
-    const [image, setImage] = useState();
+  const handleDoctorImageUpload = (e) => {
+    const file = e.target.files[0];
+    TransformFile(file);
+  };
 
-    const handleDoctorImageUpload = (e) => {
-        const file = e.target.files[0];
+  const TransformFile = (file) => {
+    const reader = new FileReader();
 
-        TransformFile(file)
-    };
+    if (file) {
+      reader.readAsDataURL(file);
+      reader.onloadend = () => {
+        setImage(reader.result);
+      };
+    } else {
+      setImage('');
+    }
+  };
 
-    const TransformFile = (file) => {
-        const reader = new FileReader();
+  const validate = () => {
+    const errors = {};
 
-        if (file) {
-            reader.readAsDataURL(file);
-            reader.onloadend = () => {
-                setImage(reader.result)
-            };
-        } else {
-            setImage("")
-        }
+    if (!firstName) {
+      errors.firstName = 'First name is required';
+    } else if (firstName.length < 3) {
+      errors.firstName = 'First name should contain at least three characters';
+    } else if (firstName.length > 15) {
+      errors.firstName = 'Maximum limit exceeded';
     }
 
-    //validate
+    if (!lastName) {
+      errors.lastName = 'Last name is required';
+    }
+
+    if (!email) {
+      errors.email = 'Email is required';
+    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email)) {
+      errors.email = 'Invalid email address';
+    }
+
+    if (!password) {
+      errors.password = 'Password is required';
+    } else if (password.includes(' ')) {
+      errors.password = 'Invalid password';
+    }
+
+    if (!address) {
+      errors.address = 'Address is required';
+    }
+
+    if (!password) {
+      errors.password = 'Password is required';
+    } else if (password.length < 7) {
+      errors.password = 'Password must contain at least six characters';
+    }
+
+    if (experience > 50) {
+      errors.experience = 'Invalid experience';
+    } else if (experience < 0) {
+      errors.experience = 'Invalid experience. Please enter proper experience';
+    }
+
+    if (fees < 0) {
+      errors.fees = 'Invalid fees';
+    } else if (fees > 3000) {
+      errors.fees = 'Maximum fees limit exceeded';
+    }
+
+    if (about.length > 300) {
+      errors.about = 'Please shorten the about me content';
+    }
+
     if (image) {
-
-        const delimiter = '/';
-        const end = ';'
-        const index = image.indexOf(delimiter);
-        const endIndex = image.indexOf(end);
-        result = image.slice(index + 1, endIndex);
-
-    }
-    const validate = () => {
-        const errors = {};
-
-
-        if (!firstName) {
-            errors.firstName = toast.error("first name is required");
-        } else if (firstName.length < 3) {
-            errors.firstName = toast.error("firstname should contain three characters")
-        }
-        else if (!lastName) {
-            errors.lastName = toast.error("Last name is required");
-        }
-        else if (!email) {
-            errors.email = toast.error("email is required");
-        } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email)) {
-            errors.email = toast.error("invalid email address")
-        } else if (!password) {
-            errors.password = toast.error('password is required');
-        } else if (password.includes(' ')) {
-            errors.password = toast.error('wrong password');
-        } else if (!address) {
-            errors.address = toast.error("address is required");
-            // } else if (!mobile) {
-            //     errors.mobile = toast.error("mobile number is required");
-
-            // } else if (mobile.length < 11) {
-            //     errors.mobile = toast.error("phone number must valid")
-        }
-        else if (!password) {
-            errors.password = toast.error("password is required")
-        } else if (password < 7) {
-            errors.password = toast.error("password must contain six characters")
-        }
-
-        if(image){
-             if (result !== 'jpg' && result !== 'jpeg' && result !== 'png' && result !== 'webp') {
-                errors.image = toast.error("This format of image is not supported")
-            }
-        }
-
-       
-
-        return errors
+      const delimiter = '/';
+      const end = ';';
+      const index = image.indexOf(delimiter);
+      const endIndex = image.indexOf(end);
+      result = image.slice(index + 1, endIndex);
+      if (
+        result !== 'jpg' &&
+        result !== 'jpeg' &&
+        result !== 'png' &&
+        result !== 'webp'
+      ) {
+        errors.image = 'Invalid file format. Please upload a valid image';
+      }
     }
 
+    return errors;
+  };
 
+  const formik = useFormik({
+    initialValues: {
+      firstName: '',
+      lastName: '',
+      email: '',
+      password: '',
+      address: '',
+      dob: '',
+      about: '',
+      experience: '',
+      fees: '',
+      image: '',
+    },
+    validate,
+    onSubmit: (values) => {
+      const data = new FormData();
+      data.append('firstName', values.firstName);
+      data.append('lastName', values.lastName);
+      data.append('email', values.email);
+      data.append('password', values.password);
+      data.append('address', values.address);
+      data.append('dob', values.dob);
+      data.append('about', values.about);
+      data.append('experience', values.experience);
+      data.append('fees', values.fees);
+      data.append('image', values.image);
 
-    useEffect(() => {
-        doctorProfile(id).then((doctor) => {
-            setDoctor(doctor.data);
-
-            setFirstName(doctor?.data?.firstName);
-            setLastName(doctor?.data?.lastName);
-            setEmail(doctor?.data?.email);
-            setAddress(doctor?.data?.address);
-            setDob(doctor?.data?.dob);
-            setPassword(doctor?.data?.password);
-            setAbout(doctor?.data?.about);
-            setExperience(doctor?.data?.experience)
-            setFees(doctor?.data?.fees)
-
-
-
-        }).catch((err) => {
-            return err;
+      dispatch(editDoctorProfile(data))
+        .then((res) => {
+          if (res.status === 200) {
+            toast.success('Profile updated successfully');
+            history(`/doctor-profile/${id}`);
+          }
         })
-    }, []);
+        .catch((err) => {
+          toast.error('Failed to update profile');
+        });
+    },
+  });
 
-    const formik = useFormik({
-        initialValues: {
-            firstName: '',
-            lastName: '',
-            email: '',
-            address: '',
-            mobile: '',
-            password: ''
-        },
-        validate,
-        validateOnBlur: false,
-        validateOnChange: false,
-        onSubmit: () => {
-            const credentials = {
-                firstName,
-                lastName,
-                email,
-                address,
-                dob,
-                about,
-                experience,
-                fees,
-                image,
-                imgPublicId: doctor?.image?.public_id
-            }
+  useEffect(() => {
+    if (user) {
+      doctorProfile(id).then((res) => {
+        setDoctor(res.data.doctor);
+      });
+    } else {
+      history('/doctor-signin');
+    }
+  }, [user]);
 
-            editDoctorProfile(id, credentials).then((doctor) => {
-                toast.loading('Loading...');
-                dispatch(
-                    login({
-                        _id: doctor.data._id,
-                        firstName: doctor.data.firstName,
-                        lastName: doctor.data.lastName,
-                        department: doctor.data.department,
-                        image: doctor.data.image.secure_url,
-                        loggedIn: true
-                    })
-                );
-                toast.success("doctor updated successfully")
+  useEffect(() => {
+    if (doctor) {
+      setFirstName(doctor.firstName);
+      setLastName(doctor.lastName);
+      setEmail(doctor.email);
+      setAddress(doctor.address);
+      setDob(doctor.dob);
+      setAbout(doctor.about);
+      setExperience(doctor.experience);
+      setFees(doctor.fees);
+      setImage(doctor.image);
+    }
+  }, [doctor]);
 
-                history("/doctor")
-
-            }).catch((err) => {
-                toast.error("doctor updation failed")
-               
-            })
-
-        }
-    });
-
-
-    return (
-
-        <div className='font-poppins antialiased overflow-x-hidden coverflow-hidden'>
-            <div
-                id="view"
-                class="h-full w-screen flex flex-row overflow-hidden"
-                x-data="{ sidenav: true }"
-            >
-                <section className="px-2">
-                <Toaster position='top-center' reverseOrder={false}></Toaster>
-                    <form novalidate="" action="" className="container flex flex-col mx-auto space-y-10 ng-untouched ng-pristine ng-valid" onSubmit={formik.handleSubmit}>
-                        <fieldset className="grid grid-cols-4 gap-6 p-4 rounded-md shadow-sm border">
-                            <div className="space-y-2 col-span-full lg:col-span-1">
-                                <p className="font-medium">Personal Inormation</p>
-                                <p className="text-xs">About myself in brief</p>
-                            </div>
-                            <div className="grid grid-cols-6 gap-4 col-span-full lg:col-span-3">
-                                <div className="col-span-full sm:col-span-3">
-                                    <label for="firstname" className="text-sm">First name</label>
-                                    <input id="firstname" type="text" onChange={(e) => setFirstName(e.target.value)} value={firstName} placeholder="First name" className="w-full rounded-md focus:ring focus:ring-opacity-75 focus:ring-violet-400 dark:border-gray-700 dark:text-gray-900 border text-center" />
-                                </div>
-                                <div className="col-span-full sm:col-span-3">
-                                    <label for="lastname" className="text-sm">Last name</label>
-                                    <input id="lastname" type="text" onChange={(e) => setLastName(e.target.value)} value={lastName} placeholder="Last name" className="w-full rounded-md focus:ring focus:ring-opacity-75 focus:ring-violet-400 dark:border-gray-700 dark:text-gray-900 border text-center" />
-                                </div>
-                                <div className="col-span-full sm:col-span-3">
-                                    <label for="email" className="text-sm">Email</label>
-                                    <input id="email" type="email" placeholder="Email" onChange={(e) => setEmail(e.target.value)} value={email} className="w-full rounded-md focus:ring focus:ring-opacity-75 focus:ring-violet-400 dark:border-gray-700 dark:text-gray-900 border text-center" />
-                                </div>
-                                <div className="col-span-full">
-                                    <label for="address" className="text-sm">Address</label>
-                                    <input id="address" type="text" placeholder="" onChange={(e) => setAddress(e.target.value)} value={address} className="w-full rounded-md focus:ring focus:ring-opacity-75 focus:ring-violet-400 dark:border-gray-700 dark:text-gray-900 border text-center" />
-                                </div>
-                                <div className="col-span-full sm:col-span-3">
-                                    <label for="city" className="text-sm">Date Of Birth</label>
-                                    <input id="city" type="date" value={dob} placeholder="" onChange={(e) => setDob(e.target.value)} className="w-full rounded-md focus:ring focus:ring-opacity-75 focus:ring-violet-400 dark:border-gray-700 dark:text-gray-900 border text-center" />
-                                </div>
-
-                                <div className="col-span-full sm:col-span-3">
-                                    <label for="email" className="text-sm">Experience</label>
-                                    <input id="experience" type="number" placeholder="Experience" onChange={(e) => setExperience(e.target.value)} value={experience} className="w-full rounded-md focus:ring focus:ring-opacity-75 focus:ring-violet-400 dark:border-gray-700 dark:text-gray-900 border text-center" />
-                                </div>
-
-                            </div>
-                        </fieldset>
-                        <fieldset className="grid grid-cols-4 gap-6 p-4 rounded-md shadow-sm border">
-                            <div className="space-y-2 col-span-full lg:col-span-1">
-                                <p className="font-medium">Profile</p>
-                                <p className="text-xs">About my profile</p>
-                            </div>
-                            <div className="grid grid-cols-6 gap-4 col-span-full lg:col-span-3">
-                                <div className="col-span-full sm:col-span-3">
-                                    <label for="username" className="text-sm">email/username</label>
-                                    <input id="username" value={email} type="text" placeholder="Username" disabled className="w-full rounded-md focus:ring focus:ring-opacity-75 focus:ring-violet-400 dark:border-gray-700 dark:text-gray-900 border text-center" />
-                                </div>
-                                <div className="col-span-full sm:col-span-3">
-                                    <label for="website" className="text-sm">Password</label>
-                                    <input id="website" type="password" disabled value={password?.substr(0, 6)} className="w-full rounded-md focus:ring focus:ring-opacity-75 focus:ring-violet-400 dark:border-gray-700 dark:text-gray-900 border text-center" />
-                                </div>
-                                <div className="col-span-full sm:col-span-3">
-                                    <label for="website" className="text-sm">Fees Per consultation</label>
-                                    <input id="website" type="number" value={fees} onChange={(e) => setFees(e.target.value)} className="w-full rounded-md focus:ring focus:ring-opacity-75 focus:ring-violet-400 dark:border-gray-700 dark:text-gray-900 border text-center" />
-                                </div>
-                                <div className="col-span-full">
-                                    <label for="bio" className="text-sm">About Me</label>
-                                    <textarea id="bio" value={about} placeholder="" onChange={(e) => setAbout(e.target.value)} className="w-full rounded-md focus:ring focus:ring-opacity-75 focus:ring-violet-400 dark:border-gray-700 dark:text-gray-900 border text-center"></textarea>
-                                </div>
-                                <div className="col-span-full">
-                                    <label for="bio" className="text-sm">Photo</label>
-                                    <div className="flex items-center space-x-2">
-                                        <img src={doctor?.image?.secure_url} alt="" className="w-10 h-10 rounded-full" />
-                                        <input id="dropzone-file" type="file" className="px-4 py-2 border rounded-md dark:border-gray-700 dark:text-gray-900" accept='image/*' onChange={handleDoctorImageUpload} />
-                                    </div>
-                                </div>
-                            </div>
-                        </fieldset>
-                        <div class="flex justify-center">
-                            <button type='submit' class="bg-purple-900 text-white hover:bg-blue-400 font-bold py-2 px-4 mt-1 rounded items-center">submit</button>
-                        </div>
-                    </form>
-
-                </section>
-
+  return (
+    <div>
+      <Toaster />
+      <div className="mainDiv">
+        <div className="contentDiv">
+          <div className="row">
+            <div className="col-md-3">
+              <SideBar />
             </div>
+            <div className="col-md-9">
+              <form onSubmit={formik.handleSubmit}>
+                <div className="row">
+                  <div className="col-md-6">
+                    <div className="form-group">
+                      <label htmlFor="firstName">First Name</label>
+                      <input
+                        type="text"
+                        name="firstName"
+                        id="firstName"
+                        className="form-control"
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.firstName}
+                      />
+                      {formik.touched.firstName && formik.errors.firstName ? (
+                        <div className="error">{formik.errors.firstName}</div>
+                      ) : null}
+                    </div>
+                  </div>
+                  <div className="col-md-6">
+                    <div className="form-group">
+                      <label htmlFor="lastName">Last Name</label>
+                      <input
+                        type="text"
+                        name="lastName"
+                        id="lastName"
+                        className="form-control"
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.lastName}
+                      />
+                      {formik.touched.lastName && formik.errors.lastName ? (
+                        <div className="error">{formik.errors.lastName}</div>
+                      ) : null}
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-md-6">
+                    <div className="form-group">
+                      <label htmlFor="email">Email</label>
+                      <input
+                        type="email"
+                        name="email"
+                        id="email"
+                        className="form-control"
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.email}
+                      />
+                      {formik.touched.email && formik.errors.email ? (
+                        <div className="error">{formik.errors.email}</div>
+                      ) : null}
+                    </div>
+                  </div>
+                  <div className="col-md-6">
+                    <div className="form-group">
+                      <label htmlFor="password">Password</label>
+                      <input
+                        type="password"
+                        name="password"
+                        id="password"
+                        className="form-control"
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.password}
+                      />
+                      {formik.touched.password && formik.errors.password ? (
+                        <div className="error">{formik.errors.password}</div>
+                      ) : null}
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-md-6">
+                    <div className="form-group">
+                      <label htmlFor="address">Address</label>
+                      <textarea
+                        name="address"
+                        id="address"
+                        className="form-control"
+                        rows="3"
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.address}
+                      ></textarea>
+                      {formik.touched.address && formik.errors.address ? (
+                        <div className="error">{formik.errors.address}</div>
+                      ) : null}
+                    </div>
+                  </div>
+                  <div className="col-md-6">
+                    <div className="form-group">
+                      <label htmlFor="dob">Date of Birth</label>
+                      <input
+                        type="date"
+                        name="dob"
+                        id="dob"
+                        className="form-control"
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.dob}
+                      />
+                      {formik.touched.dob && formik.errors.dob ? (
+                        <div className="error">{formik.errors.dob}</div>
+                      ) : null}
+                    </div>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-md-6">
+                    <div className="form-group">
+                      <label htmlFor="about">About Me</label>
+                      <textarea
+                        name="about"
+                        id="about"
+                        className="form-control"
+                        rows="3"
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.about}
+                      ></textarea>
+                      {formik.touched.about && formik.errors.about ? (
+                        <div className="error">{formik.errors.about}</div>
+                      ) : null}
+                    </div>
+                  </div>
+                  <div className="col-md-6">
+                    <div className="form-group">
+                      <label htmlFor="experience">Experience (in years)</label>
+                      <input
+                        type="number"
+                        name="experience"
+                        id="experience"
+                        className="form-control"
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.experience}
+                      />
+                      {formik.touched.experience && formik.errors.experience ? (
+                        <div className="error">{formik.errors.experience}</div>
+                      ) : null}
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="fees">Consultation Fees</label>
+                      <input
+                        type="number"
+                        name="fees"
+                        id="fees"
+                        className="form-control"
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.fees}
+                      />
+                      {formik.touched.fees && formik.errors.fees ? (
+                        <div className="error">{formik.errors.fees}</div>
+                      ) : null}
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="image">Profile Image</label>
+                      <input
+                        type="file"
+                        name="image"
+                        id="image"
+                        className="form-control"
+                        onChange={(e) => {
+                          formik.setFieldValue('image', e.target.files[0]);
+                          handleDoctorImageUpload(e);
+                        }}
+                      />
+                      {formik.touched.image && formik.errors.image ? (
+                        <div className="error">{formik.errors.image}</div>
+                      ) : null}
+                    </div>
+                  </div>
+                </div>
+                <div className="form-group">
+                  <button type="submit" className="btn btn-primary">
+                    Update Profile
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
         </div>
+      </div>
+    </div>
+  );
+};
 
-
-    )
-}
-
-export default DoctorsEdit
+export default DoctorsEdit;

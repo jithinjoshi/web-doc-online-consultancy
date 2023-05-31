@@ -3,13 +3,13 @@ import { DataGrid } from "@mui/x-data-grid";
 import { userColumns, userRows } from "../../../datatablesource";
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import { deleteDoctor } from "../../../Helpers/adminHelper";
+import { blockDoctor, deleteDoctor, unblockDoctor } from "../../../Helpers/adminHelper";
 import Swal from 'sweetalert2'
 
-const Doctors = ({doctors,setDoctors}) => {
+const Doctors = ({ doctors, setDoctors }) => {
   const [data, setData] = useState();
 
-  const handleDelete = async (id) => {
+  const handleBlock = async (id) => {
     try {
       Swal.fire({
         title: 'Are you sure?',
@@ -18,27 +18,61 @@ const Doctors = ({doctors,setDoctors}) => {
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
+        confirmButtonText: 'Yes, Do it!'
       }).then(async (result) => {
         if (result.isConfirmed) {
-          const deleteDoc = await deleteDoctor(id);
-          setDoctors(deleteDoc?.data?.doctors)
-          
+          const blockDoc = await blockDoctor(id);
+          console.log(blockDoc?.data)
+          setDoctors(blockDoc?.data)
+
           setData()
-          
+
           Swal.fire(
-            'Deleted!',
-            'Your file has been deleted.',
+            'Success!',
+            'You Blocked doctor successfully',
             'success'
           )
         }
       })
 
-      
-      
+
+
     } catch (error) {
       return error
-      
+
+    }
+  };
+
+  const handleUnBlock = async (id) => {
+    try {
+      Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, Do it!'
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          const unblockDoc = await unblockDoctor(id);
+          setDoctors(unblockDoc?.data)
+
+          setData()
+
+          Swal.fire(
+            'Success!',
+            'You unblocked doctor successfully',
+            'success'
+          )
+        }
+      })
+
+
+
+    } catch (error) {
+      return error
+
     }
   };
 
@@ -53,12 +87,24 @@ const Doctors = ({doctors,setDoctors}) => {
             <Link to={`/admin/update-doctor/${params.row._id}`} style={{ textDecoration: "none" }}>
               <div className="viewButton">View</div>
             </Link>
-            <div
+            {
+              params?.row?.isActive ? <div
               className="deleteButton"
-              onClick={() => handleDelete(params.row._id)}
+              onClick={() => handleBlock(params.row._id)}
             >
-              Delete
+              Block
+
             </div>
+            :
+            <div
+              className="unblockButton"
+              onClick={() => handleUnBlock(params.row._id)}
+            >
+              unblock
+
+            </div>
+            }
+            
           </div>
         );
       },
@@ -75,7 +121,7 @@ const Doctors = ({doctors,setDoctors}) => {
       <DataGrid
         className="datagrid"
         rows={doctors}
-        getRowId={(row) => row._id} 
+        getRowId={(row) => row._id}
         columns={userColumns.concat(actionColumn)}
         pageSize={9}
         rowsPerPageOptions={[9]}

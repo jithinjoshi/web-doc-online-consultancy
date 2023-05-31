@@ -17,19 +17,24 @@ const DoctorsEdit = () => {
     let result;
 
 
-    let { id } = useParams();
-    let [doctor, setDoctor] = useState([]);
+    const { id } = useParams();
+    const [doctor, setDoctor] = useState([]);
 
-    let [firstName, setFirstName] = useState();
-    let [lastName, setLastName] = useState();
-    let [email, setEmail] = useState();
-    let [address, setAddress] = useState();
-    let [dob, setDob] = useState();
-    let [password, setPassword] = useState();
-    let [about, setAbout] = useState();
+    const [firstName, setFirstName] = useState();
+    const [lastName, setLastName] = useState();
+    const [email, setEmail] = useState();
+    const [address, setAddress] = useState();
+    const [dob, setDob] = useState();
+    const [password, setPassword] = useState();
+    const [about, setAbout] = useState();
     const [experience, setExperience] = useState();
     const [fees, setFees] = useState();
     const [image, setImage] = useState();
+
+    const currentDate = new Date();
+    const maxDate = new Date(currentDate.getFullYear() - 20, currentDate.getMonth(), currentDate.getDate())
+        .toISOString()
+        .split("T")[0];
 
     const handleDoctorImageUpload = (e) => {
         const file = e.target.files[0];
@@ -68,9 +73,13 @@ const DoctorsEdit = () => {
             errors.firstName = toast.error("first name is required");
         } else if (firstName.length < 3) {
             errors.firstName = toast.error("firstname should contain three characters")
+        } else if (firstName.length > 20) {
+            errors.firstName = toast.error("please shorten your firstname")
         }
         else if (!lastName) {
             errors.lastName = toast.error("Last name is required");
+        } else if (lastName.length > 20) {
+            errors.lastName = toast.error("please shorten your lastname")
         }
         else if (!email) {
             errors.email = toast.error("email is required");
@@ -92,6 +101,14 @@ const DoctorsEdit = () => {
             errors.password = toast.error("password is required")
         } else if (password < 7) {
             errors.password = toast.error("password must contain six characters")
+        } else if (experience > 50) {
+            errors.experience = toast.error('Invalid experience');
+        } else if (experience < 0) {
+            errors.experience = toast.error('Invalid experience. Please enter proper experience');
+        } else if (fees < 0) {
+            errors.fees = toast.error('Invalid fees');
+        } else if (fees > 3000) {
+            errors.fees = toast.error('Maximum fees limit exceeded');
         }
 
         if (image) {
@@ -135,7 +152,10 @@ const DoctorsEdit = () => {
             email: '',
             address: '',
             mobile: '',
-            password: ''
+            password: '',
+            experience: '',
+            fees: '',
+            about: ''
         },
         validate,
         validateOnBlur: false,
@@ -171,7 +191,7 @@ const DoctorsEdit = () => {
 
             }).catch((err) => {
                 toast.error("doctor updation failed")
-               
+
             })
 
         }
@@ -217,7 +237,16 @@ const DoctorsEdit = () => {
                                                 </div>
                                                 <div className="col-span-full sm:col-span-3">
                                                     <label for="city" className="text-sm">Date Of Birth</label>
-                                                    <input id="city" type="date" value={dob} placeholder="" onChange={(e) => setDob(e.target.value)} className="w-full rounded-md focus:ring focus:ring-opacity-75 focus:ring-violet-400 dark:border-gray-700 dark:text-gray-900 border text-center" />
+                                                    <input
+                                                        id="city"
+                                                        type="date"
+                                                        value={dob}
+                                                        min="1930-01-01" 
+                                                        placeholder=""
+                                                        max={maxDate}
+                                                        onChange={(e) => setDob(e.target.value)}
+                                                        className="w-full rounded-md focus:ring focus:ring-opacity-75 focus:ring-violet-400 dark:border-gray-700 dark:text-gray-900 border text-center"
+                                                    />
                                                 </div>
 
                                                 <div className="col-span-full sm:col-span-3">

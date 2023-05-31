@@ -6,8 +6,6 @@ const FindPage = () => {
     const [searchInput, setSearchInput] = useState();
     const [filterDoctor, setFilterDoctor] = useState([]);
     const [allDoctors, setAllDoctors] = useState([]);
-    const [departments, setDepartments] = useState([]);
-    const [selectedDepartment, setSelectedDepartment] = useState();
 
     useEffect(() => {
         getAllDoctors().then((doctors) => {

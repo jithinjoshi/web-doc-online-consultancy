@@ -96,7 +96,7 @@ const TimeSlot = ({ doctor, id }) => {
           getSelectedDay={selectedDay}
           labelFormat={"MMMM"}
           color={"#374e8c"}
-          endDate={31}
+          endDate={50}
         />
       </div>
 

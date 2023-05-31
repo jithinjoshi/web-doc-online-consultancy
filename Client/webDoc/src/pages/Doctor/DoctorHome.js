@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
-import { selectUser } from '../../Redux/Doctor/doctorSlice';
-import SideBar from '../../components/Doctor/SideBar';
-import { doctorProfile, getDoctor, getMonthlyReport, getMyAppointments, getPatients, getTotalPayments, } from '../../Helpers/doctorHelper';
-import DoctorMain from '../../components/Doctor/DoctorMain';
-import Patients from '../../components/Doctor/Patients';
+import { useDispatch, useSelector } from 'react-redux'
+import { logout, selectUser } from '../../Redux/Doctor/doctorSlice';
+import {getDoctor, getMonthlyReport, getMyAppointments, getPatients, getTotalPayments, } from '../../Helpers/doctorHelper';
 import Doctor from '../../components/Doctors/Doctor'
 import { useCookies } from "react-cookie";
 import { useNavigate } from 'react-router-dom';
+import { remove } from 'react-cookie';
 
 const DoctorHome = () => {
   const [appointments, setAppointments] = useState();
@@ -18,11 +16,12 @@ const DoctorHome = () => {
   const [cookies, removeCookie] = useCookies([]);
   const [doctor, setDoctor] = useState("");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    getMyAppointments(user?._id).then((appointments) => {
+    getMyAppointments().then((appointments) => {
       setAppointmentData(appointments?.data)
-      setAppointments(appointments?.data?.length)
+      setAppointments(appointments?.data?.appointments?.length)
     })
   }, [user]);
 
@@ -47,28 +46,33 @@ const DoctorHome = () => {
     },[])
 
     const Logout = () => {
-      removeCookie("token");
+      removeCookie("token"); // Remove the "token" cookie using removeCookie
+      dispatch(logout());
       navigate("/doctor/signin");
     };
 
     useEffect(() => {
       const verifyCookie = async () => {
-        
-        if (typeof cookies.token === 'undefined' || cookies.token === 'undefined') {
+        const token = cookies.token;
+    
+        if (!token || token === 'undefined') {
+          dispatch(logout()); // Clear the Redux store
           navigate('/doctor/signin');
-        
+        } else {
           const doctor = await getDoctor();
           setDoctor(doctor);
-        
+    
           if (!doctor) {
-            removeCookie("token");
+            remove("token"); // Remove the "token" cookie
+            dispatch(logout()); // Clear the Redux store
             navigate("/doctor/signin");
           }
         }
       };
     
       verifyCookie();
-    }, [cookies, navigate, removeCookie]);
+    }, [cookies, navigate, dispatch]);
+    
 
 
   return (

@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { doctorProfile } from '../../Helpers/doctorHelper';
-import Profile from '../../components/Doctor/Profile';
+import Profile from '../../components/Doctors/Profile';
 import SideBar from '../../components/Doctors/SideBar';
 
 
 const DoctorsProfile = () => {
     let { id } = useParams();
     let [doctor, setDoctor] = useState([]);
+    const navigate = useNavigate();
     useEffect(() => {
         doctorProfile(id).then((doctor) => {
             setDoctor(doctor.data)
         }).catch((err) => {
+            console.log(err)
             return err;
         })
     }, []);

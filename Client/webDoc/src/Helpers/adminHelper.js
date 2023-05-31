@@ -93,6 +93,40 @@ export const deleteDoctor = async (id) => {
 
 }
 
+//block doctor
+export const blockDoctor = async(id)=>{
+    try {
+        const blockDoc = await axios.put(`/api/admin/block-doctor/${id}`);
+        return blockDoc;
+        
+    } catch (error) {
+        return error;
+        
+    }
+}
+
+//unblock doctor
+export const unblockDoctor = async(id)=>{
+    try {
+        const unblockDoctor = await axios.put(`/api/admin/unblock-doctor/${id}`);
+        return unblockDoctor;
+    } catch (error) {
+        return error;     
+    }
+}
+
+//get doctor
+export const getDoctor = async(id)=>{
+    try {
+        const doctor = await axios.get(`/api/admin/doctor-profile/${id}`);
+        return doctor;
+        
+    } catch (error) {
+        return error;
+        
+    }
+}
+
 //delete department
 export const deleteDepartment = async (id) => {
     try {

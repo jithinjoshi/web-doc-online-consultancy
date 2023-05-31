@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react'
 import { Toaster, toast } from 'react-hot-toast';
 import { doctorProfile } from '../../../Helpers/doctorHelper';
 import { useNavigate, useParams } from 'react-router-dom';
-import { editDoctorProfile } from '../../../Helpers/adminHelper';
+import { editDoctorProfile, getDoctor } from '../../../Helpers/adminHelper';
 import { useFormik } from 'formik';
 import { getAllDepartments } from '../../../Helpers/adminHelper';
 
 
 const UpdateDoctor = () => {
     const history = useNavigate();
+
 
     let result;
     const { id } = useParams();
@@ -108,8 +109,9 @@ const UpdateDoctor = () => {
         return errors
     }
 
+
     useEffect(() => {
-        doctorProfile(id).then((doctor) => {
+        getDoctor(id).then((doctor) => {
             setDoctor(doctor.data);
 
             setFirstName(doctor?.data?.firstName);

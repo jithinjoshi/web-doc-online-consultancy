@@ -31,7 +31,7 @@ const DailyChart = ({ aspect, title }) => {
     const series = [
     {
     name: "daily report",
-    data: data
+    data: [data]
     }
     ];
 

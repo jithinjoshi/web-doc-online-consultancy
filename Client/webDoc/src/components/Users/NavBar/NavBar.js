@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import './NavBar.css'
-import $ from 'jquery';
+
 import { Link } from 'react-router-dom'
 import { logout, selectUser } from '../../../Redux/User/userSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { useCookies } from "react-cookie";
 
-import MenuIcon from '@mui/icons-material/Menu';
-import { getUser, refreshToken } from '../../../Helpers/userHelper';
 
 
 import { Menu, X, ChevronDown, ChevronRight } from 'lucide-react'
@@ -21,10 +19,19 @@ const menuItems = [
     name: 'Doctors',
     href: '/doctors',
   },
-  // {
-  //   name: 'Contact',
-  //   href: '#',
-  // },
+  {
+    name: 'Appointments',
+    href: '/appointments',
+  },
+  {
+    name:'chats',
+    href:'/chats'
+  },
+  {
+    name:'my Doctors',
+    href:'/appointed-doctors'
+
+  }
 ]
 
 
@@ -56,7 +63,7 @@ const NavBar = () => {
      <div className="sticky top-0 z-50 w-full bg-slate-100">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2 sm:px-6 lg:px-8">
         <div className="inline-flex items-center space-x-2 text-2xl"> 
-          <span className="font-bold text-blue-500">webDoc</span>
+          <Link to='/' className="font-bold text-blue-500">webDoc</Link>
         </div>
         <div className="hidden grow items-start lg:flex">
           <ul className="ml-12 inline-flex space-x-8">

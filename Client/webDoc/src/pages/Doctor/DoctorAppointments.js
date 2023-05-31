@@ -1,6 +1,7 @@
 import React from 'react'
 import Appointments from '../../components/Doctor/Appointments'
 import SideBar from '../../components/Doctors/SideBar'
+import FindPage from '../../components/Doctors/FindPage'
 
 const DoctorAppointments = () => {
   return (
@@ -12,7 +13,7 @@ const DoctorAppointments = () => {
                     <div id="main-content" class="h-full w-full relative overflow-y-auto lg:ml-64">
                         <main>
                             <div class=" px-4">
-                                <Appointments/>
+                                <FindPage/>
                             </div>
                         </main>
                     </div>
