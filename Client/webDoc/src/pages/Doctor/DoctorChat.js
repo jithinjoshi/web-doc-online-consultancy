@@ -1,5 +1,5 @@
 import React from 'react'
-import Chat from '../../components/Doctor/Chat/Body'
+import Chat from '../../components/Doctors/Chat/Body'
 
 
 const DoctorChat = () => {

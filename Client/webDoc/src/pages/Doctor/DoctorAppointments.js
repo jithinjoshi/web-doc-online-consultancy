@@ -1,5 +1,5 @@
 import React from 'react'
-import Appointments from '../../components/Doctor/Appointments'
+
 import SideBar from '../../components/Doctors/SideBar'
 import FindPage from '../../components/Doctors/FindPage'
 

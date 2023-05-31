@@ -14,7 +14,6 @@ import DoctorSignin from "../pages/Doctor/DoctorSignin";
 import DoctorsProfile from "../pages/Doctor/DoctorProfile";
 import DoctorsEdit from "../pages/Doctor/DoctorsEdit";
 import DoctorHome from "../pages/Doctor/DoctorHome";
-import Doctorschedule from "../pages/Doctor/Doctorschedule";
 import BookDoctor from "../pages/User/BookDoctor";
 import CheckoutSuccess from "../pages/User/CheckoutSuccess";
 import CheckoutFailure from "../pages/User/CheckoutFailure";
@@ -242,11 +241,6 @@ export const router = createBrowserRouter([
     {
         path:"/doctor/edit/:id",
         element:<DoctorsEdit/>,
-        errorElement:<ErrorPage/>
-    },
-    {
-        path:"/doctor/schedule/:id",
-        element:<Doctorschedule/>,
         errorElement:<ErrorPage/>
     },
     
