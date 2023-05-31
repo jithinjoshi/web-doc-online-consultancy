@@ -4,7 +4,7 @@ import { dailyReport } from '../../Helpers/doctorHelper';
 
 
 const DailyReport = () => {
-    let today = new Date().toISOString().slice(0, 10)
+    const today = new Date().toISOString().slice(0, 10)
     const [report,setReport] = useState([])
     useEffect(()=>{
         dailyReport().then((report)=>{

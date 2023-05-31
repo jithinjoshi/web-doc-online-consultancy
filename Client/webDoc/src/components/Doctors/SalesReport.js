@@ -2,9 +2,11 @@ import React, { useEffect, useRef, useState } from 'react';
 import { salesReport } from '../../Helpers/doctorHelper';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import { useNavigate } from 'react-router-dom';
 
 const SalesReport = () => {
     const tableRef = useRef(null);
+    const navigate = useNavigate();
 
     const generatePDF = () => {
         html2canvas(tableRef.current).then((canvas) => {
@@ -25,6 +27,7 @@ const SalesReport = () => {
             setReport(data.transactions);
             setTotalPages(data.totalPages);
         } catch (error) {
+            navigate('/doctor/signin'); 
             console.error(error);
             setReport([]);
             setTotalPages(0);

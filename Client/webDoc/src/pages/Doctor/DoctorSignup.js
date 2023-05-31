@@ -35,7 +35,7 @@ const DoctorSignup = () => {
         validateOnBlur: false,
         validateOnChange: false,
         onSubmit: async values => {
-            let addPswd = addPassword(id,values)
+            const addPswd = addPassword(id,values)
             toast.promise(addPswd, {
                 loading: 'updating...',
                 success: <b>password updated successfull</b>,

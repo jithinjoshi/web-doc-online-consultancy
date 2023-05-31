@@ -36,7 +36,7 @@ const Login = () => {
     validateOnBlur: false,
     validateOnChange: false,
     onSubmit: async values => {
-      let signin = signInAdmin(values)
+      const signin = signInAdmin(values)
       toast.promise(signin, {
         loading: 'searching...',
         success: <b>sign in successfull</b>,

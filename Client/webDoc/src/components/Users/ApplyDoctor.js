@@ -180,14 +180,14 @@ const ApplyDoctor = () => {
         validateOnChange: false,
         onSubmit: async values => {
             const date = moment(startDate).format('MM-DD-YYYY');
-            let img = { image: image, dob: date, certificate: certificate, startTime: startTime, endTime: endTime,userId:user?._id}
+            const img = { image: image, dob: date, certificate: certificate, startTime: startTime, endTime: endTime,userId:user?._id}
             const imgCopy = Object.assign({}, values, img, value);
 
             if (!imgCopy.department) {
                 imgCopy.department = departments[0].department;
             }
 
-            let doctor = applyDoctor(imgCopy);
+            const doctor = applyDoctor(imgCopy);
 
             toast.promise(doctor, {
                 loading: 'Creating doctor...',

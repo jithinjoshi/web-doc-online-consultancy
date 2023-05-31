@@ -29,7 +29,7 @@ const ResetPassword = () => {
     validateOnBlur: false,
     validateOnChange: false,
     onSubmit: async value => {
-      let verify = forgotPassword({ email: value.email })
+      const verify = forgotPassword({ email: value.email })
 
       toast.promise(verify, {
         loading: 'sending email...',

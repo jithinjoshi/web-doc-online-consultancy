@@ -33,8 +33,6 @@ const Appointments = ({ appointments, totalPages, currentPage, setCurrentPage })
     const momentObj = moment(now);
     const formattedTime = momentObj.format('h:mm a');
 
-    console.log(appointments)
-
     return (
         <>
             <div className="flex flex-col">

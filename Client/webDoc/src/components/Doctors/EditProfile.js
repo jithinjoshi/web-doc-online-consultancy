@@ -15,8 +15,8 @@ const DoctorsEdit = () => {
 
   let result;
 
-  let { id } = useParams();
-  let [doctor, setDoctor] = useState([]);
+  const { id } = useParams();
+  const [doctor, setDoctor] = useState([]);
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');

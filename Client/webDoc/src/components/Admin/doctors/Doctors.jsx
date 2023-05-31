@@ -22,7 +22,6 @@ const Doctors = ({ doctors, setDoctors }) => {
       }).then(async (result) => {
         if (result.isConfirmed) {
           const blockDoc = await blockDoctor(id);
-          console.log(blockDoc?.data)
           setDoctors(blockDoc?.data)
 
           setData()

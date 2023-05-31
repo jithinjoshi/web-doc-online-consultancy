@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { getMyAppointments } from '../../Helpers/doctorHelper';
 import Appointments from './Appointments';
+import { useNavigate } from 'react-router-dom';
 
 const FindPage = () => {
+    const navigate = useNavigate();
     const [searchInput, setSearchInput] = useState('');
   const [filterDoctor, setFilterDoctor] = useState([]);
   const [allAppointments, setAllAppointments] = useState([]);
@@ -17,12 +19,13 @@ const FindPage = () => {
       setTotalPages(data?.data?.totalPages);
     } catch (error) {
       console.error(error);
+      navigate('/doctor/signin'); 
       setReport([]);
       setTotalPages(0);
     }
   };
 
-  console.log(report)
+
   useEffect(() => {
     fetchAppointments(currentPage);
   }, [currentPage]);

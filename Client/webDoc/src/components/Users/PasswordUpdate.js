@@ -33,7 +33,7 @@ const PasswordUpdate = ({ userId, token }) => {
         validateOnBlur: false,
         validateOnChange: false,
         onSubmit: async values => {
-            let update = updatePassword(userId, token, { password: values.password })
+            const update = updatePassword(userId, token, { password: values.password })
 
             toast.promise(update, {
                 loading: 'updating...',

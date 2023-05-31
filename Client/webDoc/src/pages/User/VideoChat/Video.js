@@ -21,18 +21,18 @@ function randomID(len) {
 export function getUrlParams(
   url = window.location.href
 ) {
-  let urlStr = url.split('?')[1];
+  const urlStr = url.split('?')[1];
   return new URLSearchParams(urlStr);
 }
 
 export default function App() {
   const user = useSelector(selectUser);
   const roomID = getUrlParams().get('roomID') || randomID(5);
-  let myMeeting = async (element) => {
+  const myMeeting = async (element) => {
 
     // generate Kit Token
-    const appID = 733370959;
-    const serverSecret = "dde77a687f0a4113e41bce1bdd6b4131";
+    const appID = 376508816;
+    const serverSecret = "f52fdc09eb00c458b1a357ccfad3484c";
     const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, roomID, randomID(5), randomID(5));
 
     // Create instance object from Kit Token.

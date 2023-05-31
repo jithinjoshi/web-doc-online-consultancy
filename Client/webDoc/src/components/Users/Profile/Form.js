@@ -63,7 +63,7 @@ const Form = ({ userData }) => {
     validateOnBlur: false,
     validateOnChange: false,
     onSubmit: async values => {
-      let profile = profileOfUser(values);
+      const profile = profileOfUser(values);
       toast.promise(profile, {
         loading: 'Updating...',
         success: <b>Update user successful</b>,

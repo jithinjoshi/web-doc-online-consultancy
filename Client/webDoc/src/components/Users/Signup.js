@@ -69,7 +69,7 @@ const Signup = () => {
         validateOnChange: false,
         onSubmit: async values => {
 
-            let register = registerUser(values)
+            const register = registerUser(values)
 
             toast.promise(register, {
                 loading: 'creating...',
