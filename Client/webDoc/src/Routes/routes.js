@@ -17,8 +17,8 @@ import DoctorHome from "../pages/Doctor/DoctorHome";
 import BookDoctor from "../pages/User/BookDoctor";
 import CheckoutSuccess from "../pages/User/CheckoutSuccess";
 import CheckoutFailure from "../pages/User/CheckoutFailure";
-import OtpLogin from "../components/User/OtpLogin/OtpLogin";
-import PhoneNumber from "../components/User/PhoneNumber/PhoneNumber";
+import OtpLogin from "../components/Users/OtpLogin/OtpLogin";
+import PhoneNumber from "../components/Users/PhoneNumber/PhoneNumber";
 import EmailVerification from "../pages/User/EmailVerification";
 import ResetPassword from "../pages/User/ResetPassword";
 import UpdateDoctor from "../pages/Admin/UpdateDoctor/UpdateDoctor";
@@ -33,14 +33,14 @@ import DoctorChat from "../pages/Doctor/DoctorChat";
 import DoctorAppointments from "../pages/Doctor/DoctorAppointments";
 import Chats from "../pages/User/userChat";
 import Video from "../pages/User/VideoChat/Video";
-import CreateRoom from "../components/Doctor/VideoChat/CreateRoom";
+import CreateRoom from "../components/Doctors/VideoChat/CreateRoom";
 import DocEdit from "../pages/Doctor/DocEdit";
 import Notifications from "../pages/Admin/Notifications/Notifications";
 import DoctorRequest from "../pages/Admin/DoctorRequest/DoctorRequest";
 import ApplyDoctor from "../pages/Doctor/ApplyDoctor";
 import DoctorSignup from "../pages/Doctor/DoctorSignup";
 import AppliedDoctors from "../pages/Admin/AppliedDoctors/AppliedDoctors";
-import Leave from "../pages/Doctor/Leave";
+
 import Transactions from "../pages/Admin/Transactions/Transactions";
 import SalesReport from "../pages/Doctor/SalesReport";
 import PatientsOfDoctor from "../pages/Doctor/Patients"
@@ -267,10 +267,6 @@ export const router = createBrowserRouter([
     {
         path:'/doctor/signup/:id',
         element:<DoctorSignup/>
-    },
-    {
-        path:'/doctor/leave',
-        element:<Leave/>
     },
     {
         path:'/doctor/salesreport',

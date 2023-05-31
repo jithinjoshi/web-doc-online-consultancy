@@ -1,5 +1,5 @@
 import React from 'react'
-import PasswordUpdate from '../../components/User/PasswordUpdate'
+import PasswordUpdate from '../../components/Users/PasswordUpdate'
 import { useParams } from 'react-router-dom'
 
 const ResetPassword = () => {

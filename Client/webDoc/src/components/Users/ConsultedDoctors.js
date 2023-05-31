@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Heart, Clock10, Calendar, Stethoscope, IndianRupee } from 'lucide-react';
+import { Stethoscope, IndianRupee } from 'lucide-react';
 import { getAppointedDoctors } from '../../Helpers/userHelper';
 import { Link } from 'react-router-dom';
 

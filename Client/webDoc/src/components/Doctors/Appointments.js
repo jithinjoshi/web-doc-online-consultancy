@@ -88,7 +88,7 @@ const Appointments = ({ appointments, totalPages, currentPage, setCurrentPage })
                                                 >
                                                     Chat
                                                 </button>
-                                                <Link to={`/room/${appointments?.userId?._id}`} className='inline-block bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ms-4'>
+                                                <Link to={`/room/${appointment?.userId?._id}`} className='inline-block bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ms-4'>
                                                     create room
                                                 </Link>
                                             </td>

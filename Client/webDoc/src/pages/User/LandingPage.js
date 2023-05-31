@@ -4,14 +4,12 @@ import Banner from '../../components/Users/Banner'
 import MainDoctors from '../../components/Users/MainDoctors'
 import MainDepartments from '../../components/Users/MainDepartments'
 import Footer from '../../components/Users/Footer'
-import { getAllDepartments, getAllDoctors, getUser } from '../../Helpers/userHelper'
-import { useCookies } from "react-cookie";
-import { useNavigate } from 'react-router-dom'
+import { getAllDepartments, getAllDoctors } from '../../Helpers/userHelper'
+
 
 
 
 const LandingPage = () => {
-    const navigate = useNavigate();
     const [doctors, setDoctors] = useState([]);
     const [departments, setDepartments] = useState([]);
     //get All doctors

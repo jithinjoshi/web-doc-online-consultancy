@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getMyAppointments } from '../../Helpers/doctorHelper';
-import Appointments from '../Doctor/Appointments';
+import Appointments from './Appointments';
 
 const FindPage = () => {
     const [searchInput, setSearchInput] = useState('');

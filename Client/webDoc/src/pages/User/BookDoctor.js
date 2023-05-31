@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import NavBar from '../../components/Users/NavBar/NavBar'
-import SideBar from '../../components/User/SideBar'
-import AppointmentDoctor from '../../components/User/BookDoctor'
 import { useParams } from 'react-router-dom'
 import { getSingleDoctor } from '../../Helpers/userHelper'
 import DoctorSlotBook from '../../components/Users/DoctorSlotBook'

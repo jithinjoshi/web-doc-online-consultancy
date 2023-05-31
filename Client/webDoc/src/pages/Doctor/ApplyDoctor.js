@@ -1,5 +1,5 @@
 import React from 'react'
-import DoctorApply from '../../components/Doctor/ApplyDoctor'
+import DoctorApply from '../../components/Doctors/ApplyDoctor'
 
 const ApplyDoctor = () => {
   return (

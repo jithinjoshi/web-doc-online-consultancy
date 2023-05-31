@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { selectUser } from '../../Redux/User/userSlice'
 import { useSelector } from 'react-redux';
-import PayButton from '../User/PayButton';
+import PayButton from './PayButton';
 import { selectPaymentDetails } from '../../Redux/User/Paymentslice';
 
 const PaymentBefore = ({doctor}) => {

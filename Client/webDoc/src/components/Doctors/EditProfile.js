@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { login, selectUser } from '../../Redux/Doctor/doctorSlice';
 import { doctorProfile, editDoctorProfile } from '../../Helpers/doctorHelper';
 import { useNavigate, useParams } from 'react-router-dom';
-import SideBar from '../../components/Doctor/SideBar';
+import SideBar from './SideBar';
 import { Toaster, toast } from 'react-hot-toast';
 import { useFormik } from 'formik';
 
