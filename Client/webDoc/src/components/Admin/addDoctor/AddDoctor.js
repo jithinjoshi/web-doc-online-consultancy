@@ -116,14 +116,14 @@ const AddDoctor = () => {
         validateOnChange: false,
         onSubmit: async values => {
             const date = moment(startDate).format('MM-DD-YYYY');
-            let img = { image: image,dob:date }
+            const img = { image: image,dob:date }
             const imgCopy = Object.assign({}, values, img,value);
 
             if (!imgCopy.department) {
                 imgCopy.department = departments[0].department;
             }
            
-            let doctor = addDoctor(imgCopy)
+            const doctor = addDoctor(imgCopy)
 
             toast.promise(doctor, {
                 loading: 'creating...',

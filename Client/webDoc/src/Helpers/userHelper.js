@@ -252,10 +252,10 @@ export const updatePassword = async (id, token, credentials) => {
 }
 
 //user appointments
-export const singleUserAppointments = async (id, status) => {
+export const singleUserAppointments = async (id, status,page) => {
     try {
        
-        const appointments = await axios.get(`/api/user/my-appointments/${status}/${id}`);
+        const appointments = await axios.get(`/api/user/my-appointments/${status}/${id}?page=${page}`);
         return appointments;
     } catch (error) {
         return error;

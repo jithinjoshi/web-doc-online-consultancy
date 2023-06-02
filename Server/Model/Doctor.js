@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import mongoosePaginate from 'mongoose-paginate'
 
 const doctorSchema = new mongoose.Schema({
     firstName: {
@@ -76,5 +77,6 @@ const doctorSchema = new mongoose.Schema({
     }
 
 });
+doctorSchema.plugin(mongoosePaginate);
 
 export default mongoose.model('Doctor', doctorSchema);

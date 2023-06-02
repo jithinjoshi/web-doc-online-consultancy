@@ -27,7 +27,7 @@ const AddDepartment = ({ onClose, visible, setDepartments }) => {
         validateOnBlur: false,
         validateOnChange: false,
         onSubmit: async values => {
-            let departments = createDepartments(values)
+            const departments = createDepartments(values)
             toast.promise(departments, {
                 loading: 'searching...',
                 success: <b>department added successfully</b>,

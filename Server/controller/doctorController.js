@@ -15,11 +15,11 @@ import { Prescription } from "../Model/Prescription.js";
 export const login = async (req, res) => {
     try {
         const { email, password } = req.body;
-        let user = await Doctor.findOne({ email });
+        const user = await Doctor.findOne({ email });
 
 
         if (user) {
-            let isValidUser = await bcrypt.compare(password, user.password);
+            const isValidUser = await bcrypt.compare(password, user.password);
 
             if (isValidUser) {
                 const token = createSecretTokenForDoc(user._id);
@@ -29,7 +29,7 @@ export const login = async (req, res) => {
 
 
                 res.status(201).send({ msg: "Login successfull", user, token })
-               
+
             } else {
                 res.status(500).send("invalid credentials")
             }
@@ -38,7 +38,7 @@ export const login = async (req, res) => {
         }
 
     } catch (error) {
-     
+
         res.status(500).json({ err: "login failed" })
 
     }
@@ -46,10 +46,10 @@ export const login = async (req, res) => {
 
 export const profile = async (req, res) => {
     try {
-        let doctorId = req.params.id
-       
+        const doctorId = req.params.id
+
         if (doctorId) {
-            let doctor = await Doctor.findOne({ _id: doctorId });
+            const doctor = await Doctor.findOne({ _id: doctorId });
             if (doctor) {
                 res.status(201).send(doctor)
             }
@@ -66,8 +66,8 @@ export const profile = async (req, res) => {
 //edit doctor
 export const edit = async (req, res) => {
     try {
-        let userId = req.params.id;
-        let data = req.body;
+        const userId = req.params.id;
+        const data = req.body;
         if (req.body.image) {
             const imgId = req.body.imgPublicId;
 
@@ -89,7 +89,7 @@ export const edit = async (req, res) => {
         }
 
     } catch (error) {
-      
+
         res.status(500).json(error)
 
     }
@@ -101,9 +101,9 @@ export const schedule = async (req, res) => {
         let schedules = [];
         var convertedStartTime = moment(startingTime, 'hh:mm A').format('HH:mm');
         var convertedEndTime = moment(endingTime, 'hh:mm A').format('HH:mm');
-        let numStartTime = Number(convertedStartTime.split(':')[0]);
-        let numEndTime = Number(convertedEndTime.split(':')[0]);
-       
+        const numStartTime = Number(convertedStartTime.split(':')[0]);
+        const numEndTime = Number(convertedEndTime.split(':')[0]);
+
 
         if (numStartTime < numEndTime) {
             for (let i = numStartTime; i < numEndTime; i++) {
@@ -161,15 +161,30 @@ export const getMyPatients = async (req, res) => {
 
 
 export const getAppointments = async (req, res) => {
-    const doctorId = req.params.id;
+    const doctorId = req.doctor;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 3;
     try {
-        const data = await Appointment.find({ doctorId })
-            .populate({
-                path: 'userId',
-                select: ['-password', '-tokens']
+        const data = await Appointment.paginate(
+            { doctorId: doctorId },
+            
+            {
+                page,
+                limit,
+                populate: {
+                    path: 'userId',
+                    select: '-password -tokens'
+                },
+                sort: { createdAt: -1 }
+            }
+        );
+        const totalPages = Math.ceil(data.total / limit);
 
-            }).select("-doctorId -doctorName -doctorImage -department -price -payment_status -paymentOwner -paymentOwnerEmail -createdAt -updatedAt -__v");
-        res.send(data)
+
+        res.status(201).json({
+            appointments: data.docs,
+            totalPages
+        });
 
     } catch (error) {
         res.send("can't find appointments")
@@ -203,7 +218,7 @@ export const getFullPayment = async (req, res) => {
         res.status(200).json(payment);
 
     } catch (error) {
-       
+
         return res.status(500).json({ err: "can't access data" })
 
     }
@@ -221,7 +236,7 @@ export const applyForDoctor = async (req, res) => {
 
         function getTimesBetween(start, end) {
             const times = [];
-            let currentTime = moment(start);
+            const currentTime = moment(start);
 
             while (currentTime.isBefore(end)) {
                 times.push(currentTime.format("h:mm A"));
@@ -232,7 +247,7 @@ export const applyForDoctor = async (req, res) => {
         }
 
         const timings = getTimesBetween(formattedStartTime, formattedEndTime);
-       
+
 
 
         if (image && certificate) {
@@ -266,11 +281,11 @@ export const applyForDoctor = async (req, res) => {
                     timings,
                     image: uploadRes,
                     certificate: certificateUploadRes,
-                    doctorTimings:timeslots
+                    doctorTimings: timeslots
                 });
 
                 addDoc.save().then(async () => {
-                   
+
                     const adminId = await Admin.find({}).select('_id');
                     const doctor = await Doctor.find({ email }).select('-password');
                     const unSeenNotification = {
@@ -287,13 +302,13 @@ export const applyForDoctor = async (req, res) => {
                     res.status(200).json({ success: true });
                 })
                     .catch((err) => {
-                   
+
                         res.status(400).json({ error: new Error("Some of the credentials already exist.") });
                     });
             }
         }
     } catch (error) {
-      
+
         return res.status(500).json({ success: false });
     }
 }
@@ -320,7 +335,7 @@ export const signupDoctor = async (req, res) => {
 
         res.status(200).json({ email: email })
     } catch (error) {
-      
+
         res.status(500).json({ err: "unable to update data" })
 
     }
@@ -335,7 +350,7 @@ export const addPassword = (async (req, res) => {
         const passwordUpdate = await Doctor.findByIdAndUpdate(id, { password: hash });
         res.status(200).json({ success: "user updated successfully" })
     } catch (error) {
-       
+
         res.status(500).json({ err: "can't update password" })
     }
 
@@ -350,7 +365,7 @@ export const updateLeave = (async (req, res) => {
 
 
 
-      
+
 
         const updateLeave = await Doctor.findByIdAndUpdate(
             id,
@@ -359,7 +374,7 @@ export const updateLeave = (async (req, res) => {
         res.status(200).json({ success: "data updated successfully" })
 
     } catch (error) {
-      
+
         return res.status(500).json({ err: "can't update leave" })
 
     }
@@ -370,7 +385,7 @@ export const updateLeave = (async (req, res) => {
 export const monthlyReport = async (req, res) => {
     try {
         const doctorId = req.doctor;
-        
+
         const result = await Appointment.aggregate([
             {
                 $match: {
@@ -445,7 +460,7 @@ export const monthlyReport = async (req, res) => {
 
         res.status(200).send(prices);
     } catch (error) {
-    
+
         res.status(500).json({ error: "Unable to retrieve the data" });
     }
 };
@@ -476,10 +491,10 @@ export const weeklyReport = (async (req, res) => {
             const dayData = result.find(data => data._id === index + 1);
             return dayData ? dayData.totalSales : 0
         });
-       
+
         res.status(201).json(salesByDay)
     } catch (error) {
-      
+
         res.status(500).json({ err: "can't create data" })
 
     }
@@ -489,33 +504,33 @@ export const weeklyReport = (async (req, res) => {
 //daily report 
 export const getDailyReport = async (req, res) => {
     try {
-      const doctorId = req.doctor;
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      const result = await Appointment.aggregate([
-        {
-          $match: {
-            date: { $gte: today },
-            doctorId: new mongoose.Types.ObjectId(doctorId),
-          },
-        },
-        {
-          $group: {
-            _id: null,
-            total: { $sum: "$price" },
-          },
-        },
-      ]);
-  
-      const dailyTotal = result.length > 0 ? result[0].total : 0;
-   
-      res.status(201).json(dailyTotal);
+        const doctorId = req.doctor;
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const result = await Appointment.aggregate([
+            {
+                $match: {
+                    date: { $gte: today },
+                    doctorId: new mongoose.Types.ObjectId(doctorId),
+                },
+            },
+            {
+                $group: {
+                    _id: null,
+                    total: { $sum: "$price" },
+                },
+            },
+        ]);
+
+        const dailyTotal = result.length > 0 ? result[0].total : 0;
+
+        res.status(201).json(dailyTotal);
     } catch (error) {
-    
-      res.status(500).json({ err: "Can't find the data" });
+
+        res.status(500).json({ err: "Can't find the data" });
     }
-  };
-  
+};
+
 
 //yearly report
 export const getYearlyReport = (async (req, res) => {
@@ -552,9 +567,9 @@ export const getData = async (req, res,) => {
     const doctorId = req.doctor;
     try {
 
-        let user = await Doctor.findById(doctorId);
+        const user = await Doctor.findById(doctorId);
         if (user) {
-            let { password, ...rest } = Object.assign({}, user.toJSON());
+            const { password, ...rest } = Object.assign({}, user.toJSON());
             res.status(201).send(rest);
         } else {
             res.status(500).send("can't find the user")
@@ -593,7 +608,7 @@ export const getSaleReport = async (req, res) => {
             totalPages
         });
     } catch (error) {
-        
+
         res.status(500).json({ err: "Can't access data" });
     }
 };
@@ -603,7 +618,7 @@ export const singleAppointment = (async (req, res) => {
     try {
         const { id } = req.params;
         const doctorId = req.doctor;
-       
+
 
         const appointment = await Appointment.findOne({ userId: new mongoose.Types.ObjectId(id), doctorId: new mongoose.Types.ObjectId(doctorId) }).populate({
             path: 'userId',
@@ -635,7 +650,7 @@ export const prescriptions = (async (req, res) => {
         res.status(200).json(newPrescription);
 
     } catch (error) {
-       
+
         return res.status(500).json({ err: "can't create prescription" })
     }
 })
@@ -652,7 +667,7 @@ export const singlePrescription = (async (req, res) => {
         res.status(200).json({ prescription });
 
     } catch (error) {
-       
+
         res.status(500).json({ err: "can't find the data" })
 
     }
@@ -712,12 +727,12 @@ export const deletePrescription = (async (req, res) => {
 export const addDoctorTimeSlot = async (req, res) => {
     const doctorId = req.doctor;
     const { timings, interval } = req.body;
-    
+
 
     try {
         function generateTimeSlots(startTime, endTime, interval) {
             const timeSlots = [];
-            let currentTime = moment(startTime, 'h:mm A');
+            const currentTime = moment(startTime, 'h:mm A');
 
             while (currentTime < moment(endTime, 'h:mm A')) {
                 timeSlots.push(currentTime.format('h:mm A'));

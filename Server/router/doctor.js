@@ -10,7 +10,7 @@ router.route('/edit/:id').put(controller.edit);
 router.route('/schedule/:id').post(controller.schedule);
 router.route('/scheduledTime/:id').get(controller.scheduledTime);
 router.route('/getMyPatients').get(DoctorAuth,controller.getMyPatients);
-router.route('/appointments/:id').get(controller.getAppointments);
+router.route('/appointments').get(DoctorAuth,controller.getAppointments);
 router.route('/getSingleDoctor/:id').post(controller.getSingleDoctor);
 router.route('/getFullProfit/:id').get(controller.getFullPayment);
 router.route('/apply-doctor').post(controller.applyForDoctor);

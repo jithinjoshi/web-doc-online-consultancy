@@ -208,10 +208,10 @@ export const googleLogin = async (req, res) => {
 export const login = async (req, res) => {
     try {
         const { email, password } = req.body;
-        let user = await User.findOne({ email });
+        const user = await User.findOne({ email });
 
         if (user) {
-            let isValidUser = await bcrypt.compare(password, user.password);
+            const isValidUser = await bcrypt.compare(password, user.password);
             if (isValidUser) {
                 const token = createSecretToken(user._id);
                 res.cookie("token", token, {
@@ -240,10 +240,10 @@ export const getUser = async (req, res,) => {
     
     try {
 
-        let user = await User.findById(userId);
+        const user = await User.findById(userId);
 
         if (user) {
-            let { password, ...rest } = Object.assign({}, user.toJSON());
+            const { password, ...rest } = Object.assign({}, user.toJSON());
             res.status(201).send(rest);
         } else {
             res.status(500).send("can't find the user")
@@ -260,7 +260,7 @@ export const getAllDoctors = async (req, res) => {
     try {
 
 
-        let doctors = await Doctor.find({ status: "approved" }, '-password');
+        const doctors = await Doctor.find({ status: "approved" }, '-password');
         res.status(200).send(doctors);
 
     } catch (error) {
@@ -421,7 +421,7 @@ export const payment = async (req, res) => {
 }
 
 export const handleWebhook = async (req, res) => {
-    let signature = req.headers['stripe-signature'];
+    const signature = req.headers['stripe-signature'];
     const endpointSecret = "whsec_98351d7eaef6f96ad8d4da5bd4f2bf4413d7bbf97dd7a1302aeeb794ea875e62";
 
     let data;
@@ -517,9 +517,9 @@ export const forgotPassword = async (req, res) => {
 
 
 
-        let testAccount = await nodemailer.createTestAccount();
+        const testAccount = await nodemailer.createTestAccount();
 
-        let transporter = nodemailer.createTransport({
+        const transporter = nodemailer.createTransport({
             host: 'smtp.gmail.com',
             port: 465,
             secure: true,
@@ -530,7 +530,7 @@ export const forgotPassword = async (req, res) => {
             }
         });
 
-        let info = await transporter.sendMail({
+        const info = await transporter.sendMail({
             from: process.env.EMAIL, // sender address
             to: user.email, // list of receivers
             subject: "Reset password", // Subject line
@@ -611,7 +611,7 @@ export const getToken = async (req, res) => {
 export const getMyAppointment = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 10;
+        const limit = parseInt(req.query.limit) || 5;
         const { id, status } = req.params;
         const currentDate = new Date();
 

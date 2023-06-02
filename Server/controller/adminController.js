@@ -46,7 +46,7 @@ export const signup = (async (req, res) => {
 export const signin = (async (req, res) => {
     try {
         const { email, password } = req.body;
-        let admin = await Admin.findOne({ email });
+        const admin = await Admin.findOne({ email });
 
         if (admin) {
             const compare = await bcrypt.compare(password, admin.password);
@@ -304,9 +304,9 @@ export const doctorApproval = async (req, res) => {
         if (approveDoctor) {
 
             //node mailer
-            let testAccount = await nodemailer.createTestAccount();
+            const testAccount = await nodemailer.createTestAccount();
 
-            let transporter = nodemailer.createTransport({
+            const transporter = nodemailer.createTransport({
                 host: 'smtp.gmail.com',
                 port: 465,
                 secure: true,
@@ -319,7 +319,7 @@ export const doctorApproval = async (req, res) => {
 
             const link = `<a href="${process.env.CLIENT_URL}/doctor/signup/${id}">Click here to create account</a>`;
 
-            let info = await transporter.sendMail({
+            const info = await transporter.sendMail({
                 from: process.env.EMAIL, // sender address
                 to: approveDoctor?.email, // list of receivers
                 subject: "doctor application approved by the authority. please create your doctor account with the  ", // Subject line
@@ -345,9 +345,9 @@ export const doctorRejection = async (req, res) => {
 
 
             //node mailer
-            let testAccount = await nodemailer.createTestAccount();
+            const testAccount = await nodemailer.createTestAccount();
 
-            let transporter = nodemailer.createTransport({
+            const transporter = nodemailer.createTransport({
                 host: 'smtp.gmail.com',
                 port: 465,
                 secure: true,
@@ -362,7 +362,7 @@ export const doctorRejection = async (req, res) => {
             `<a href="${process.env.CLIENT_URL}/doctor/signin">You can request for doctor with proper documents</a>`;
 
 
-            let info = await transporter.sendMail({
+            const info = await transporter.sendMail({
                 from: process.env.EMAIL, // sender address
                 to: email, // list of receivers
                 subject: "doctor application denied by the authority", // Subject line
@@ -579,9 +579,9 @@ export const getSaleReport = async (req, res) => {
     const adminId = req.admin;
     try {
 
-        let user = await Admin.findById(adminId);
+        const user = await Admin.findById(adminId);
         if (user) {
-            let { password, ...rest } = Object.assign({}, user.toJSON());
+            const { password, ...rest } = Object.assign({}, user.toJSON());
             res.status(201).send(rest);
         } else {
             res.status(500).send("can't find the user")
